@@ -10,28 +10,274 @@
     scroll-behavior: smooth;
   }
   :focus-visible {
-    outline: 2px solid theme("colors.signal.DEFAULT");
+    outline: 2px solid #00F0FF; /* cyber.cyan */
     outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0A0E14; /* ink.DEFAULT */
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #00F0FF; /* cyber.cyan */
+    border-radius: 9999px;
+    box-shadow: 0 0 15px #00F0FF;
   }
 }
 
 @layer components {
-  .grid-backdrop {
-    background-image: linear-gradient(#1a222e 1px, transparent 1px),
-      linear-gradient(90deg, #1a222e 1px, transparent 1px);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  
+  /* ===== Enhanced Cyber Background ===== */
+  .cyber-bg {
+    position: relative;
+    min-height: 100vh;
+    background-color: #0A0E14;
+    background-image:
+      /* Radial glows */
+      radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(255, 0, 229, 0.06) 0%, transparent 60%),
+      radial-gradient(circle at 50% 50%, rgba(123, 47, 190, 0.05) 0%, transparent 80%),
+      /* Circuit trace pattern – subtle tech lines */
+      repeating-linear-gradient(45deg, rgba(0, 240, 255, 0.02) 0px, rgba(0, 240, 255, 0.02) 2px, transparent 2px, transparent 8px),
+      repeating-linear-gradient(-45deg, rgba(255, 0, 229, 0.02) 0px, rgba(255, 0, 229, 0.02) 2px, transparent 2px, transparent 8px);
+    background-blend-mode: overlay, overlay, overlay, normal, normal;
+    z-index: 0;
   }
 
+  /* Grid overlay with node dots */
+  .cyber-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      /* Grid lines */
+      linear-gradient(to right, rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+      /* Diagonal accent lines */
+      linear-gradient(135deg, rgba(255, 0, 229, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 40px 40px;
+    pointer-events: none;
+    z-index: 1;
+    animation: gridPulse 8s ease-in-out infinite;
+  }
+
+  /* Node dots at grid intersections – using box‑shadow on a pseudo‑element */
+  .cyber-bg .grid-dots {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.2) 1px, transparent 1px);
+    background-size: 60px 60px;
+    background-position: 0 0;
+    opacity: 0.6;
+    animation: dotsPulse 4s ease-in-out infinite;
+  }
+
+  /* Scanline effect */
+  .cyber-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 240, 255, 0.03) 50%, transparent 100%);
+    background-size: 100% 8px;
+    background-repeat: repeat-y;
+    pointer-events: none;
+    z-index: 2;
+    animation: scanline 10s linear infinite;
+    opacity: 0.6;
+  }
+
+  /* Noise texture */
+  .cyber-bg .noise {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* Floating particles (pure CSS) */
+  .cyber-bg .particles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cyber-bg .particles span {
+    position: absolute;
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #00F0FF;
+    box-shadow: 0 0 6px #00F0FF;
+    animation: floatParticle linear infinite;
+    opacity: 0.4;
+  }
+  /* Generate 10 particles with different positions and speeds */
+  .cyber-bg .particles span:nth-child(1) { left: 10%; top: 20%; animation-duration: 12s; animation-delay: 0s; }
+  .cyber-bg .particles span:nth-child(2) { left: 25%; top: 70%; animation-duration: 15s; animation-delay: 2s; }
+  .cyber-bg .particles span:nth-child(3) { left: 45%; top: 10%; animation-duration: 10s; animation-delay: 4s; }
+  .cyber-bg .particles span:nth-child(4) { left: 65%; top: 80%; animation-duration: 18s; animation-delay: 1s; }
+  .cyber-bg .particles span:nth-child(5) { left: 80%; top: 30%; animation-duration: 14s; animation-delay: 3s; }
+  .cyber-bg .particles span:nth-child(6) { left: 5%; top: 50%; animation-duration: 16s; animation-delay: 5s; }
+  .cyber-bg .particles span:nth-child(7) { left: 50%; top: 60%; animation-duration: 11s; animation-delay: 0s; }
+  .cyber-bg .particles span:nth-child(8) { left: 90%; top: 90%; animation-duration: 13s; animation-delay: 2s; }
+  .cyber-bg .particles span:nth-child(9) { left: 35%; top: 40%; animation-duration: 17s; animation-delay: 3s; }
+  .cyber-bg .particles span:nth-child(10) { left: 75%; top: 15%; animation-duration: 19s; animation-delay: 1s; }
+
+  /* Cyber orb */
+  .cyber-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  /* ===== Glass card ===== */
+  .glass {
+    background: rgba(10, 14, 20, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.05);
+  }
+
+  /* ===== Typography ===== */
   .eyebrow {
-    @apply font-mono text-xs uppercase tracking-[0.25em] text-signal;
+    font-family: theme("fontFamily.mono");
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: #00F0FF;
   }
 
   .section-heading {
-    @apply font-display text-3xl sm:text-4xl font-medium tracking-tight text-paper;
+    font-family: theme("fontFamily.display");
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: #E8ECEF;
+  }
+  @media (min-width: 640px) {
+    .section-heading {
+      font-size: 3rem;
+    }
+  }
+
+  .gradient-text {
+    background: linear-gradient(to right, #00F0FF, #FF00E5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn-cyber {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.75rem 2rem;
+    font-family: theme("fontFamily.mono");
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #0A0E14;
+    background: linear-gradient(to right, #00F0FF, #7B2FBE);
+    transition: all 0.3s ease;
+  }
+  .btn-cyber:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+  }
+  .btn-cyber:active {
+    transform: scale(0.95);
+  }
+
+  /* ===== Animations ===== */
+  .animate-on-scroll {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out forwards;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+  /* ===== Keyframes ===== */
+  @keyframes gridPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  @keyframes dotsPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+  @keyframes floatParticle {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+    25% { transform: translateY(-80px) translateX(40px) scale(1.5); opacity: 0.6; }
+    50% { transform: translateY(-160px) translateX(-20px) scale(0.8); opacity: 0.3; }
+    75% { transform: translateY(-80px) translateX(60px) scale(1.2); opacity: 0.5; }
+    100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+  }
+  @keyframes fade-up {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 }
 
+/* ===== Section spacing helper ===== */
+.section-spacing {
+  @apply py-20 sm:py-24 lg:py-32;
+}
+
+/* ===== Marquee (continuous auto-slide) ===== */
+@layer utilities {
+  .animate-marquee {
+    animation: marquee linear infinite;
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse linear infinite;
+  }
+
+  .animate-pause {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+}
+
+/* ===== Reduce motion ===== */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

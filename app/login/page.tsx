@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { SYMPOSIUM_NAME } from "@/lib/eventsConfig";
+import { SYMPOSIUM_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,7 +29,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Get current session and check role for dynamic redirect
     const session = await getSession();
     setLoading(false);
 
@@ -50,78 +49,101 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-ink px-5 overflow-hidden">
-      {/* Background radial gradient glow for a premium aesthetic */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(253,176,34,0.06)_0%,transparent_65%)] pointer-events-none z-0" />
-
-      {/* Grid backdrop separated from the card so the components are fully visible */}
-      <div className="absolute inset-0 grid-backdrop pointer-events-none z-0" />
-
-      <form
-        onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-sm rounded-lg border border-ink-line bg-ink-surface/85 backdrop-blur-md p-8 shadow-2xl transition-all duration-300 hover:border-ink-line/80"
-      >
-        <div className="mb-6 text-center sm:text-left">
-          <p className="eyebrow mb-2">{SYMPOSIUM_NAME}</p>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-paper">
-            Coordinator / Admin Login
-          </h1>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-muted">
-              Username
-            </label>
-            <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-md border border-ink-line bg-ink/60 px-3.5 py-2.5 font-mono text-sm text-paper outline-none transition-all duration-200 focus:border-signal focus:bg-ink focus:shadow-[0_0_12px_rgba(253,176,34,0.12)]"
-              autoComplete="username"
-              required
-              placeholder="Enter username"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-muted">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-ink-line bg-ink/60 px-3.5 py-2.5 font-mono text-sm text-paper outline-none transition-all duration-200 focus:border-signal focus:bg-ink focus:shadow-[0_0_12px_rgba(253,176,34,0.12)]"
-              autoComplete="current-password"
-              required
-              placeholder="Enter password"
-            />
-          </div>
-        </div>
-
-        {error && (
-          <div className="mt-4 flex items-center gap-2 rounded border border-full/20 bg-full/5 p-3 font-mono text-xs text-full">
-            <span className="h-1.5 w-1.5 rounded-full bg-full animate-ping" />
-            <p>{error}</p>
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-6 w-full rounded-md bg-signal py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-all duration-300 hover:bg-signal-soft hover:shadow-[0_0_15px_rgba(253,176,34,0.25)] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
-        >
-          {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="h-3 w-3 animate-spin rounded-full border-2 border-ink border-t-transparent" />
-              Signing in…
+    <div className="flex min-h-screen overflow-hidden">
+      {/* Left side – branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-ink to-ink-surface/90 relative overflow-hidden items-center justify-center p-12">
+        <div className="absolute inset-0 bg-cyber-cyan/5" />
+        <div className="cyber-orb top-1/4 left-1/4 w-96 h-96 bg-cyber-cyan/10" />
+        <div className="relative z-10 max-w-md">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-cyber-cyan to-cyber-purple text-sm font-bold text-ink shadow-glow-cyan">
+              {SYMPOSIUM_NAME.split(" ")
+                .map((w) => w[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
             </span>
-          ) : (
-            "Sign in"
-          )}
-        </button>
-      </form>
-    </main>
+            <span className="font-display text-2xl font-bold text-paper">{SYMPOSIUM_NAME}</span>
+          </div>
+          <h1 className="font-display text-4xl font-bold text-paper leading-tight">
+            Welcome back, <br />
+            <span className="gradient-text">Organizer.</span>
+          </h1>
+          <p className="mt-4 text-muted text-sm leading-relaxed">
+            Access the coordinator and admin dashboard to manage events, registrations, and live updates.
+          </p>
+          <p className="mt-4 font-mono text-xs text-muted">
+            {COLLEGE_NAME} • National Symposium
+          </p>
+        </div>
+      </div>
+
+      {/* Right side – login form */}
+      <div className="flex w-full lg:w-1/2 items-center justify-center px-6 py-12 sm:px-12 bg-ink-surface/50 backdrop-blur-sm relative">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 text-center lg:text-left">
+            <h2 className="font-display text-2xl font-bold text-paper">Sign In</h2>
+            <p className="mt-1 text-sm text-muted">Enter your credentials to continue</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-muted">
+                Username
+              </label>
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full rounded-xl border border-white/10 bg-ink/60 px-4 py-3 font-mono text-sm text-paper outline-none transition-all duration-200 focus:border-cyber-cyan focus:bg-ink focus:shadow-glow-cyan"
+                autoComplete="username"
+                required
+                placeholder="Enter username"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-muted">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-xl border border-white/10 bg-ink/60 px-4 py-3 font-mono text-sm text-paper outline-none transition-all duration-200 focus:border-cyber-cyan focus:bg-ink focus:shadow-glow-cyan"
+                autoComplete="current-password"
+                required
+                placeholder="Enter password"
+              />
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 rounded-xl border border-full/20 bg-full/5 p-3 font-mono text-xs text-full">
+                <span className="h-1.5 w-1.5 rounded-full bg-full animate-pulse" />
+                <p>{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-cyber w-full justify-center"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-ink border-t-transparent" />
+                  Signing in…
+                </span>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+          </form>
+
+          <p className="mt-6 text-center text-xs text-muted">
+            Protected • {COLLEGE_NAME} Symposium
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
-

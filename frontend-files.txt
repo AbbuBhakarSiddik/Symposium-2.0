@@ -1,0 +1,810 @@
+﻿
+==================== tailwind.config.ts ====================
+
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        ink: {
+          DEFAULT: "#0A0E14",
+          surface: "#121822",
+          raised: "#1A222E",
+          line: "#232D3A",
+        },
+        signal: {
+          DEFAULT: "#FDB022",
+          soft: "#FFD180",
+        },
+        circuit: {
+          DEFAULT: "#34D9C5",
+        },
+        ok: "#34D399",
+        full: "#F87171",
+        paper: "#E8ECEF",
+        muted: "#7C8896",
+      },
+      fontFamily: {
+        display: ["var(--font-display)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
+      },
+      backgroundImage: {
+        grid: "linear-gradient(#1A222E 1px, transparent 1px), linear-gradient(90deg, #1A222E 1px, transparent 1px)",
+      },
+      backgroundSize: {
+        grid: "40px 40px",
+      },
+      keyframes: {
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.25" },
+        },
+        flicker: {
+          "0%,100%": { opacity: "1" },
+          "92%": { opacity: "1" },
+          "93%": { opacity: "0.6" },
+          "94%": { opacity: "1" },
+        },
+      },
+      animation: {
+        blink: "blink 1.4s ease-in-out infinite",
+        flicker: "flicker 6s linear infinite",
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
+
+==================== app/globals.css ====================
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-ink-line;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  :focus-visible {
+    outline: 2px solid theme("colors.signal.DEFAULT");
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .grid-backdrop {
+    background-image: linear-gradient(#1a222e 1px, transparent 1px),
+      linear-gradient(90deg, #1a222e 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.25em] text-signal;
+  }
+
+  .section-heading {
+    @apply font-display text-3xl sm:text-4xl font-medium tracking-tight text-paper;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+==================== app/layout.tsx ====================
+
+import type { Metadata, Viewport } from "next";
+import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import "./globals.css";
+import { SYMPOSIUM_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
+
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-display",
+});
+const body = Inter({ subsets: ["latin"], variable: "--font-body" });
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-mono",
+});
+
+export const metadata: Metadata = {
+  title: `${SYMPOSIUM_NAME} â€” ${COLLEGE_NAME}`,
+  description: `Register for ${SYMPOSIUM_NAME}, the national-level technical symposium hosted by ${COLLEGE_NAME}.`,
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0A0E14",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+      <body className="bg-ink text-paper font-body antialiased selection:bg-signal selection:text-ink">
+        {children}
+      </body>
+    </html>
+  );
+}
+
+==================== app/page.tsx ====================
+
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import EventBoard from "@/components/EventBoard";
+import Gallery from "@/components/Gallery";
+import Achievements from "@/components/Achievements";
+import CoordinatorsSection from "@/components/CoordinatorsSection";
+import Contact from "@/components/Contact";
+
+export default function Home() {
+  return (
+    <main>
+      <Header />
+      <Hero />
+      <EventBoard />
+      <Achievements />
+      <Gallery />
+      <CoordinatorsSection />
+      <Contact />
+    </main>
+  );
+}
+
+==================== components/Header.tsx ====================
+
+import Link from "next/link";
+import { SYMPOSIUM_NAME, CLUB_NAME } from "@/lib/eventsConfig";
+
+export default function Header() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-ink-line/80 bg-ink/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
+        <Link href="/" className="flex items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-sm border border-signal/50 font-mono text-xs font-bold text-signal">
+            {CLUB_NAME.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+          </span>
+          <span className="font-display text-lg font-medium tracking-tight">
+            {SYMPOSIUM_NAME}
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-8 font-mono text-xs uppercase tracking-widest text-muted sm:flex">
+          <a href="#events" className="hover:text-paper">Events</a>
+          <a href="#gallery" className="hover:text-paper">Gallery</a>
+          <a href="#achievements" className="hover:text-paper">Achievements</a>
+          <a href="#coordinators" className="hover:text-paper">Coordinators</a>
+          <a href="#contact" className="hover:text-paper">Contact</a>
+        </nav>
+
+        <Link
+          href="/login"
+          className="rounded-sm border border-ink-line px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-muted transition hover:border-signal hover:text-signal"
+        >
+          Coordinator / Admin
+        </Link>
+      </div>
+    </header>
+  );
+}
+
+==================== components/Hero.tsx ====================
+
+import { SYMPOSIUM_NAME, COLLEGE_NAME, CLUB_NAME, EVENTS } from "@/lib/eventsConfig";
+
+export default function Hero() {
+  return (
+    <section className="relative overflow-hidden border-b border-ink-line">
+      <div className="grid-backdrop absolute inset-0 h-full w-full opacity-60" />
+      <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <p className="eyebrow mb-4">
+          {CLUB_NAME} &middot; {COLLEGE_NAME}
+        </p>
+        <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-paper sm:text-7xl">
+          {SYMPOSIUM_NAME}
+        </h1>
+        <p className="mt-5 max-w-xl font-body text-base text-muted sm:text-lg">
+          A national-level technical symposium â€” {EVENTS.length} events, one day,
+          open to every campus in the country. Seats are tracked live below.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <a
+            href="#events"
+            className="rounded-sm bg-signal px-5 py-2.5 font-mono text-sm font-bold uppercase tracking-widest text-ink transition hover:bg-signal-soft"
+          >
+            View events &amp; seats
+          </a>
+          <a
+            href="#contact"
+            className="rounded-sm border border-ink-line px-5 py-2.5 font-mono text-sm uppercase tracking-widest text-muted transition hover:border-circuit hover:text-circuit"
+          >
+            Contact organizers
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+==================== components/EventBoard.tsx ====================
+
+"use client";
+
+import { useEffect, useState } from "react";
+import { EVENTS, EventConfig } from "@/lib/eventsConfig";
+
+type SeatData = { id: string; registered: number; capacity: number; available: number };
+type ApiResponse = { isLive: boolean; data: SeatData[]; fetchedAt: string };
+
+const POLL_MS = 15000;
+
+export default function EventBoard() {
+  const [seats, setSeats] = useState<Record<string, SeatData>>({});
+  const [isLive, setIsLive] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function poll() {
+      try {
+        const res = await fetch("/api/sheets", { cache: "no-store" });
+        const json: ApiResponse = await res.json();
+        if (cancelled) return;
+        setIsLive(json.isLive);
+        setSeats(Object.fromEntries(json.data.map((d) => [d.id, d])));
+      } catch {
+        // silently keep last known state; the row falls back to "â€”"
+      }
+    }
+
+    poll();
+    const interval = setInterval(poll, POLL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
+  return (
+    <section id="events" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow mb-2">Board</p>
+          <h2 className="section-heading">Events &amp; live seats</h2>
+        </div>
+        <div className="hidden items-center gap-2 font-mono text-xs text-muted sm:flex">
+          <span
+            className={`h-2 w-2 rounded-full ${isLive ? "bg-ok animate-blink" : "bg-muted"}`}
+          />
+          {isLive ? "Live from registration sheet" : "Preview data â€” sheet not connected yet"}
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-sm border border-ink-line">
+        <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 border-b border-ink-line bg-ink-surface px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-muted sm:grid-cols-[1fr_auto_auto_auto_auto]">
+          <span>Event</span>
+          <span className="hidden sm:block">Date</span>
+          <span>Registered</span>
+          <span>Available</span>
+          <span></span>
+        </div>
+
+        {EVENTS.map((event) => (
+          <EventRow
+            key={event.id}
+            event={event}
+            seat={seats[event.id]}
+            isOpen={openId === event.id}
+            onToggle={() => setOpenId(openId === event.id ? null : event.id)}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function EventRow({
+  event,
+  seat,
+  isOpen,
+  onToggle,
+}: {
+  event: EventConfig;
+  seat?: SeatData;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const available = seat?.available;
+  const status =
+    available === undefined
+      ? "loading"
+      : available === 0
+      ? "full"
+      : available <= event.capacity * 0.15
+      ? "filling"
+      : "open";
+
+  const statusStyles: Record<string, string> = {
+    loading: "text-muted",
+    open: "text-ok",
+    filling: "text-signal",
+    full: "text-full",
+  };
+
+  return (
+    <div className="border-b border-ink-line last:border-b-0">
+      <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-3 px-4 py-4 transition hover:bg-ink-surface sm:grid-cols-[1fr_auto_auto_auto_auto]">
+        <div>
+          <p className="font-display text-base font-medium text-paper sm:text-lg">{event.name}</p>
+          <p className="font-mono text-xs text-muted">{event.tagline}</p>
+        </div>
+        <span className="hidden font-mono text-sm text-muted sm:block">{event.date}</span>
+        <span className="font-mono text-sm tabular-nums text-paper">
+          {seat ? seat.registered : "â€”"}
+          <span className="text-muted">/{event.capacity}</span>
+        </span>
+        <span className={`font-mono text-sm font-bold uppercase tabular-nums ${statusStyles[status]}`}>
+          {available === undefined ? "Â·Â·Â·" : status === "full" ? "Full" : available}
+        </span>
+        <button
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          aria-label={`More options for ${event.name}`}
+          className="ml-2 flex h-8 w-8 flex-col items-center justify-center gap-[3px] rounded-sm border border-ink-line transition hover:border-signal"
+        >
+          <span className="h-px w-4 bg-muted" />
+          <span className="h-px w-4 bg-muted" />
+          <span className="h-px w-4 bg-muted" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-ink-line bg-ink-surface px-4 py-5 sm:px-6">
+          <p className="mb-4 max-w-2xl text-sm text-muted">{event.description}</p>
+
+          <p className="eyebrow mb-2">Schedule</p>
+          <ul className="mb-5 space-y-1 font-mono text-sm">
+            {event.schedule.map((s, i) => (
+              <li key={i} className="flex gap-3 text-muted">
+                <span className="w-28 shrink-0 text-signal">{s.time}</span>
+                <span>{s.item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="#contact"
+              className="rounded-sm bg-signal px-4 py-2 font-mono text-xs font-bold uppercase tracking-widest text-ink transition hover:bg-signal-soft"
+            >
+              Register
+            </a>
+            <a
+              href="#coordinators"
+              className="rounded-sm border border-ink-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted transition hover:border-circuit hover:text-circuit"
+            >
+              Contact coordinator
+            </a>
+            <span className="rounded-sm border border-ink-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted">
+              {event.venue}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+==================== components/CoordinatorsSection.tsx ====================
+
+import Link from "next/link";
+import { EVENTS, COLLEGE_NAME } from "@/lib/eventsConfig";
+
+export default function CoordinatorsSection() {
+  return (
+    <section id="coordinators" className="border-t border-ink-line">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow mb-2">People</p>
+            <h2 className="section-heading">Coordinators &amp; department</h2>
+          </div>
+          <Link
+            href="/login"
+            className="rounded-sm border border-ink-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted transition hover:border-signal hover:text-signal"
+          >
+            Coordinator login â†’
+          </Link>
+        </div>
+
+        <p className="mb-8 max-w-xl text-sm text-muted">
+          Full contact details and internal event material are restricted to coordinator and
+          admin logins. Public event-lead names for each event are below.
+        </p>
+
+        <div className="grid gap-px overflow-hidden rounded-sm border border-ink-line bg-ink-line sm:grid-cols-2 lg:grid-cols-4">
+          {EVENTS.map((e) => (
+            <div key={e.id} className="bg-ink p-5">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-signal">
+                {e.name}
+              </p>
+              {e.coordinators.map((c) => (
+                <p key={c.name} className="mt-2 font-display text-base text-paper">
+                  {c.name}
+                  <span className="block font-mono text-xs font-normal text-muted">{c.role}</span>
+                </p>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-8 font-mono text-xs uppercase tracking-widest text-muted">
+          Department â€” {COLLEGE_NAME}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+==================== components/Gallery.tsx ====================
+
+const PLACEHOLDER_TILES = Array.from({ length: 8 }, (_, i) => i);
+
+export default function Gallery() {
+  return (
+    <section id="gallery" className="border-t border-ink-line">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <p className="eyebrow mb-2">Archive</p>
+        <h2 className="section-heading mb-8">Previous editions</h2>
+        <p className="mb-8 max-w-xl text-sm text-muted">
+          Photos and recap videos from past symposiums go here â€” drop files into{" "}
+          <code className="font-mono text-signal">/public/media</code> and swap the tiles below.
+        </p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {PLACEHOLDER_TILES.map((i) => (
+            <div
+              key={i}
+              className="flex aspect-square items-center justify-center rounded-sm border border-dashed border-ink-line bg-ink-surface font-mono text-[10px] uppercase tracking-widest text-muted"
+            >
+              Media {i + 1}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+==================== components/Contact.tsx ====================
+
+import { CLUB_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
+
+export default function Contact() {
+  return (
+    <section id="contact" className="border-t border-ink-line bg-ink-surface/40">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <p className="eyebrow mb-2">Reach us</p>
+        <h2 className="section-heading mb-8">Contact</h2>
+
+        <div className="grid gap-8 sm:grid-cols-3">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">Organized by</p>
+            <p className="mt-2 font-display text-lg text-paper">{CLUB_NAME}</p>
+            <p className="font-mono text-sm text-muted">{COLLEGE_NAME}</p>
+          </div>
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">Email</p>
+            <p className="mt-2 font-mono text-sm text-signal">symposium@example.edu</p>
+          </div>
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">Phone</p>
+            <p className="mt-2 font-mono text-sm text-signal">+91 90000 00000</p>
+          </div>
+        </div>
+      </div>
+
+      <footer className="border-t border-ink-line px-5 py-6 sm:px-8">
+        <p className="mx-auto max-w-6xl font-mono text-xs text-muted">
+          Â© {new Date().getFullYear()} {CLUB_NAME}, {COLLEGE_NAME}.
+        </p>
+      </footer>
+    </section>
+  );
+}
+
+==================== components/Achievements.tsx ====================
+
+import { CLUB_NAME } from "@/lib/eventsConfig";
+
+const ACHIEVEMENTS = [
+  { stat: "5+", label: "Years running the symposium" },
+  { stat: "2000+", label: "Students hosted across editions" },
+  { stat: "40+", label: "Partner colleges" },
+  { stat: "12", label: "Industry speakers to date" },
+];
+
+export default function Achievements() {
+  return (
+    <section id="achievements" className="border-t border-ink-line bg-ink-surface/40">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <p className="eyebrow mb-2">About</p>
+        <h2 className="section-heading mb-4">{CLUB_NAME}</h2>
+        <p className="mb-10 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+          Replace this paragraph with the club's real story â€” when it was founded, what it runs
+          year-round (workshops, projects, competitions), and what makes this year's symposium
+          worth attending.
+        </p>
+
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+          {ACHIEVEMENTS.map((a) => (
+            <div key={a.label} className="border-l border-signal/50 pl-4">
+              <p className="font-display text-3xl font-medium text-paper sm:text-4xl">{a.stat}</p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-muted">
+                {a.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+==================== app/login/page.tsx ====================
+
+"use client";
+
+import { useState } from "react";
+import { signIn, getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { SYMPOSIUM_NAME } from "@/lib/eventsConfig";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const res = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      setLoading(false);
+      setError("Incorrect username or password.");
+      return;
+    }
+
+    // Get current session and check role for dynamic redirect
+    const session = await getSession();
+    setLoading(false);
+
+    const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl");
+    if (callbackUrl) {
+      router.push(callbackUrl);
+    } else {
+      const role = (session?.user as any)?.role;
+      if (role === "admin") {
+        router.push("/admin");
+      } else if (role === "coordinator") {
+        router.push("/coordinators");
+      } else {
+        router.push("/");
+      }
+    }
+    router.refresh();
+  }
+
+  return (
+    <main className="relative flex min-h-screen items-center justify-center bg-ink px-5 overflow-hidden">
+      {/* Background radial gradient glow for a premium aesthetic */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(253,176,34,0.06)_0%,transparent_65%)] pointer-events-none z-0" />
+
+      {/* Grid backdrop separated from the card so the components are fully visible */}
+      <div className="absolute inset-0 grid-backdrop pointer-events-none z-0" />
+
+      <form
+        onSubmit={handleSubmit}
+        className="relative z-10 w-full max-w-sm rounded-lg border border-ink-line bg-ink-surface/85 backdrop-blur-md p-8 shadow-2xl transition-all duration-300 hover:border-ink-line/80"
+      >
+        <div className="mb-6 text-center sm:text-left">
+          <p className="eyebrow mb-2">{SYMPOSIUM_NAME}</p>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-paper">
+            Coordinator / Admin Login
+          </h1>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-muted">
+              Username
+            </label>
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-md border border-ink-line bg-ink/60 px-3.5 py-2.5 font-mono text-sm text-paper outline-none transition-all duration-200 focus:border-signal focus:bg-ink focus:shadow-[0_0_12px_rgba(253,176,34,0.12)]"
+              autoComplete="username"
+              required
+              placeholder="Enter username"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-muted">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-md border border-ink-line bg-ink/60 px-3.5 py-2.5 font-mono text-sm text-paper outline-none transition-all duration-200 focus:border-signal focus:bg-ink focus:shadow-[0_0_12px_rgba(253,176,34,0.12)]"
+              autoComplete="current-password"
+              required
+              placeholder="Enter password"
+            />
+          </div>
+        </div>
+
+        {error && (
+          <div className="mt-4 flex items-center gap-2 rounded border border-full/20 bg-full/5 p-3 font-mono text-xs text-full">
+            <span className="h-1.5 w-1.5 rounded-full bg-full animate-ping" />
+            <p>{error}</p>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-6 w-full rounded-md bg-signal py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-all duration-300 hover:bg-signal-soft hover:shadow-[0_0_15px_rgba(253,176,34,0.25)] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="h-3 w-3 animate-spin rounded-full border-2 border-ink border-t-transparent" />
+              Signing inâ€¦
+            </span>
+          ) : (
+            "Sign in"
+          )}
+        </button>
+      </form>
+    </main>
+  );
+}
+
+
+==================== lib/eventsConfig.ts ====================
+
+// Placeholder event data. Replace names, descriptions, dates, and capacities
+// with the real symposium details when ready. The "capacity" here is the
+// only number the live-count logic needs per event â€” everything else is
+// content.
+
+export type EventConfig = {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  date: string; // e.g. "12 Sep 2026"
+  time: string; // e.g. "10:00 AM"
+  venue: string;
+  capacity: number;
+  // Must exactly match the value coordinators/students pick in the
+  // Google Form's "Event" dropdown â€” this is how live registrations
+  // get counted per event.
+  sheetEventLabel: string;
+  schedule: { time: string; item: string }[];
+  coordinators: { name: string; role: string; phone?: string; email?: string }[];
+};
+
+export const CLUB_NAME = "Placeholder Tech Club";
+export const COLLEGE_NAME = "Placeholder College of Engineering";
+export const SYMPOSIUM_NAME = "SYMPOSIUM '26";
+
+export const EVENTS: EventConfig[] = [
+  {
+    id: "event-1",
+    name: "Paper Presentation",
+    tagline: "Present. Defend. Win.",
+    description:
+      "Present an original technical paper before a panel of judges. Open to teams of up to 3.",
+    date: "12 Sep 2026",
+    time: "10:00 AM",
+    venue: "Seminar Hall A",
+    capacity: 60,
+    sheetEventLabel: "Paper Presentation",
+    schedule: [
+      { time: "10:00 AM", item: "Reporting & abstract submission" },
+      { time: "10:30 AM", item: "Presentations begin (Round 1)" },
+      { time: "1:00 PM", item: "Lunch break" },
+      { time: "2:00 PM", item: "Final round" },
+      { time: "4:00 PM", item: "Results" },
+    ],
+    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00001" }],
+  },
+  {
+    id: "event-2",
+    name: "Hackathon",
+    tagline: "24 hours. One idea. Ship it.",
+    description:
+      "Build a working prototype around this year's theme within the time limit. Teams of 2-4.",
+    date: "12-13 Sep 2026",
+    time: "9:00 AM",
+    venue: "CSE Lab Block",
+    capacity: 100,
+    sheetEventLabel: "Hackathon",
+    schedule: [
+      { time: "9:00 AM", item: "Theme reveal & team check-in" },
+      { time: "10:00 AM", item: "Hacking begins" },
+      { time: "Next day 9:00 AM", item: "Submissions close" },
+      { time: "11:00 AM", item: "Demos & judging" },
+    ],
+    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00002" }],
+  },
+  {
+    id: "event-3",
+    name: "Circuit Debugging",
+    tagline: "Find the fault before the clock runs out.",
+    description: "Spot-the-bug relay across analog and digital circuit boards. Solo event.",
+    date: "12 Sep 2026",
+    time: "11:00 AM",
+    venue: "ECE Lab 2",
+    capacity: 40,
+    sheetEventLabel: "Circuit Debugging",
+    schedule: [
+      { time: "11:00 AM", item: "Rules briefing" },
+      { time: "11:15 AM", item: "Round 1" },
+      { time: "12:15 PM", item: "Round 2 (finalists)" },
+      { time: "1:00 PM", item: "Results" },
+    ],
+    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00003" }],
+  },
+  {
+    id: "event-4",
+    name: "Tech Quiz",
+    tagline: "Buzz in. Back it up.",
+    description: "General + core-engineering quiz, prelims followed by a stage final. Teams of 2.",
+    date: "13 Sep 2026",
+    time: "10:00 AM",
+    venue: "Main Auditorium",
+    capacity: 80,
+    sheetEventLabel: "Tech Quiz",
+    schedule: [
+      { time: "10:00 AM", item: "Written prelims" },
+      { time: "11:00 AM", item: "Prelim results" },
+      { time: "11:30 AM", item: "Stage final" },
+      { time: "1:00 PM", item: "Prize distribution" },
+    ],
+    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00004" }],
+  },
+];

@@ -1,34 +1,168 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { SYMPOSIUM_NAME, CLUB_NAME } from "@/lib/eventsConfig";
 
 export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Toggle body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Add shadow on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: "#events", label: "Events" },
+    { href: "#gallery", label: "Gallery" },
+    { href: "#achievements", label: "Achievements" },
+    { href: "#coordinators", label: "Coordinators" },
+    { href: "#contact", label: "Contact" },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-line/80 bg-ink/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded-sm border border-signal/50 font-mono text-xs font-bold text-signal">
-            {CLUB_NAME.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
-          </span>
-          <span className="font-display text-lg font-medium tracking-tight">
-            {SYMPOSIUM_NAME}
-          </span>
-        </Link>
+    <>
+      <header
+        className={`
+          sticky top-0 z-50 transition-all duration-300
+          ${scrolled 
+            ? "bg-ink/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/20" 
+            : "bg-ink/60 backdrop-blur-sm border-b border-ink-line/80"
+          }
+        `}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 group"
+            aria-label={`${SYMPOSIUM_NAME} home`}
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-cyber-cyan to-cyber-purple text-sm font-bold text-ink shadow-glow-cyan transition-transform duration-300 group-hover:scale-105">
+              {CLUB_NAME.split(" ")
+                .map((w) => w[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
+            </span>
+            <span className="font-display text-lg font-semibold tracking-tight text-paper transition-colors group-hover:text-cyber-cyan">
+              {SYMPOSIUM_NAME}
+            </span>
+          </Link>
 
-        <nav className="hidden items-center gap-8 font-mono text-xs uppercase tracking-widest text-muted sm:flex">
-          <a href="#events" className="hover:text-paper">Events</a>
-          <a href="#gallery" className="hover:text-paper">Gallery</a>
-          <a href="#achievements" className="hover:text-paper">Achievements</a>
-          <a href="#coordinators" className="hover:text-paper">Coordinators</a>
-          <a href="#contact" className="hover:text-paper">Contact</a>
-        </nav>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="relative font-mono text-xs uppercase tracking-widest text-muted transition-colors duration-200 hover:text-paper after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-cyber-cyan after:transition-all after:duration-300 hover:after:w-full"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-        <Link
-          href="/login"
-          className="rounded-sm border border-ink-line px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-muted transition hover:border-signal hover:text-signal"
+          {/* Right side: Login + Hamburger */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="btn-cyber hidden sm:inline-flex"  // using the global btn-cyber class
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              Coordinator / Admin
+            </Link>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 bg-ink/80 backdrop-blur-sm transition-colors hover:border-cyber-cyan/50"
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span
+                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${
+                  isMobileMenuOpen ? "translate-y-1.5 rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${
+                  isMobileMenuOpen ? "opacity-0" : ""
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${
+                  isMobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`
+          fixed inset-0 z-40 bg-ink/90 backdrop-blur-2xl transition-all duration-500 lg:hidden
+          ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+        `}
+        aria-hidden={!isMobileMenuOpen}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        <nav
+          className="flex h-full flex-col items-center justify-center gap-8 px-8"
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Mobile navigation"
         >
-          Coordinator / Admin
-        </Link>
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="font-display text-3xl font-medium text-paper transition-colors hover:text-cyber-cyan"
+            >
+              {link.label}
+            </a>
+          ))}
+          <Link
+            href="/login"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="btn-cyber mt-4"  // using the global button class
+          >
+            Coordinator / Admin
+          </Link>
+        </nav>
       </div>
-    </header>
+    </>
   );
 }

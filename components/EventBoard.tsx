@@ -24,7 +24,7 @@ export default function EventBoard() {
         setIsLive(json.isLive);
         setSeats(Object.fromEntries(json.data.map((d) => [d.id, d])));
       } catch {
-        // silently keep last known state; the row falls back to "—"
+        // silently keep last known state
       }
     }
 
@@ -38,30 +38,22 @@ export default function EventBoard() {
 
   return (
     <section id="events" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-      <div className="mb-8 flex items-end justify-between gap-4">
+      <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow mb-2">Board</p>
-          <h2 className="section-heading">Events &amp; live seats</h2>
+          <p className="eyebrow mb-2">Live Board</p>
+          <h2 className="section-heading">Events &amp; Seats</h2>
         </div>
-        <div className="hidden items-center gap-2 font-mono text-xs text-muted sm:flex">
+        <div className="flex items-center gap-2 font-mono text-xs text-muted">
           <span
-            className={`h-2 w-2 rounded-full ${isLive ? "bg-ok animate-blink" : "bg-muted"}`}
+            className={`h-2 w-2 rounded-full ${isLive ? "bg-cyber-cyan animate-pulse" : "bg-muted"}`}
           />
-          {isLive ? "Live from registration sheet" : "Preview data — sheet not connected yet"}
+          {isLive ? "Live from registration" : "Preview — sheet not connected"}
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-sm border border-ink-line">
-        <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 border-b border-ink-line bg-ink-surface px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-muted sm:grid-cols-[1fr_auto_auto_auto_auto]">
-          <span>Event</span>
-          <span className="hidden sm:block">Date</span>
-          <span>Registered</span>
-          <span>Available</span>
-          <span></span>
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
         {EVENTS.map((event) => (
-          <EventRow
+          <EventCard
             key={event.id}
             event={event}
             seat={seats[event.id]}
@@ -74,7 +66,7 @@ export default function EventBoard() {
   );
 }
 
-function EventRow({
+function EventCard({
   event,
   seat,
   isOpen,
@@ -86,82 +78,142 @@ function EventRow({
   onToggle: () => void;
 }) {
   const available = seat?.available;
+  const registered = seat?.registered ?? 0;
+  const capacity = event.capacity;
+  const percentageFilled = capacity > 0 ? Math.min((registered / capacity) * 100, 100) : 0;
+
+  // Determine status
   const status =
     available === undefined
       ? "loading"
       : available === 0
       ? "full"
-      : available <= event.capacity * 0.15
+      : available <= capacity * 0.15
       ? "filling"
       : "open";
 
-  const statusStyles: Record<string, string> = {
-    loading: "text-muted",
-    open: "text-ok",
-    filling: "text-signal",
-    full: "text-full",
-  };
+  const statusColor = {
+    loading: "text-muted border-muted/30",
+    open: "text-ok border-ok/50",
+    filling: "text-warning border-warning/50",
+    full: "text-full border-full/50",
+  }[status];
+
+  const statusLabel = {
+    loading: "···",
+    open: "Open",
+    filling: "Filling Fast",
+    full: "Full",
+  }[status];
 
   return (
-    <div className="border-b border-ink-line last:border-b-0">
-      <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-3 px-4 py-4 transition hover:bg-ink-surface sm:grid-cols-[1fr_auto_auto_auto_auto]">
-        <div>
-          <p className="font-display text-base font-medium text-paper sm:text-lg">{event.name}</p>
-          <p className="font-mono text-xs text-muted">{event.tagline}</p>
+    <div className={`
+      glass rounded-2xl p-5 transition-all duration-300 hover:border-cyber-cyan/40 hover:shadow-glow-cyan
+      ${isOpen ? "border-cyber-cyan/40 shadow-glow-cyan" : ""}
+    `}>
+      {/* Header: Event name + status */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1">
+          <h3 className="font-display text-xl font-semibold text-paper">{event.name}</h3>
+          <p className="font-mono text-xs text-muted mt-0.5">{event.tagline}</p>
         </div>
-        <span className="hidden font-mono text-sm text-muted sm:block">{event.date}</span>
-        <span className="font-mono text-sm tabular-nums text-paper">
-          {seat ? seat.registered : "—"}
-          <span className="text-muted">/{event.capacity}</span>
+        <span className={`
+          font-mono text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border
+          ${statusColor} bg-ink/40 backdrop-blur-sm
+        `}>
+          {statusLabel}
         </span>
-        <span className={`font-mono text-sm font-bold uppercase tabular-nums ${statusStyles[status]}`}>
-          {available === undefined ? "···" : status === "full" ? "Full" : available}
-        </span>
-        <button
-          onClick={onToggle}
-          aria-expanded={isOpen}
-          aria-label={`More options for ${event.name}`}
-          className="ml-2 flex h-8 w-8 flex-col items-center justify-center gap-[3px] rounded-sm border border-ink-line transition hover:border-signal"
-        >
-          <span className="h-px w-4 bg-muted" />
-          <span className="h-px w-4 bg-muted" />
-          <span className="h-px w-4 bg-muted" />
-        </button>
       </div>
 
-      {isOpen && (
-        <div className="border-t border-ink-line bg-ink-surface px-4 py-5 sm:px-6">
-          <p className="mb-4 max-w-2xl text-sm text-muted">{event.description}</p>
+      {/* Progress bar */}
+      <div className="mt-4 space-y-1">
+        <div className="flex justify-between text-xs font-mono text-muted">
+          <span>Seats filled</span>
+          <span>{registered} / {capacity}</span>
+        </div>
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-line">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-cyber-cyan to-cyber-magenta transition-all duration-500 ease-out"
+            style={{ width: `${percentageFilled}%` }}
+          />
+        </div>
+      </div>
 
-          <p className="eyebrow mb-2">Schedule</p>
-          <ul className="mb-5 space-y-1 font-mono text-sm">
-            {event.schedule.map((s, i) => (
-              <li key={i} className="flex gap-3 text-muted">
-                <span className="w-28 shrink-0 text-signal">{s.time}</span>
-                <span>{s.item}</span>
-              </li>
-            ))}
-          </ul>
+      {/* Quick info row */}
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-mono text-muted">
+        <span className="flex items-center gap-1">📅 {event.date}</span>
+        <span className="h-3 w-px bg-ink-line" />
+        <span className="flex items-center gap-1">📍 {event.venue}</span>
+        {available !== undefined && (
+          <>
+            <span className="h-3 w-px bg-ink-line" />
+            <span className="text-cyber-cyan">{available} spots left</span>
+          </>
+        )}
+      </div>
 
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="#contact"
-              className="rounded-sm bg-signal px-4 py-2 font-mono text-xs font-bold uppercase tracking-widest text-ink transition hover:bg-signal-soft"
-            >
-              Register
-            </a>
-            <a
-              href="#coordinators"
-              className="rounded-sm border border-ink-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted transition hover:border-circuit hover:text-circuit"
-            >
-              Contact coordinator
-            </a>
-            <span className="rounded-sm border border-ink-line px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted">
-              {event.venue}
-            </span>
+      {/* Action buttons */}
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <button
+          onClick={onToggle}
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-muted transition-all hover:border-cyber-cyan hover:text-cyber-cyan"
+        >
+          {isOpen ? "Hide Details" : "View Details"}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-3 w-3 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <a
+          href="#contact"
+          className="btn-cyber text-xs py-1.5 px-5"
+        >
+          Register Now
+        </a>
+      </div>
+
+      {/* Expandable details */}
+      <div
+        className={`
+          overflow-hidden transition-all duration-300 ease-in-out
+          ${isOpen ? "max-h-[600px] opacity-100 mt-5" : "max-h-0 opacity-0"}
+        `}
+      >
+        <div className="border-t border-white/10 pt-5 space-y-4">
+          <p className="text-sm text-muted leading-relaxed">{event.description}</p>
+
+          <div>
+            <p className="eyebrow text-[10px]">Schedule</p>
+            <ul className="mt-2 space-y-1 font-mono text-sm text-muted">
+              {event.schedule.map((s, i) => (
+                <li key={i} className="flex gap-4">
+                  <span className="w-24 shrink-0 text-cyber-cyan">{s.time}</span>
+                  <span>{s.item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="eyebrow text-[10px]">Coordinators</p>
+            <div className="mt-2 flex flex-wrap gap-4">
+              {event.coordinators.map((c) => (
+                <div key={c.name} className="text-sm">
+                  <p className="text-paper font-medium">{c.name}</p>
+                  <p className="text-xs text-muted">{c.role}</p>
+                  {c.phone && <p className="text-xs text-cyber-cyan">{c.phone}</p>}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
