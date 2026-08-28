@@ -32,24 +32,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="cyber-bg text-paper font-body antialiased selection:bg-cyber-cyan selection:text-ink">
         {/* Noise texture */}
         <div className="noise" aria-hidden="true" />
-        
+
         {/* Grid dots at intersections */}
         <div className="grid-dots" aria-hidden="true" />
-        
+
         {/* Floating particles (10 dots) */}
         <div className="particles" aria-hidden="true">
           {Array.from({ length: 10 }).map((_, i) => (
             <span key={i} />
           ))}
         </div>
-        
+
         {/* Gradient orbs – slow floating motion */}
         <div className="cyber-orb top-1/4 left-1/4 w-96 h-96 bg-cyber-cyan/20" />
-        <div 
-          className="cyber-orb bottom-1/4 right-1/4 w-96 h-96 bg-cyber-magenta/20" 
-          style={{ animationDelay: "-3s" }} 
+        <div
+          className="cyber-orb bottom-1/4 right-1/4 w-96 h-96 bg-cyber-magenta/20"
+          style={{ animationDelay: "-3s" }}
         />
-        
+
         {children}
       </body>
     </html>

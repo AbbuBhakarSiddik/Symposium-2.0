@@ -20,14 +20,17 @@ export type EventConfig = {
   coordinators: { name: string; role: string; phone?: string; email?: string }[];
 };
 
-export const CLUB_NAME = "Placeholder Tech Club";
-export const COLLEGE_NAME = "Placeholder College of Engineering";
-export const SYMPOSIUM_NAME = "SYMPOSIUM '26";
+export const CLUB_NAME = "Creative Codex";
+export const COLLEGE_NAME = "Shridevi Institute Of Engineering And Technology,Tumkur";
+export const SYMPOSIUM_NAME = "Innovation Ignite Symposium 2.0";
+
+// Replace "#" below with the actual Google Form registration link before going live.
+export const REGISTER_FORM_URL = "#";
 
 export const EVENTS: EventConfig[] = [
   {
     id: "event-1",
-    name: "Paper Presentation",
+    name: "The Elevator Pitch",
     tagline: "Present. Defend. Win.",
     description:
       "Present an original technical paper before a panel of judges. Open to teams of up to 3.",
@@ -47,7 +50,7 @@ export const EVENTS: EventConfig[] = [
   },
   {
     id: "event-2",
-    name: "Hackathon",
+    name: "Zero to hero",
     tagline: "24 hours. One idea. Ship it.",
     description:
       "Build a working prototype around this year's theme within the time limit. Teams of 2-4.",
@@ -66,7 +69,7 @@ export const EVENTS: EventConfig[] = [
   },
   {
     id: "event-3",
-    name: "Circuit Debugging",
+    name: "Bot or not",
     tagline: "Find the fault before the clock runs out.",
     description: "Spot-the-bug relay across analog and digital circuit boards. Solo event.",
     date: "12 Sep 2026",
@@ -82,22 +85,5 @@ export const EVENTS: EventConfig[] = [
     ],
     coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00003" }],
   },
-  {
-    id: "event-4",
-    name: "Tech Quiz",
-    tagline: "Buzz in. Back it up.",
-    description: "General + core-engineering quiz, prelims followed by a stage final. Teams of 2.",
-    date: "13 Sep 2026",
-    time: "10:00 AM",
-    venue: "Main Auditorium",
-    capacity: 80,
-    sheetEventLabel: "Tech Quiz",
-    schedule: [
-      { time: "10:00 AM", item: "Written prelims" },
-      { time: "11:00 AM", item: "Prelim results" },
-      { time: "11:30 AM", item: "Stage final" },
-      { time: "1:00 PM", item: "Prize distribution" },
-    ],
-    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00004" }],
-  },
+
 ];

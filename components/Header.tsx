@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
-import { SYMPOSIUM_NAME, CLUB_NAME } from "@/lib/eventsConfig";
+import { SYMPOSIUM_NAME, CLUB_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,26 +43,27 @@ export default function Header() {
       <header
         className={`
           sticky top-0 z-50 transition-all duration-300
-          ${scrolled 
-            ? "bg-ink/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/20" 
+          ${scrolled
+            ? "bg-ink/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/20"
             : "bg-ink/60 backdrop-blur-sm border-b border-ink-line/80"
           }
         `}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
-          {/* Logo */}
+        <div className="mx-auto flex max-w-20xl items-center justify-between px-10 sm:px-10 lg:px-8 py-10 lg:py-6">
+          {/* Logo — club logo image on the left, symposium name text on the right */}
           <Link
             href="/"
             className="flex items-center gap-2.5 group"
             aria-label={`${SYMPOSIUM_NAME} home`}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-cyber-cyan to-cyber-purple text-sm font-bold text-ink shadow-glow-cyan transition-transform duration-300 group-hover:scale-105">
-              {CLUB_NAME.split(" ")
-                .map((w) => w[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()}
-            </span>
+            <Image
+              src="/logos/symologo1.png"
+              alt={`${CLUB_NAME} logo`}
+              width={120}
+              height={36}
+              className="h-8 sm:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_8px_rgba(0,240,255,0.3)]"
+              priority
+            />
             <span className="font-display text-lg font-semibold tracking-tight text-paper transition-colors group-hover:text-cyber-cyan">
               {SYMPOSIUM_NAME}
             </span>
@@ -111,19 +113,16 @@ export default function Header() {
               aria-expanded={isMobileMenuOpen}
             >
               <span
-                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${
-                  isMobileMenuOpen ? "translate-y-1.5 rotate-45" : ""
-                }`}
+                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${isMobileMenuOpen ? "translate-y-1.5 rotate-45" : ""
+                  }`}
               />
               <span
-                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${
-                  isMobileMenuOpen ? "opacity-0" : ""
-                }`}
+                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""
+                  }`}
               />
               <span
-                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${
-                  isMobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
-                }`}
+                className={`block h-0.5 w-5 bg-paper transition-all duration-300 ${isMobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
+                  }`}
               />
             </button>
           </div>

@@ -5,10 +5,12 @@ import Gallery from "@/components/Gallery";
 import Achievements from "@/components/Achievements";
 import CoordinatorsSection from "@/components/CoordinatorsSection";
 import Contact from "@/components/Contact";
+import CollegeBanner from "@/components/CollegeBanner";
 
 export default function Home() {
   return (
     <main>
+      <CollegeBanner />
       <Header />
       <Hero />
       <EventBoard />
