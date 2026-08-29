@@ -143,3 +143,162 @@ export async function deleteResource(id: string) {
   const { error } = await db.from("resources").delete().eq("id", id);
   if (error) throw error;
 }
+
+// ---------- Events Management ----------
+import { EVENTS, EventConfig, SYMPOSIUM_NAME, CLUB_NAME, COLLEGE_NAME, REGISTER_FORM_URL } from "./eventsConfig";
+
+export async function listEvents(): Promise<EventConfig[]> {
+  try {
+    const db = supabaseAdmin();
+    const { data, error } = await db
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (error || !data || data.length === 0) {
+      return EVENTS;
+    }
+
+    return data.map((item) => ({
+      id: item.id,
+      name: item.name,
+      tagline: item.tagline || "",
+      description: item.description || "",
+      date: item.date,
+      time: item.time,
+      venue: item.venue,
+      capacity: item.capacity,
+      sheetEventLabel: item.sheet_event_label,
+      schedule: Array.isArray(item.schedule) ? item.schedule : [],
+      coordinators: Array.isArray(item.coordinators) ? item.coordinators : [],
+    }));
+  } catch {
+    return EVENTS;
+  }
+}
+
+export async function createEvent(input: {
+  id?: string;
+  name: string;
+  tagline?: string;
+  description?: string;
+  date: string;
+  time: string;
+  venue: string;
+  capacity: number;
+  sheetEventLabel: string;
+  schedule?: { time: string; item: string }[];
+  coordinators?: { name: string; role: string; phone?: string; email?: string }[];
+}) {
+  const db = supabaseAdmin();
+  const eventId = input.id || `event-${Date.now()}`;
+  const { error } = await db.from("events").insert({
+    id: eventId,
+    name: input.name,
+    tagline: input.tagline || "",
+    description: input.description || "",
+    date: input.date,
+    time: input.time,
+    venue: input.venue,
+    capacity: input.capacity,
+    sheet_event_label: input.sheetEventLabel,
+    schedule: input.schedule || [],
+    coordinators: input.coordinators || [],
+  });
+
+  if (error) throw error;
+}
+
+export async function updateEvent(
+  id: string,
+  input: Partial<{
+    name: string;
+    tagline: string;
+    description: string;
+    date: string;
+    time: string;
+    venue: string;
+    capacity: number;
+    sheetEventLabel: string;
+    schedule: { time: string; item: string }[];
+    coordinators: { name: string; role: string; phone?: string; email?: string }[];
+  }>
+) {
+  const db = supabaseAdmin();
+  const payload: Record<string, any> = {};
+
+  if (input.name !== undefined) payload.name = input.name;
+  if (input.tagline !== undefined) payload.tagline = input.tagline;
+  if (input.description !== undefined) payload.description = input.description;
+  if (input.date !== undefined) payload.date = input.date;
+  if (input.time !== undefined) payload.time = input.time;
+  if (input.venue !== undefined) payload.venue = input.venue;
+  if (input.capacity !== undefined) payload.capacity = input.capacity;
+  if (input.sheetEventLabel !== undefined) payload.sheet_event_label = input.sheetEventLabel;
+  if (input.schedule !== undefined) payload.schedule = input.schedule;
+  if (input.coordinators !== undefined) payload.coordinators = input.coordinators;
+
+  const { error } = await db.from("events").update(payload).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteEvent(id: string) {
+  const db = supabaseAdmin();
+  const { error } = await db.from("events").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function assignCoordinatorToEvent(
+  eventId: string,
+  coordinator: { name: string; role: string; phone?: string; email?: string }
+) {
+  const events = await listEvents();
+  const event = events.find((e) => e.id === eventId);
+  if (!event) throw new Error("Event not found");
+
+  const updatedCoordinators = [...event.coordinators.filter((c) => c.name !== coordinator.name), coordinator];
+  await updateEvent(eventId, { coordinators: updatedCoordinators });
+}
+
+// ---------- Site Settings ----------
+
+export type SiteSettings = {
+  symposiumName: string;
+  clubName: string;
+  collegeName: string;
+  registerFormUrl: string;
+};
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const defaults: SiteSettings = {
+    symposiumName: SYMPOSIUM_NAME,
+    clubName: CLUB_NAME,
+    collegeName: COLLEGE_NAME,
+    registerFormUrl: REGISTER_FORM_URL,
+  };
+
+  try {
+    const db = supabaseAdmin();
+    const { data, error } = await db.from("site_settings").select("key, value");
+    if (error || !data || data.length === 0) return defaults;
+
+    const map = Object.fromEntries(data.map((row) => [row.key, row.value]));
+    return {
+      symposiumName: map.symposiumName || defaults.symposiumName,
+      clubName: map.clubName || defaults.clubName,
+      collegeName: map.collegeName || defaults.collegeName,
+      registerFormUrl: map.registerFormUrl || defaults.registerFormUrl,
+    };
+  } catch {
+    return defaults;
+  }
+}
+
+export async function updateSiteSetting(key: keyof SiteSettings, value: string) {
+  const db = supabaseAdmin();
+  const { error } = await db
+    .from("site_settings")
+    .upsert({ key, value, updated_at: new Date().toISOString() });
+  if (error) throw error;
+}
+

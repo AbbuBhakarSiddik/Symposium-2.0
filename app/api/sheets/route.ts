@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 import { getLiveCounts } from "@/lib/googleSheets";
-import { EVENTS } from "@/lib/eventsConfig";
+import { listEvents } from "@/lib/db";
 
-// Polled from the client every so often to keep the "slots available"
-// numbers on the home page current. Cheap and cache-free on purpose —
-// swap in ISR/revalidate or a webhook-driven cache if traffic grows.
 export async function GET() {
-  const { counts, isLive } = await getLiveCounts();
+  const events = await listEvents();
+  const { counts, isLive } = await getLiveCounts(events);
 
-  const data = EVENTS.map((e) => ({
+  const data = events.map((e) => ({
     id: e.id,
     registered: counts[e.id] ?? 0,
     capacity: e.capacity,
     available: Math.max(e.capacity - (counts[e.id] ?? 0), 0),
   }));
 
-  return NextResponse.json({ isLive, data, fetchedAt: new Date().toISOString() });
+  return NextResponse.json({ isLive, data, events, fetchedAt: new Date().toISOString() });
 }
+
+

@@ -9,30 +9,30 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#0A0E14",
-          surface: "#121822",
-          raised: "#1A222E",
-          line: "#232D3A",
+          DEFAULT: "#FAF9F5",
+          surface: "#FFFFFF",
+          raised: "#F3F2EC",
+          line: "#E2E8F0",
         },
         signal: {
-          DEFAULT: "#FDB022",
-          soft: "#FFD180",
+          DEFAULT: "#D97706",
+          soft: "#F59E0B",
         },
         circuit: {
-          DEFAULT: "#34D9C5",
+          DEFAULT: "#0EA5E9",
         },
         cyber: {
-          cyan: "#00F0FF",
-          magenta: "#FF00E5",
-          purple: "#7B2FBE",
+          cyan: "#0EA5E9",
+          magenta: "#EC4899",
+          purple: "#6366F1",
         },
-        ok: "#34D399",
-        full: "#F87171",
-        warning: "#FBBF24",
-        paper: "#E8ECEF",
-        muted: "#9CA3AF",
-        glass: "rgba(255, 255, 255, 0.04)",
-        "glass-border": "rgba(255, 255, 255, 0.08)",
+        ok: "#10B981",
+        full: "#EF4444",
+        warning: "#F59E0B",
+        paper: "#0F172A",
+        muted: "#64748B",
+        glass: "rgba(255, 255, 255, 0.85)",
+        "glass-border": "rgba(15, 23, 42, 0.08)",
       },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
@@ -41,26 +41,26 @@ const config: Config = {
       },
       backgroundImage: {
         "cyber-grid": `
-          linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-          linear-gradient(135deg, rgba(255, 0, 229, 0.03) 1px, transparent 1px)
+          linear-gradient(to right, rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(14, 165, 233, 0.04) 1px, transparent 1px)
         `,
-        "cyber-gradient": "radial-gradient(circle at 30% 30%, rgba(0, 240, 255, 0.15), rgba(123, 47, 190, 0.10) 50%, transparent 80%)",
-        "glow-orb": "radial-gradient(circle, rgba(255, 176, 34, 0.2), transparent 70%)",
+        "cyber-gradient": "radial-gradient(circle at 30% 30%, rgba(14, 165, 233, 0.08), rgba(99, 102, 241, 0.06) 50%, transparent 80%)",
+        "glow-orb": "radial-gradient(circle, rgba(14, 165, 233, 0.12), transparent 70%)",
       },
       backgroundSize: {
-        grid: "60px 60px, 60px 60px, 40px 40px",
+        grid: "60px 60px, 60px 60px",
       },
       boxShadow: {
-        glow: "0 0 30px rgba(253, 176, 34, 0.2)",
-        "glow-teal": "0 0 30px rgba(52, 217, 197, 0.2)",
-        "glow-cyan": "0 0 30px rgba(0, 240, 255, 0.2)",
-        glass: "0 8px 32px rgba(0, 0, 0, 0.5)",
+        glow: "0 10px 30px rgba(14, 165, 233, 0.15)",
+        "glow-teal": "0 10px 30px rgba(20, 184, 166, 0.15)",
+        "glow-cyan": "0 10px 30px rgba(14, 165, 233, 0.2)",
+        glass: "0 20px 40px -15px rgba(15, 23, 42, 0.07), 0 0 1px rgba(15, 23, 42, 0.12)",
+        depth: "0 25px 50px -12px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.15)",
       },
       keyframes: {
         float: {
           "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" },
+          "50%": { transform: "translateY(-15px)" },
         },
         scanline: {
           "0%": { transform: "translateY(-100%)" },
@@ -68,14 +68,14 @@ const config: Config = {
         },
         "grid-pulse": {
           "0%, 100%": { opacity: "0.3" },
-          "50%": { opacity: "0.8" },
+          "50%": { opacity: "0.7" },
         },
         "glow-pulse": {
           "0%, 100%": { opacity: "0.4" },
           "50%": { opacity: "0.8" },
         },
         "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(30px)" },
+          "0%": { opacity: "0", transform: "translateY(25px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },

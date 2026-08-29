@@ -1,12 +1,12 @@
 // Hero.tsx — Cyber-themed landing section with:
-//   1. Three-logo lockup with staggered hero-logo-enter animation
-//      Left: College logo | Centre: Symposium logo (prominent) | Right: Club logo
+//   1. Big Logo Cards component for College, Symposium, and Club logos
 //   2. AnnouncementBar (server-rendered, shows latest notice)
 //   3. Primary CTA → Register Now (REGISTER_FORM_URL, new tab)
 //   4. Secondary CTA → View Events (anchor #events)
 
 import Image from "next/image";
 import AnnouncementBar from "@/components/AnnouncementBar";
+import LogoCards from "@/components/LogoCards";
 import {
   SYMPOSIUM_NAME,
   COLLEGE_NAME,
@@ -39,56 +39,8 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto max-w-5xl px-5 sm:px-8 py-8 sm:py-12 lg:py-16 w-full text-center z-20 flex flex-col items-center gap-8">
-        {/* ── 1. THREE-LOGO LOCKUP ────────────────────────────────────── */}
-        {/* On mobile: stacked column. On sm+: side-by-side row.
-            stagger-children applies animation-delay to each child in order. */}
-        <div
-          className="stagger-children w-full flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 lg:gap-8"
-          aria-label="Organiser logos"
-        >
-
-
-          {/* Divider left */}
-          <span
-            aria-hidden="true"
-            className="hero-logo-enter hidden sm:block h-16 w-px shrink-0 bg-gradient-to-b from-transparent via-cyber-cyan/35 to-transparent"
-          />
-
-          {/* CENTRE — Symposium logo (most prominent) */}
-          <div className="hero-logo-enter flex items-center justify-center">
-            <Image
-              src="/logos/symologo1.png"
-              alt={`${SYMPOSIUM_NAME} logo`}
-              width={2600}
-              height={900}
-              className="h-50 sm:h-50 lg:h-50 w-auto max-w-[300px] sm:max-w-[400px] object-contain drop-shadow-[0_0_24px_rgba(0,240,255,0.25)]"
-              priority
-            />
-          </div>
-
-          {/* Divider right */}
-          <span
-            aria-hidden="true"
-            className="hero-logo-enter hidden sm:block h-16 w-px shrink-0 bg-gradient-to-b from-transparent via-cyber-cyan/35 to-transparent"
-          />
-
-          {/* RIGHT — Club logo */}
-          <div className="hero-logo-enter flex items-center justify-center">
-            <Image
-              src="/logos/cclogo1.png"
-              alt={`Associated with ${CLUB_NAME}`}
-              width={600}
-              height={400}
-              className="h-50 sm:h-50 lg:h-50 w-auto max-w-[500px] sm:max-w-[700px] object-contain drop-shadow-[0_0_12px_rgba(255,0,229,0.15)]"
-              priority
-            />
-          </div>
-          {/* Divider right */}
-          <span
-            aria-hidden="true"
-            className="hero-logo-enter hidden sm:block h-16 w-px shrink-0 bg-gradient-to-b from-transparent via-cyber-cyan/35 to-transparent"
-          />
-        </div>
+        {/* ── 1. BIG LOGO CARDS COMPONENT ────────────────────────────── */}
+        <LogoCards />
         {/* ── 2. ANNOUNCEMENT BANNER ─────────────────────────────────── */}
         <div className="w-full flex justify-center px-2">
           <AnnouncementBar />

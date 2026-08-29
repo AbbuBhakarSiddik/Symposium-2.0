@@ -7,11 +7,16 @@ export default withAuth(
     const path = req.nextUrl.pathname;
 
     if (path.startsWith("/admin") && role !== "admin") {
+      if (role === "coordinator") {
+        return NextResponse.redirect(new URL("/coordinators", req.url));
+      }
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
     if (path.startsWith("/coordinators") && role !== "admin" && role !== "coordinator") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
     return NextResponse.next();
   },
   {
@@ -25,3 +30,4 @@ export default withAuth(
 export const config = {
   matcher: ["/admin/:path*", "/coordinators/:path*"],
 };
+

@@ -31,11 +31,12 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { href: "#events", label: "Events" },
-    { href: "#gallery", label: "Gallery" },
-    { href: "#achievements", label: "Achievements" },
-    { href: "#coordinators", label: "Coordinators" },
-    { href: "#contact", label: "Contact" },
+    { href: "/#events", label: "Events" },
+    { href: "/announcements", label: "Announcements" },
+    { href: "/#gallery", label: "Gallery" },
+    { href: "/#achievements", label: "Achievements" },
+    { href: "/#coordinators", label: "Coordinators" },
+    { href: "/#contact", label: "Contact" },
   ];
 
   return (
@@ -44,8 +45,8 @@ export default function Header() {
         className={`
           sticky top-0 z-50 transition-all duration-300
           ${scrolled
-            ? "bg-ink/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/20"
-            : "bg-ink/60 backdrop-blur-sm border-b border-ink-line/80"
+            ? "bg-[#e4e4e4]/90 backdrop-blur-xl border-b border-slate-200/80 shadow-md"
+            : "bg-[#e4e4e4]/70 backdrop-blur-md border-b border-slate-200/50"
           }
         `}
       >
@@ -57,7 +58,7 @@ export default function Header() {
             aria-label={`${SYMPOSIUM_NAME} home`}
           >
             <Image
-              src="/logos/symologo1.png"
+              src="/logos/sympo3.jpeg"
               alt={`${CLUB_NAME} logo`}
               width={120}
               height={36}
@@ -72,15 +73,16 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 className="relative font-mono text-xs uppercase tracking-widest text-muted transition-colors duration-200 hover:text-paper after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-cyber-cyan after:transition-all after:duration-300 hover:after:w-full"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
+
 
           {/* Right side: Login + Hamburger */}
           <div className="flex items-center gap-3">
@@ -144,14 +146,14 @@ export default function Header() {
           aria-label="Mobile navigation"
         >
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
               className="font-display text-3xl font-medium text-paper transition-colors hover:text-cyber-cyan"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <Link
             href="/login"

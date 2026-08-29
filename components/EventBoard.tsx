@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { EVENTS, EventConfig } from "@/lib/eventsConfig";
 
 type SeatData = { id: string; registered: number; capacity: number; available: number };
-type ApiResponse = { isLive: boolean; data: SeatData[]; fetchedAt: string };
+type ApiResponse = { isLive: boolean; data: SeatData[]; events?: EventConfig[]; fetchedAt: string };
 
 const POLL_MS = 15000;
 
 export default function EventBoard() {
+  const [eventsList, setEventsList] = useState<EventConfig[]>(EVENTS);
   const [seats, setSeats] = useState<Record<string, SeatData>>({});
   const [isLive, setIsLive] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -23,6 +24,9 @@ export default function EventBoard() {
         if (cancelled) return;
         setIsLive(json.isLive);
         setSeats(Object.fromEntries(json.data.map((d) => [d.id, d])));
+        if (json.events && json.events.length > 0) {
+          setEventsList(json.events);
+        }
       } catch {
         // silently keep last known state
       }
@@ -52,7 +56,7 @@ export default function EventBoard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
-        {EVENTS.map((event) => (
+        {eventsList.map((event) => (
           <EventCard
             key={event.id}
             event={event}
@@ -65,6 +69,7 @@ export default function EventBoard() {
     </section>
   );
 }
+
 
 function EventCard({
   event,
