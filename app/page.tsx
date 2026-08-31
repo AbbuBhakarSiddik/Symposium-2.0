@@ -6,8 +6,11 @@ import Achievements from "@/components/Achievements";
 import CoordinatorsSection from "@/components/CoordinatorsSection";
 import Contact from "@/components/Contact";
 import CollegeBanner from "@/components/CollegeBanner";
+import { listGalleryItems } from "@/lib/db";
 
-export default function Home() {
+export default async function Home() {
+  const galleryItems = await listGalleryItems().catch(() => []);
+
   return (
     <main>
       <CollegeBanner />
@@ -15,9 +18,10 @@ export default function Home() {
       <Hero />
       <EventBoard />
       <Achievements />
-      <Gallery />
+      <Gallery items={galleryItems} />
       <CoordinatorsSection />
       <Contact />
     </main>
   );
 }
+

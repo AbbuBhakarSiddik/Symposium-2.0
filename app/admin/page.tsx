@@ -10,6 +10,7 @@ import {
   listResources,
   listEvents,
   getSiteSettings,
+  listGalleryItems,
 } from "@/lib/db";
 import AdminDashboardClient from "@/components/AdminDashboardClient";
 
@@ -20,7 +21,7 @@ export default async function AdminPage() {
   }
 
   const events = await listEvents().catch(() => []);
-  const [{ counts, isLive }, users, announcements, resources, settings] = await Promise.all([
+  const [{ counts, isLive }, users, announcements, resources, settings, galleryItems] = await Promise.all([
     getLiveCounts(events),
     listUsers().catch(() => []),
     listAnnouncements().catch(() => []),
@@ -31,6 +32,7 @@ export default async function AdminPage() {
       collegeName: "Shridevi Institute Of Engineering And Technology,Tumkur",
       registerFormUrl: "#",
     })),
+    listGalleryItems().catch(() => []),
   ]);
 
   const currentUser = {
@@ -48,8 +50,10 @@ export default async function AdminPage() {
       resources={resources}
       events={events}
       settings={settings}
+      galleryItems={galleryItems}
       currentUser={currentUser}
     />
   );
 }
+
 

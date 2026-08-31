@@ -302,3 +302,122 @@ export async function updateSiteSetting(key: keyof SiteSettings, value: string) 
   if (error) throw error;
 }
 
+// ---------- Gallery Management ----------
+
+export type GalleryItem = {
+  id: string;
+  type: "photo" | "video";
+  url: string;
+  title: string;
+  caption?: string;
+  created_at: string;
+};
+
+export const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
+  {
+    id: "g-p1",
+    type: "photo",
+    url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80",
+    title: "Keynote Address 2025",
+    caption: "Inaugural ceremony and opening address by chief guests.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-p2",
+    type: "photo",
+    url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+    title: "Hackathon Coding Arena",
+    caption: "Teams collaborating non-stop during 24hr code sprint.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-p3",
+    type: "photo",
+    url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80",
+    title: "Project Expo & Demo",
+    caption: "Students showcasing hardware and software prototypes.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-p4",
+    type: "photo",
+    url: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80",
+    title: "Prize Distribution & Gala",
+    caption: "Celebrating winners across coding, robotics and web events.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-p5",
+    type: "photo",
+    url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1200&q=80",
+    title: "Panel Discussion",
+    caption: "Industry experts discussing AI & Future Technologies.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-p6",
+    type: "photo",
+    url: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
+    title: "Gaming Championship",
+    caption: "High-octane esports tournament stage action.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-v1",
+    type: "video",
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    title: "Symposium 1.0 Official Aftermovie",
+    caption: "Highlights & energy from our previous national level edition.",
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "g-v2",
+    type: "video",
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    title: "Hackathon Highlights & Winner Showcase",
+    caption: "24 hours of innovation distilled into a 3-minute recap.",
+    created_at: new Date().toISOString(),
+  },
+];
+
+export async function listGalleryItems(): Promise<GalleryItem[]> {
+  try {
+    const db = supabaseAdmin();
+    const { data, error } = await db
+      .from("gallery")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return DEFAULT_GALLERY_ITEMS;
+    }
+
+    return data as GalleryItem[];
+  } catch {
+    return DEFAULT_GALLERY_ITEMS;
+  }
+}
+
+export async function createGalleryItem(input: {
+  type: "photo" | "video";
+  url: string;
+  title?: string;
+  caption?: string;
+}) {
+  const db = supabaseAdmin();
+  const { error } = await db.from("gallery").insert({
+    type: input.type,
+    url: input.url,
+    title: input.title || "",
+    caption: input.caption || "",
+  });
+  if (error) throw error;
+}
+
+export async function deleteGalleryItem(id: string) {
+  const db = supabaseAdmin();
+  const { error } = await db.from("gallery").delete().eq("id", id);
+  if (error) throw error;
+}
+
+

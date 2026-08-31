@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AppUser, Announcement, Resource, SiteSettings } from "@/lib/db";
+import { AppUser, Announcement, Resource, SiteSettings, GalleryItem } from "@/lib/db";
 import { EventConfig } from "@/lib/eventsConfig";
 import SignOutButton from "./SignOutButton";
 import Link from "next/link";
@@ -17,6 +17,8 @@ import {
   deleteEventAction,
   assignCoordinatorAction,
   updateSiteSettingsAction,
+  createGalleryItemAction,
+  deleteGalleryItemAction,
 } from "@/lib/actions";
 
 type AdminDashboardClientProps = {
@@ -27,6 +29,7 @@ type AdminDashboardClientProps = {
   resources: Resource[];
   events: EventConfig[];
   settings: SiteSettings;
+  galleryItems?: GalleryItem[];
   currentUser: { name: string; username: string; role: string };
 };
 
@@ -38,6 +41,7 @@ export default function AdminDashboardClient({
   resources,
   events,
   settings,
+  galleryItems = [],
   currentUser,
 }: AdminDashboardClientProps) {
   // Live seats table state: search, sort, filter
@@ -53,6 +57,23 @@ export default function AdminDashboardClient({
   // Announcements & Resources search
   const [announcementSearch, setAnnouncementSearch] = useState("");
   const [resourceSearch, setResourceSearch] = useState("");
+
+  // Gallery search & filter state
+  const [gallerySearch, setGallerySearch] = useState("");
+  const [galleryTypeFilter, setGalleryTypeFilter] = useState<"all" | "photo" | "video">("all");
+
+  const filteredGalleryItems = useMemo(() => {
+    return galleryItems.filter((item) => {
+      if (galleryTypeFilter !== "all" && item.type !== galleryTypeFilter) return false;
+      if (!gallerySearch.trim()) return true;
+      const q = gallerySearch.toLowerCase();
+      return (
+        item.title.toLowerCase().includes(q) ||
+        (item.caption && item.caption.toLowerCase().includes(q)) ||
+        item.url.toLowerCase().includes(q)
+      );
+    });
+  }, [galleryItems, gallerySearch, galleryTypeFilter]);
 
   // Edit Event Modal state
   const [editingEvent, setEditingEvent] = useState<EventConfig | null>(null);
@@ -856,6 +877,177 @@ export default function AdminDashboardClient({
               Save Site Settings
             </button>
           </form>
+        </section>
+
+        {/* Section 6: Gallery Management (Photos & Videos) */}
+        <section className="glass rounded-3xl p-6 sm:p-8 space-y-6 shadow-glass border border-slate-200/80">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-display text-xl font-bold text-slate-900">
+                  Gallery Management (Photos &amp; Videos)
+                </h2>
+                <span className="font-mono text-xs bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-full font-bold border border-purple-200">
+                  {galleryItems.length} Total Items
+                </span>
+              </div>
+              <p className="font-mono text-xs text-slate-500 mt-1">
+                Add, manage, and remove photos and recap videos shown in the website gallery.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <input
+                type="text"
+                value={gallerySearch}
+                onChange={(e) => setGallerySearch(e.target.value)}
+                placeholder="🔍 Search photos &amp; videos…"
+                className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 font-mono text-xs text-slate-900 outline-none shadow-sm focus:border-sky-500"
+              />
+              <select
+                value={galleryTypeFilter}
+                onChange={(e: any) => setGalleryTypeFilter(e.target.value)}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono text-xs text-slate-900 outline-none shadow-sm focus:border-sky-500 font-bold"
+              >
+                <option value="all">All Media</option>
+                <option value="photo">📷 Photos Only</option>
+                <option value="video">🎬 Videos Only</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Form to Add New Gallery Media */}
+          <form
+            action={createGalleryItemAction}
+            className="grid gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-5 font-mono text-xs sm:grid-cols-2 lg:grid-cols-4"
+          >
+            <p className="col-span-full font-bold uppercase tracking-wider text-purple-700 flex items-center gap-2">
+              <span>➕ Add New Photo or Video to Gallery</span>
+            </p>
+
+            <div>
+              <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[10px] font-bold">Media Type *</label>
+              <select
+                name="type"
+                required
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 outline-none focus:border-sky-500 shadow-sm font-bold"
+              >
+                <option value="photo">📸 Photo</option>
+                <option value="video">🎬 Video (YouTube / MP4)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[10px] font-bold">Media Title *</label>
+              <input
+                name="title"
+                required
+                placeholder="e.g. Hackathon Final Presentation"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 outline-none focus:border-sky-500 shadow-sm"
+              />
+            </div>
+
+            <div className="lg:col-span-2">
+              <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[10px] font-bold">Media URL / Image Link *</label>
+              <input
+                name="url"
+                required
+                placeholder="https://... (Image link or YouTube URL)"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 outline-none focus:border-sky-500 shadow-sm"
+              />
+            </div>
+
+            <div className="col-span-full">
+              <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[10px] font-bold">Caption / Short Description</label>
+              <input
+                name="caption"
+                placeholder="Brief tagline or description of the photo/video…"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 outline-none focus:border-sky-500 shadow-sm"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn-cyber col-span-full justify-center mt-2 shadow-md bg-purple-600 hover:bg-purple-700 text-white border-none"
+            >
+              Upload / Save to Gallery
+            </button>
+          </form>
+
+          {/* List / Grid of Existing Gallery Items */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredGalleryItems.map((item) => (
+              <div
+                key={item.id}
+                className="group relative rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              >
+                <div>
+                  {/* Thumbnail / Media Preview */}
+                  <div className="relative aspect-video bg-slate-900 overflow-hidden flex items-center justify-center">
+                    {item.type === "photo" && item.url ? (
+                      <img
+                        src={item.url}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                    ) : null}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+
+                    <span className="absolute top-2 left-2 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold font-mono uppercase tracking-wider bg-black/60 backdrop-blur-md text-white border border-white/20">
+                      {item.type === "photo" ? "📸 Photo" : "🎬 Video"}
+                    </span>
+
+                    {item.type === "video" && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg">
+                          <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Text Details */}
+                  <div className="p-4 space-y-1 font-mono text-xs">
+                    <h4 className="font-bold text-slate-900 text-sm line-clamp-1">{item.title || "Untitled"}</h4>
+                    {item.caption && <p className="text-slate-500 text-[11px] line-clamp-2">{item.caption}</p>}
+                    <p className="text-[10px] text-slate-400 truncate pt-1">{item.url}</p>
+                  </div>
+                </div>
+
+                {/* Delete Button */}
+                <div className="p-4 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-slate-400">
+                    ID: {item.id.slice(0, 8)}
+                  </span>
+                  <form action={deleteGalleryItemAction}>
+                    <input type="hidden" name="id" value={item.id} />
+                    <button
+                      type="submit"
+                      onClick={(evt) => {
+                        if (!confirm(`Are you sure you want to remove "${item.title || "this item"}" from gallery?`)) {
+                          evt.preventDefault();
+                        }
+                      }}
+                      className="font-mono text-xs font-bold text-rose-600 hover:text-rose-800 hover:underline inline-flex items-center gap-1"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+
+            {filteredGalleryItems.length === 0 && (
+              <div className="col-span-full py-12 text-center font-mono text-xs text-slate-500 bg-white rounded-2xl border border-slate-200">
+                No matching gallery items found.
+              </div>
+            )}
+          </div>
         </section>
 
       </div>

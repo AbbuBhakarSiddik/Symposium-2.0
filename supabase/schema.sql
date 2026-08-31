@@ -49,6 +49,15 @@ create table if not exists site_settings (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists gallery (
+  id uuid primary key default gen_random_uuid(),
+  type text not null check (type in ('photo', 'video')),
+  url text,
+  title text,
+  caption text,
+  created_at timestamptz not null default now()
+);
+
 -- Row-level security is ON by default with no policies, which blocks all
 -- access from Supabase's public/anon client. That's intentional: this app
 -- only ever talks to these tables from the server using the service role
@@ -58,4 +67,6 @@ alter table announcements enable row level security;
 alter table resources enable row level security;
 alter table events enable row level security;
 alter table site_settings enable row level security;
+alter table gallery enable row level security;
+
 

@@ -4,8 +4,19 @@ import { listEvents } from "./db";
 
 export type LiveCounts = Record<string, number>; // eventId -> registered count
 
+// In-Memory SWR Cache for Google Sheets API to stay within 300 req/min quota for 500+ concurrent users
+let cachedCountsData: { counts: LiveCounts; isLive: boolean } | null = null;
+let lastFetchTimestamp = 0;
+const CACHE_TTL_MS = 5000; // 5 seconds TTL cache
+
 export async function getLiveCounts(customEvents?: EventConfig[]): Promise<{ counts: LiveCounts; isLive: boolean }> {
   const events = customEvents || (await listEvents());
+  const now = Date.now();
+
+  // Return cached result if fresh (< 5 seconds old)
+  if (cachedCountsData && (now - lastFetchTimestamp) < CACHE_TTL_MS) {
+    return cachedCountsData;
+  }
 
   const {
     GOOGLE_SHEETS_CLIENT_EMAIL,
@@ -47,9 +58,15 @@ export async function getLiveCounts(customEvents?: EventConfig[]): Promise<{ cou
       if (id) counts[id] += 1;
     }
 
-    return { counts, isLive: true };
+    const result = { counts, isLive: true };
+    cachedCountsData = result;
+    lastFetchTimestamp = Date.now();
+    return result;
   } catch (err) {
-    console.error("Google Sheets fetch failed, falling back to mock data:", err);
+    console.error("Google Sheets fetch failed, falling back to cached or mock data:", err);
+    if (cachedCountsData) {
+      return { ...cachedCountsData, isLive: false };
+    }
     return { counts: mockCounts(events), isLive: false };
   }
 }

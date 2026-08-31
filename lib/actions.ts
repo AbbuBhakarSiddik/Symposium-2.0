@@ -97,6 +97,8 @@ import {
   deleteEvent,
   assignCoordinatorToEvent,
   updateSiteSetting,
+  createGalleryItem,
+  deleteGalleryItem,
 } from "./db";
 
 export async function createEventAction(formData: FormData) {
@@ -216,4 +218,35 @@ export async function updateSiteSettingsAction(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/coordinators");
 }
+
+// ---------- Gallery Actions ----------
+
+export async function createGalleryItemAction(formData: FormData) {
+  await requireAdmin();
+
+  const type = String(formData.get("type") || "photo") as "photo" | "video";
+  const url = String(formData.get("url") || "").trim();
+  const title = String(formData.get("title") || "").trim();
+  const caption = String(formData.get("caption") || "").trim();
+
+  if (!url) throw new Error("Media URL is required");
+
+  await createGalleryItem({ type, url, title, caption });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function deleteGalleryItemAction(formData: FormData) {
+  await requireAdmin();
+
+  const id = String(formData.get("id") || "").trim();
+  if (!id) throw new Error("Missing gallery item ID");
+
+  await deleteGalleryItem(id);
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
 
