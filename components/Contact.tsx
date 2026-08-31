@@ -4,28 +4,28 @@ import { CLUB_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
 export default function Contact() {
   return (
     <>
-      <section id="contact" className="border-t border-white/5 bg-ink-surface/30 py-20">
+      <section id="contact" className="border-t border-slate-200 bg-gradient-to-br from-white via-green-50/30 to-blue-50/20 py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="text-center mb-12">
             <p className="eyebrow mb-2">Reach Us</p>
-            <h2 className="section-heading">Get in Touch</h2>
+            <h2 className="section-heading text-slate-900">Get in Touch</h2>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">
             {/* Left: Organized by + Social links */}
             <div className="space-y-6">
-              <div className="glass rounded-2xl p-6 transition-all duration-300 hover:border-cyber-cyan/40 hover:shadow-glow-cyan">
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">Organized by</p>
-                <p className="mt-2 font-display text-2xl font-semibold text-paper">{CLUB_NAME}</p>
-                <p className="font-mono text-sm text-muted">{COLLEGE_NAME}</p>
+              <div className="glass rounded-2xl p-6 transition-all duration-300 bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200 hover:border-green-400 hover:shadow-[0_8px_30px_rgba(16,185,129,0.2)]">
+                <p className="font-mono text-xs uppercase tracking-widest text-green-700 font-bold">Organized by</p>
+                <p className="mt-2 font-display text-2xl font-semibold text-slate-900">{CLUB_NAME}</p>
+                <p className="font-mono text-sm text-slate-600">{COLLEGE_NAME}</p>
               </div>
 
-              <div className="glass rounded-2xl p-6 transition-all duration-300 hover:border-cyber-cyan/40 hover:shadow-glow-cyan">
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">Follow Us</p>
+              <div className="glass rounded-2xl p-6 transition-all duration-300 bg-gradient-to-br from-orange-50 to-amber-100 border border-orange-200 hover:border-orange-400 hover:shadow-[0_8px_30px_rgba(249,115,22,0.2)]">
+                <p className="font-mono text-xs uppercase tracking-widest text-orange-700 font-bold">Follow Us</p>
                 <div className="mt-3 flex gap-3">
                   <a
                     href="#"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-ink/40 text-muted transition-all hover:border-cyber-cyan hover:text-cyber-cyan hover:shadow-glow-cyan"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-orange-300 bg-orange-50 text-orange-600 transition-all hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:shadow-md"
                     aria-label="Instagram"
                   >
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -34,7 +34,7 @@ export default function Contact() {
                   </a>
                   <a
                     href="#"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-ink/40 text-muted transition-all hover:border-cyber-cyan hover:text-cyber-cyan hover:shadow-glow-cyan"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-red-300 bg-red-50 text-red-600 transition-all hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-md"
                     aria-label="YouTube"
                   >
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@ export default function Contact() {
                   </a>
                   <a
                     href="#"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-ink/40 text-muted transition-all hover:border-cyber-cyan hover:text-cyber-cyan hover:shadow-glow-cyan"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-300 bg-blue-50 text-blue-600 transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-md"
                     aria-label="LinkedIn"
                   >
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@ export default function Contact() {
                   </a>
                   <a
                     href="#"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-ink/40 text-muted transition-all hover:border-cyber-cyan hover:text-cyber-cyan hover:shadow-glow-cyan"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-slate-50 text-slate-700 transition-all hover:bg-slate-800 hover:text-white hover:border-slate-800 hover:shadow-md"
                     aria-label="Twitter"
                   >
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -65,21 +65,21 @@ export default function Contact() {
 
             {/* Right: Contact details */}
             <div className="space-y-6">
-              <div className="glass rounded-2xl p-6 transition-all duration-300 hover:border-cyber-cyan/40 hover:shadow-glow-cyan">
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">Email</p>
+              <div className="glass rounded-2xl p-6 transition-all duration-300 bg-gradient-to-br from-blue-50 to-sky-100 border border-blue-200 hover:border-blue-400 hover:shadow-[0_8px_30px_rgba(59,130,246,0.2)]">
+                <p className="font-mono text-xs uppercase tracking-widest text-blue-700 font-bold">Email</p>
                 <a
                   href="mailto:symposium@example.edu"
-                  className="mt-2 inline-block font-mono text-lg text-cyber-cyan transition-colors hover:text-cyber-magenta"
+                  className="mt-2 inline-block font-mono text-lg text-blue-700 font-semibold transition-colors hover:text-blue-900"
                 >
                   symposium@example.edu
                 </a>
               </div>
 
-              <div className="glass rounded-2xl p-6 transition-all duration-300 hover:border-cyber-cyan/40 hover:shadow-glow-cyan">
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">Phone</p>
+              <div className="glass rounded-2xl p-6 transition-all duration-300 bg-gradient-to-br from-red-50 to-rose-100 border border-red-200 hover:border-red-400 hover:shadow-[0_8px_30px_rgba(239,68,68,0.2)]">
+                <p className="font-mono text-xs uppercase tracking-widest text-red-700 font-bold">Phone</p>
                 <a
                   href="tel:+919000000000"
-                  className="mt-2 inline-block font-mono text-lg text-cyber-cyan transition-colors hover:text-cyber-magenta"
+                  className="mt-2 inline-block font-mono text-lg text-red-700 font-semibold transition-colors hover:text-red-900"
                 >
                   +91 90000 00000
                 </a>
@@ -90,14 +90,23 @@ export default function Contact() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 bg-ink/80 backdrop-blur-sm px-5 py-6 sm:px-8">
+      <footer
+        className="border-t px-5 py-6 sm:px-8"
+        style={{
+          background: 'linear-gradient(135deg, rgba(232,240,254,0.95) 0%, rgba(243,232,255,0.9) 33%, rgba(252,228,236,0.88) 66%, rgba(224,247,250,0.92) 100%)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderColor: 'rgba(138,180,248,0.3)',
+          boxShadow: '0 -4px 24px -4px rgba(138,180,248,0.12)'
+        }}
+      >
         <div className="mx-auto max-w-6xl flex flex-wrap items-center justify-between gap-4">
-          <p className="font-mono text-xs text-muted">
+          <p className="font-mono text-xs text-slate-500">
             © {new Date().getFullYear()} {CLUB_NAME}, {COLLEGE_NAME}.
           </p>
           <a
             href="#top"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-ink/40 text-muted transition-all hover:border-cyber-cyan hover:text-cyber-cyan hover:shadow-glow-cyan"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-500 transition-all hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 hover:shadow-md"
             aria-label="Back to top"
           >
             <svg

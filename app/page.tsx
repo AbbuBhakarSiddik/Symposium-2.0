@@ -6,10 +6,13 @@ import Achievements from "@/components/Achievements";
 import CoordinatorsSection from "@/components/CoordinatorsSection";
 import Contact from "@/components/Contact";
 import CollegeBanner from "@/components/CollegeBanner";
-import { listGalleryItems } from "@/lib/db";
+import { listGalleryItems, listEvents } from "@/lib/db";
 
 export default async function Home() {
-  const galleryItems = await listGalleryItems().catch(() => []);
+  const [galleryItems, events] = await Promise.all([
+    listGalleryItems().catch(() => []),
+    listEvents().catch(() => []),
+  ]);
 
   return (
     <main>
@@ -19,7 +22,7 @@ export default async function Home() {
       <EventBoard />
       <Achievements />
       <Gallery items={galleryItems} />
-      <CoordinatorsSection />
+      <CoordinatorsSection events={events} />
       <Contact />
     </main>
   );

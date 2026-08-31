@@ -9,7 +9,13 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #e4e4e4;
+    background: linear-gradient(135deg,
+      #e8f0fe 0%,
+      #f3e8ff 25%,
+      #fce4ec 50%,
+      #e0f7fa 75%,
+      #e8f5e9 100%);
+    background-attachment: fixed;
     color: #0F172A;
   }
 
@@ -23,7 +29,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #dfdfdf;
+    background: #ede9f6;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -38,15 +44,17 @@
 
 @layer components {
 
-  /* ===== Off-White Cyber Background ===== */
+  /* ===== Chrome-Inspired Light Gradient Background ===== */
   .cyber-bg {
     position: relative;
     min-height: 100vh;
-    background-color: #e2e2e2;
-    background-image:
-      radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(243, 242, 236, 0.8) 0%, transparent 100%);
+    background:
+      radial-gradient(ellipse at 0% 0%,   rgba(138, 180, 248, 0.45) 0%, transparent 55%),
+      radial-gradient(ellipse at 100% 0%,  rgba(197, 138, 249, 0.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(251, 187, 206, 0.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 0%   100%, rgba(129, 230, 217, 0.35) 0%, transparent 55%),
+      linear-gradient(135deg, #eef4ff 0%, #f5eeff 33%, #fff0f6 66%, #edfcfb 100%);
+    background-attachment: fixed;
     z-index: 0;
   }
 
@@ -55,8 +63,8 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+      linear-gradient(to right, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
     background-size: 48px 48px;
     pointer-events: none;
     z-index: 1;
@@ -67,9 +75,9 @@
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background-image: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+    background-image: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 1px, transparent 1px);
     background-size: 48px 48px;
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
   .cyber-orb {

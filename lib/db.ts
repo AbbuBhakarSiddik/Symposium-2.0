@@ -206,7 +206,10 @@ export async function createEvent(input: {
     coordinators: input.coordinators || [],
   });
 
-  if (error) throw error;
+  if (error) {
+    const msg = (error as any)?.message || JSON.stringify(error);
+    throw new Error(`createEvent failed: ${msg}. Ensure the 'events' table exists in Supabase (run supabase/schema.sql).`);
+  }
 }
 
 export async function updateEvent(
@@ -239,18 +242,24 @@ export async function updateEvent(
   if (input.coordinators !== undefined) payload.coordinators = input.coordinators;
 
   const { error } = await db.from("events").update(payload).eq("id", id);
-  if (error) throw error;
+  if (error) {
+    const msg = (error as any)?.message || JSON.stringify(error);
+    throw new Error(`updateEvent failed: ${msg}. Ensure the 'events' table exists in Supabase (run supabase/schema.sql).`);
+  }
 }
 
 export async function deleteEvent(id: string) {
   const db = supabaseAdmin();
   const { error } = await db.from("events").delete().eq("id", id);
-  if (error) throw error;
+  if (error) {
+    const msg = (error as any)?.message || JSON.stringify(error);
+    throw new Error(`deleteEvent failed: ${msg}. Ensure the 'events' table exists in Supabase (run supabase/schema.sql).`);
+  }
 }
 
 export async function assignCoordinatorToEvent(
   eventId: string,
-  coordinator: { name: string; role: string; phone?: string; email?: string }
+  coordinator: { name: string; role: string; phone?: string; email?: string; image?: string }
 ) {
   const events = await listEvents();
   const event = events.find((e) => e.id === eventId);

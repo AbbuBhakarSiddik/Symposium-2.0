@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { AppUser, Announcement, Resource, SiteSettings } from "@/lib/db";
 import { EventConfig } from "@/lib/eventsConfig";
 import SignOutButton from "./SignOutButton";
@@ -27,6 +27,32 @@ export default function CoordinatorDashboardClient({
   settings,
   currentUser,
 }: CoordinatorDashboardClientProps) {
+  // Live seats state (auto-polled every 30s)
+  const [liveCounts, setLiveCounts] = useState<Record<string, number>>(counts);
+  const [liveIsLive, setLiveIsLive] = useState(isLive);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchCounts = useCallback(async () => {
+    try {
+      const res = await fetch("/api/sheets");
+      if (!res.ok) return;
+      const json = await res.json();
+      const newCounts: Record<string, number> = {};
+      for (const item of json.data ?? []) {
+        newCounts[item.id] = item.registered;
+      }
+      setLiveCounts(newCounts);
+      setLiveIsLive(json.isLive ?? false);
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    pollingRef.current = setInterval(fetchCounts, 30_000);
+    return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
+  }, [fetchCounts]);
+
   // Live seats table state
   const [eventSearch, setEventSearch] = useState("");
   const [eventSortField, setEventSortField] = useState<"name" | "capacity" | "registered" | "available" | "venue" | "date">("name");
@@ -46,10 +72,10 @@ export default function CoordinatorDashboardClient({
   const processedEvents = useMemo(() => {
     return events
       .map((e) => {
-        const registered = counts[e.id] ?? 0;
+        const registered = liveCounts[e.id] ?? 0;
         const available = Math.max(e.capacity - registered, 0);
         let status: "available" | "filling" | "full" = "available";
-        if (available === 0) status = "full";
+        if (available === 0 || registered >= e.capacity) status = "full";
         else if (available <= e.capacity * 0.2) status = "filling";
 
         return {

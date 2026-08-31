@@ -17,7 +17,7 @@ export type EventConfig = {
   // get counted per event.
   sheetEventLabel: string;
   schedule: { time: string; item: string }[];
-  coordinators: { name: string; role: string; phone?: string; email?: string }[];
+  coordinators: { name: string; role: string; phone?: string; email?: string; image?: string }[];
 };
 
 export const CLUB_NAME = "Creative Codex";
@@ -46,7 +46,15 @@ export const EVENTS: EventConfig[] = [
       { time: "2:00 PM", item: "Final round" },
       { time: "4:00 PM", item: "Results" },
     ],
-    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00001" }],
+    coordinators: [
+      {
+        name: "Arjun Sharma",
+        role: "Lead Faculty Coordinator",
+        phone: "+91 98765 43210",
+        email: "arjun@siet.edu.in",
+        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      },
+    ],
   },
   {
     id: "event-2",
@@ -65,7 +73,15 @@ export const EVENTS: EventConfig[] = [
       { time: "Next day 9:00 AM", item: "Submissions close" },
       { time: "11:00 AM", item: "Demos & judging" },
     ],
-    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00002" }],
+    coordinators: [
+      {
+        name: "Priya Patel",
+        role: "Student Lead Coordinator",
+        phone: "+91 98765 43211",
+        email: "priya@siet.edu.in",
+        image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+      },
+    ],
   },
   {
     id: "event-3",
@@ -83,7 +99,15 @@ export const EVENTS: EventConfig[] = [
       { time: "12:15 PM", item: "Round 2 (finalists)" },
       { time: "1:00 PM", item: "Results" },
     ],
-    coordinators: [{ name: "Coordinator Name", role: "Event Lead", phone: "+91 90000 00003" }],
+    coordinators: [
+      {
+        name: "Rohan Kumar",
+        role: "Technical Operations Lead",
+        phone: "+91 98765 43212",
+        email: "rohan@siet.edu.in",
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      },
+    ],
   },
-
 ];
+

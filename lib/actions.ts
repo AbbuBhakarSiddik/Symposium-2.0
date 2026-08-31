@@ -191,10 +191,17 @@ export async function assignCoordinatorAction(formData: FormData) {
   const role = String(formData.get("role") || "Event Lead").trim();
   const phone = String(formData.get("phone") || "").trim();
   const email = String(formData.get("email") || "").trim();
+  const image = String(formData.get("image") || "").trim();
 
   if (!eventId || !name) throw new Error("Missing eventId or coordinator name");
 
-  await assignCoordinatorToEvent(eventId, { name, role, phone: phone || undefined, email: email || undefined });
+  await assignCoordinatorToEvent(eventId, {
+    name,
+    role,
+    phone: phone || undefined,
+    email: email || undefined,
+    image: image || undefined,
+  });
 
   revalidatePath("/");
   revalidatePath("/admin");

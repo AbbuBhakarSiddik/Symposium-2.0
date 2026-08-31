@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { AppUser, Announcement, Resource, SiteSettings, GalleryItem } from "@/lib/db";
 import { EventConfig } from "@/lib/eventsConfig";
 import SignOutButton from "./SignOutButton";
@@ -44,6 +44,44 @@ export default function AdminDashboardClient({
   galleryItems = [],
   currentUser,
 }: AdminDashboardClientProps) {
+  // ── Live counts state (auto-polled from /api/sheets every 30s) ──
+  const [liveCounts, setLiveCounts] = useState<Record<string, number>>(counts);
+  const [liveIsLive, setLiveIsLive] = useState(isLive);
+  const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchCounts = useCallback(async (forceRefresh = false) => {
+    try {
+      const url = forceRefresh ? "/api/sheets/refresh" : "/api/sheets";
+      const method = forceRefresh ? "POST" : "GET";
+      const res = await fetch(url, { method });
+      if (!res.ok) return;
+      const json = await res.json();
+      const newCounts: Record<string, number> = {};
+      for (const item of json.data ?? []) {
+        newCounts[item.id] = item.registered;
+      }
+      setLiveCounts(newCounts);
+      setLiveIsLive(json.isLive ?? false);
+      setLastRefreshed(new Date());
+    } catch {
+      // silently ignore — show stale data
+    }
+  }, []);
+
+  // Start polling on mount, clear on unmount
+  useEffect(() => {
+    pollingRef.current = setInterval(() => fetchCounts(false), 30_000);
+    return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
+  }, [fetchCounts]);
+
+  const handleRefreshCounts = useCallback(async () => {
+    setIsRefreshing(true);
+    await fetchCounts(true);
+    setIsRefreshing(false);
+  }, [fetchCounts]);
+
   // Live seats table state: search, sort, filter
   const [eventSearch, setEventSearch] = useState("");
   const [eventSortField, setEventSortField] = useState<"name" | "capacity" | "registered" | "available" | "venue" | "date">("name");
@@ -78,11 +116,11 @@ export default function AdminDashboardClient({
   // Edit Event Modal state
   const [editingEvent, setEditingEvent] = useState<EventConfig | null>(null);
 
-  // Computed & Filtered Events Table Data
+  // Computed & Filtered Events Table Data (uses live-polled counts)
   const processedEvents = useMemo(() => {
     return events
       .map((e) => {
-        const registered = counts[e.id] ?? 0;
+        const registered = liveCounts[e.id] ?? 0;
         const available = Math.max(e.capacity - registered, 0);
         let status: "available" | "filling" | "full" = "available";
         if (available === 0) status = "full";
@@ -228,31 +266,69 @@ export default function AdminDashboardClient({
 
         {/* Section 1: Live Event Seats & Registration Data */}
         <section className="glass rounded-3xl p-6 sm:p-8 space-y-6 shadow-glass border border-slate-200/80">
+
+          {/* Google Sheets Setup Banner (shown when not connected) */}
+          {!liveIsLive && (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 font-mono text-xs">
+              <div className="flex items-start gap-3">
+                <span className="text-amber-500 text-base mt-0.5">⚠️</span>
+                <div className="space-y-1.5">
+                  <p className="font-bold text-amber-800 uppercase tracking-wider text-[11px]">Google Sheets Not Connected — Showing Preview / Mock Data</p>
+                  <p className="text-amber-700">Add the following variables to your <code className="bg-amber-100 px-1 rounded">.env.local</code> to connect live registration counts:</p>
+                  <pre className="bg-amber-100 rounded-xl p-3 text-[10px] leading-relaxed text-amber-900 overflow-x-auto select-all">{`GOOGLE_SHEETS_CLIENT_EMAIL=your-service@project.iam.gserviceaccount.com
+GOOGLE_SHEETS_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\\n..."
+GOOGLE_SHEET_ID=your_spreadsheet_id_from_url
+GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}</pre>
+                  <p className="text-amber-700 text-[11px]">
+                    The <strong>Sheet Label</strong> on each event must match the dropdown value in your Google Form exactly.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-display text-xl font-bold text-slate-900">
                   Event Seats &amp; Live Registration Status
                 </h2>
-                <span className={`h-2.5 w-2.5 rounded-full ${isLive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
+                <span className={`h-2.5 w-2.5 rounded-full ${liveIsLive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
                 <span className="font-mono text-xs text-slate-500 font-medium">
-                  {isLive ? "Connected to Google Sheet" : "Preview Mode (Sheet Not Connected)"}
+                  {liveIsLive ? "Connected to Google Sheet" : "Preview Mode (Sheet Not Connected)"}
                 </span>
               </div>
               <p className="font-mono text-xs text-slate-500 mt-1">
-                Live Google Form response counts. Filter, search, and sort event capacities below.
+                Auto-refreshes every 30s · Last updated: <span className="font-semibold text-slate-700">{lastRefreshed.toLocaleTimeString()}</span>
               </p>
             </div>
 
-            <button
-              onClick={handleExportEventsCSV}
-              className="inline-flex items-center gap-2 rounded-2xl bg-sky-50 border border-sky-200 px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-sky-700 transition hover:bg-sky-600 hover:text-white shadow-sm hover:shadow-md"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Export CSV / Excel
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRefreshCounts}
+                disabled={isRefreshing}
+                className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition shadow-sm hover:shadow-md ${
+                  isRefreshing
+                    ? "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed"
+                    : "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-600 hover:text-white"
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {isRefreshing ? "Refreshing…" : "↻ Refresh Counts"}
+              </button>
+
+              <button
+                onClick={handleExportEventsCSV}
+                className="inline-flex items-center gap-2 rounded-2xl bg-sky-50 border border-sky-200 px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-sky-700 transition hover:bg-sky-600 hover:text-white shadow-sm hover:shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export CSV
+              </button>
+            </div>
           </div>
 
           {/* Search Bar & Filters Controls */}
@@ -555,6 +631,17 @@ export default function AdminDashboardClient({
                     className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 outline-none focus:border-sky-500 shadow-sm"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-600 mb-1 uppercase tracking-wider text-[10px] font-bold">
+                  Coordinator Profile Photo URL (Optional)
+                </label>
+                <input
+                  name="image"
+                  placeholder="https://... (Direct image link or photo URL)"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 outline-none focus:border-sky-500 shadow-sm"
+                />
               </div>
 
               <button

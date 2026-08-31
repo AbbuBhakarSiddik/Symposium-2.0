@@ -42,13 +42,19 @@ export default function Header() {
   return (
     <>
       <header
-        className={`
-          sticky top-0 z-50 transition-all duration-300
-          ${scrolled
-            ? "bg-[#e4e4e4]/90 backdrop-blur-xl border-b border-slate-200/80 shadow-md"
-            : "bg-[#e4e4e4]/70 backdrop-blur-md border-b border-slate-200/50"
-          }
-        `}
+        className={`sticky top-0 z-50 transition-all duration-300`}
+        style={scrolled ? {
+          background: 'linear-gradient(135deg, rgba(232,240,254,0.92) 0%, rgba(243,232,255,0.88) 40%, rgba(252,228,236,0.85) 70%, rgba(224,247,250,0.88) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(138,180,248,0.35)',
+          boxShadow: '0 4px 24px -4px rgba(138,180,248,0.2), 0 1px 0 rgba(197,138,249,0.15)'
+        } : {
+          background: 'linear-gradient(135deg, rgba(232,240,254,0.75) 0%, rgba(243,232,255,0.68) 40%, rgba(252,228,236,0.65) 70%, rgba(224,247,250,0.70) 100%)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          borderBottom: '1px solid rgba(138,180,248,0.2)',
+        }}
       >
         <div className="mx-auto flex max-w-20xl items-center justify-between px-10 sm:px-10 lg:px-8 py-10 lg:py-6">
           {/* Logo — club logo image on the left, symposium name text on the right */}
@@ -58,7 +64,7 @@ export default function Header() {
             aria-label={`${SYMPOSIUM_NAME} home`}
           >
             <Image
-              src="/logos/sympo3.jpeg"
+              src="/logos/sympo2.0.jpeg"
               alt={`${CLUB_NAME} logo`}
               width={120}
               height={36}

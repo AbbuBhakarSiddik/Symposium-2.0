@@ -17,7 +17,7 @@ export default function LogoCards() {
     },
     {
       id: "symposium",
-      src: "/logos/sympo3.jpeg",
+      src: "/logos/sympo2.0.jpeg",
       name: SYMPOSIUM_NAME,
       subtitle: "National Level Technical Symposium 2.0",
       badge: "Main Event",
@@ -46,16 +46,16 @@ export default function LogoCards() {
         <div
           key={logo.id}
           className={`hero-logo-enter glass rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-depth border bg-white/95 group ${logo.isFeatured
-              ? "border-sky-300 ring-2 ring-sky-500/20 shadow-xl md:-translate-y-1"
-              : "border-slate-200/80 shadow-glass"
+            ? "border-sky-300 ring-2 ring-sky-500/20 shadow-xl md:-translate-y-1"
+            : "border-slate-200/80 shadow-glass"
             }`}
         >
           {/* Badge at top of card */}
           <div className="w-full flex justify-center mb-4">
             <span
               className={`font-mono text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${logo.isFeatured
-                  ? "bg-sky-500 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 border border-slate-200"
+                ? "bg-amber-500 text-slate-950 shadow-md"
+                : "bg-slate-100 text-slate-700 border border-slate-200"
                 }`}
             >
               {logo.badge}
@@ -76,7 +76,7 @@ export default function LogoCards() {
 
           {/* Name & Subtitle below Logo */}
           <div className="text-center space-y-1 mt-auto">
-            <h3 className="font-display font-bold text-slate-900 text-base sm:text-lg leading-snug group-hover:text-sky-600 transition-colors">
+            <h3 className="font-display font-bold text-slate-900 text-base sm:text-lg leading-snug group-hover:text-amber-600 transition-colors">
               {logo.name}
             </h3>
             <p className="font-mono text-xs text-slate-500 font-medium">

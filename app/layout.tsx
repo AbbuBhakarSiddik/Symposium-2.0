@@ -44,10 +44,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         {/* Gradient orbs – slow floating motion */}
-        <div className="cyber-orb top-1/4 left-1/4 w-96 h-96 bg-cyber-cyan/20" />
+        <div className="cyber-orb top-1/4 left-1/4 w-96 h-96" style={{ background: 'rgba(138, 180, 248, 0.25)' }} />
         <div
-          className="cyber-orb bottom-1/4 right-1/4 w-96 h-96 bg-cyber-magenta/20"
-          style={{ animationDelay: "-3s" }}
+          className="cyber-orb bottom-1/4 right-1/4 w-96 h-96"
+          style={{ background: 'rgba(197, 138, 249, 0.2)', animationDelay: "-3s" }}
         />
 
         {children}
