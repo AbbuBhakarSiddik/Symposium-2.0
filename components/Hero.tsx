@@ -70,7 +70,7 @@ export default function Hero() {
         <div className="animate-on-scroll flex flex-wrap items-center justify-center gap-3 text-sm font-mono text-slate-100">
           <span className="flex items-center gap-2 rounded-full border border-amber-400/50 bg-slate-950/70 backdrop-blur-md px-4 py-1.5 shadow-md">
             <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-            📅 ? September 2026
+            📅 30th October 2026
           </span>
           <span aria-hidden="true" className="hidden sm:inline text-sky-200">·</span>
           <span className="flex items-center gap-2 rounded-full border border-amber-400/50 bg-slate-950/70 backdrop-blur-md px-4 py-1.5 shadow-md">
@@ -155,4 +155,4 @@ export default function Hero() {
     </section>
   );
 }
-
+
