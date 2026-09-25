@@ -121,10 +121,12 @@ export async function getLiveCounts(
     return result;
   } catch (err) {
     console.error("Google Sheets fetch failed, falling back to cached or empty data:", err);
-    if (cachedCountsData) {
-      return { ...cachedCountsData, isLive: false };
-    }
-    return { counts: emptyCounts(events), isLive: false };
+    const fallback = cachedCountsData
+      ? { ...cachedCountsData, isLive: false }
+      : { counts: emptyCounts(events), isLive: false };
+    cachedCountsData = fallback;
+    lastFetchTimestamp = Date.now();
+    return fallback;
   }
 }
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getLiveCounts } from "@/lib/googleSheets";
 import { listEvents, getSiteSettings } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const [events, settings] = await Promise.all([
     listEvents(),
