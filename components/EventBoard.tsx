@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { EVENTS, EventConfig, REGISTER_FORM_URL } from "@/lib/eventsConfig";
 
 type SeatData = { id: string; registered: number; capacity: number; available: number };
-type ApiResponse = { isLive: boolean; data: SeatData[]; events?: EventConfig[]; registerFormUrl?: string; fetchedAt: string };
+type ApiResponse = {
+  isLive: boolean;
+  data: SeatData[];
+  events?: EventConfig[];
+  registerFormUrl?: string;
+  fetchedAt: string;
+};
 
 const POLL_MS = 15000;
 
@@ -44,25 +50,71 @@ export default function EventBoard() {
     };
   }, []);
 
+  // Filter out any "event flow" / schedule item so only actual competition events appear on front page
+  const visibleEvents = eventsList.filter((event) => {
+    const name = (event.name || "").toLowerCase().trim();
+    return (
+      event.id !== "event-1789830960648" &&
+      !name.includes("event flow") &&
+      !name.includes("symposium event flow")
+    );
+  });
+
+  const totalCapacity = visibleEvents.reduce((acc, ev) => acc + (ev.capacity || 0), 0);
+  const totalRegistered = visibleEvents.reduce(
+    (acc, ev) => acc + (seats[ev.id]?.registered ?? 0),
+    0
+  );
+
   return (
-    <section id="events" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-      <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
+    <section id="events" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 sm:px-8">
+      {/* Section Header */}
+      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200/80">
         <div>
-          <p className="eyebrow mb-2">Live Board</p>
-          <h2 className="section-heading text-slate-900">Events &amp; Seats</h2>
+          <div className="flex items-center gap-2.5 mb-2">
+            <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
+            <p className="eyebrow tracking-widest text-sky-600 font-bold">Registration Arenas</p>
+          </div>
+          <h2 className="section-heading text-slate-900 tracking-tight">Events &amp; Seat Status</h2>
+          <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
+            Choose your competition, explore event timelines and team requirements, and claim your spot before seats fill up.
+          </p>
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs text-slate-500">
-          <span
-            className={`h-2 w-2 rounded-full ${isLive ? "bg-green-500 animate-pulse" : "bg-amber-400"}`}
-          />
-          {isLive ? "Live from Google Sheet" : "Preview — sheet not connected"}
+
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Live Sync Badge */}
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white shadow-sm font-mono text-xs text-slate-600">
+            <span
+              className={`h-2.5 w-2.5 rounded-full ${
+                isLive
+                  ? "bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+                  : "bg-amber-400"
+              }`}
+            />
+            <span className="font-semibold text-slate-700">
+              {isLive ? "Live Sheet Sync" : "Preview Mode"}
+            </span>
+          </div>
+
+          {/* Aggregate Count Badge */}
+          {totalCapacity > 0 && (
+            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 bg-sky-50/70 font-mono text-xs text-sky-800 font-semibold shadow-sm">
+              <span>{visibleEvents.length} Active Events</span>
+              <span className="text-sky-300">•</span>
+              <span>
+                {totalRegistered} / {totalCapacity} Filled
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
-        {eventsList.map((event) => (
+      {/* 3-Column Responsive Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        {visibleEvents.map((event, index) => (
           <EventCard
             key={event.id}
+            index={index}
             event={event}
             seat={seats[event.id]}
             registerFormUrl={registerFormUrl}
@@ -75,15 +127,40 @@ export default function EventBoard() {
   );
 }
 
+const THEME_ACCENTS = [
+  {
+    gradientBar: "from-sky-400 via-blue-500 to-indigo-600",
+    topAccent: "bg-gradient-to-r from-sky-400 to-blue-600",
+    badgeBg: "bg-sky-50 border-sky-200 text-sky-700",
+    hoverBorder: "hover:border-sky-400 hover:shadow-[0_20px_40px_-12px_rgba(14,165,233,0.22)]",
+    tagNumber: "#01",
+  },
+  {
+    gradientBar: "from-indigo-500 via-purple-500 to-pink-500",
+    topAccent: "bg-gradient-to-r from-indigo-500 to-purple-600",
+    badgeBg: "bg-indigo-50 border-indigo-200 text-indigo-700",
+    hoverBorder: "hover:border-indigo-400 hover:shadow-[0_20px_40px_-12px_rgba(99,102,241,0.22)]",
+    tagNumber: "#02",
+  },
+  {
+    gradientBar: "from-teal-400 via-emerald-500 to-cyan-500",
+    topAccent: "bg-gradient-to-r from-emerald-400 to-teal-600",
+    badgeBg: "bg-emerald-50 border-emerald-200 text-emerald-700",
+    hoverBorder: "hover:border-emerald-400 hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.22)]",
+    tagNumber: "#03",
+  },
+];
 
 function EventCard({
   event,
+  index,
   seat,
   registerFormUrl,
   isOpen,
   onToggle,
 }: {
   event: EventConfig;
+  index: number;
   seat?: SeatData;
   registerFormUrl?: string;
   isOpen: boolean;
@@ -95,6 +172,8 @@ function EventCard({
   const isClosed = available <= 0 || (capacity > 0 && registered >= capacity);
   const percentageFilled = capacity > 0 ? Math.min((registered / capacity) * 100, 100) : 0;
 
+  const theme = THEME_ACCENTS[index % THEME_ACCENTS.length];
+
   // Determine status
   const status =
     seat === undefined
@@ -105,152 +184,289 @@ function EventCard({
       ? "filling"
       : "open";
 
-  const statusColor = {
-    loading: "text-slate-500 border-slate-300 bg-slate-50",
-    open: "text-green-700 border-green-300 bg-green-50",
-    filling: "text-amber-800 border-amber-300 bg-amber-50 font-bold",
-    full: "text-red-700 border-red-300 bg-red-50 font-bold",
-  }[status];
-
-  const statusLabel = {
-    loading: "···",
-    open: "Open",
-    filling: "Filling Fast",
-    full: "Closed / Full",
-  }[status];
-
   const formHref = registerFormUrl && registerFormUrl !== "#" ? registerFormUrl : "#contact";
   const formTarget = registerFormUrl && registerFormUrl !== "#" ? "_blank" : "_self";
 
   return (
-    <div className={`
-      glass rounded-2xl p-5 transition-all duration-300 border
-      bg-gradient-to-br from-white via-blue-50/40 to-sky-50/60
-      hover:border-blue-400 hover:shadow-[0_8px_30px_rgba(59,130,246,0.2)] hover:-translate-y-1
-      ${isOpen ? "border-blue-400 shadow-[0_8px_30px_rgba(59,130,246,0.2)]" : "border-slate-200"}
-    `}>
-      {/* Header: Event name + status */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1">
-          <h3 className="font-display text-xl font-semibold text-slate-900">{event.name}</h3>
-          <p className="font-mono text-xs text-slate-500 mt-0.5">{event.tagline}</p>
-        </div>
-        <span className={`
-          font-mono text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border
-          ${statusColor}
-        `}>
-          {statusLabel}
-        </span>
-      </div>
+    <div
+      className={`
+        relative flex flex-col justify-between rounded-3xl transition-all duration-300 border
+        bg-white/95 backdrop-blur-xl p-6 sm:p-7
+        ${isOpen ? "border-blue-400 shadow-[0_20px_45px_-12px_rgba(59,130,246,0.25)] ring-1 ring-blue-300" : "border-slate-200/90 shadow-sm"}
+        ${theme.hoverBorder} hover:-translate-y-1.5
+      `}
+    >
+      {/* Top decorative accent bar */}
+      <div className={`absolute top-0 left-8 right-8 h-1 rounded-b-full ${theme.topAccent}`} />
 
-      {/* Progress bar */}
-      <div className="mt-4 space-y-1">
-        <div className="flex justify-between text-xs font-mono text-slate-500">
-          <span>Seats filled</span>
-          <span className="font-bold text-slate-700">{registered} / {capacity}</span>
-        </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ease-out ${
-              isClosed
-                ? "bg-red-500"
-                : percentageFilled >= 80
-                ? "bg-gradient-to-r from-amber-400 to-red-500"
-                : "bg-gradient-to-r from-blue-400 via-sky-500 to-blue-600"
-            }`}
-            style={{ width: `${percentageFilled}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Quick info row */}
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-mono text-slate-500">
-        <span className="flex items-center gap-1">📅 {event.date}</span>
-        <span className="h-3 w-px bg-slate-200" />
-        <span className="flex items-center gap-1">📍 {event.venue}</span>
-        {seat !== undefined && (
-          <>
-            <span className="h-3 w-px bg-slate-200" />
-            <span className={isClosed ? "text-red-600 font-bold" : "text-blue-600 font-semibold"}>
-              {isClosed ? "0 spots left (Closed)" : `${available} spots left`}
+      {/* Top Card Section */}
+      <div>
+        {/* Category Badge & Status Pill */}
+        <div className="flex items-center justify-between gap-2 pt-1 mb-4">
+          <div className="flex items-center gap-2">
+            <span className={`inline-block px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold uppercase tracking-wider border ${theme.badgeBg}`}>
+              {event.sheetEventLabel || "Competition"}
             </span>
-          </>
-        )}
-      </div>
-
-      {/* Action buttons */}
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <button
-          onClick={onToggle}
-          className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-slate-600 bg-white transition-all hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 font-semibold"
-        >
-          {isOpen ? "Hide Details" : "View Details"}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-3 w-3 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {isClosed ? (
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full border border-red-300 bg-red-50 text-red-700 px-5 py-1.5 font-mono text-xs uppercase tracking-widest font-bold cursor-not-allowed select-none shadow-sm"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
-            </svg>
-            Registration Closed
-          </span>
-        ) : (
-          <a
-            href={formHref}
-            target={formTarget}
-            rel="noreferrer"
-            className="btn-cyber text-xs py-1.5 px-5"
-          >
-            Register Now
-          </a>
-        )}
-      </div>
-
-      {/* Expandable details */}
-      <div
-        className={`
-          overflow-hidden transition-all duration-300 ease-in-out
-          ${isOpen ? "max-h-[600px] opacity-100 mt-5" : "max-h-0 opacity-0"}
-        `}
-      >
-        <div className="border-t border-slate-200 pt-5 space-y-4">
-          <p className="text-sm text-slate-600 leading-relaxed">{event.description}</p>
-
-          <div>
-            <p className="eyebrow text-[10px]">Schedule</p>
-            <ul className="mt-2 space-y-1 font-mono text-sm text-slate-600">
-              {event.schedule.map((s, i) => (
-                <li key={i} className="flex gap-4">
-                  <span className="w-24 shrink-0 text-blue-600 font-semibold">{s.time}</span>
-                  <span>{s.item}</span>
-                </li>
-              ))}
-            </ul>
+            <span className="font-mono text-[10px] text-slate-400 font-semibold">{theme.tagNumber}</span>
           </div>
 
-          <div>
-            <p className="eyebrow text-[10px]">Coordinators</p>
-            <div className="mt-2 flex flex-wrap gap-4">
-              {event.coordinators.map((c) => (
-                <div key={c.name} className="text-sm">
-                  <p className="text-slate-900 font-semibold">{c.name}</p>
-                  <p className="text-xs text-slate-500">{c.role}</p>
-                  {c.phone && <p className="text-xs text-blue-600 font-mono">{c.phone}</p>}
-                </div>
-              ))}
+          {/* Status Badge */}
+          {status === "open" && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              Open
+            </span>
+          )}
+          {status === "filling" && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-300 shadow-sm font-semibold">
+              <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
+              Filling Fast
+            </span>
+          )}
+          {status === "full" && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-300 shadow-sm">
+              Closed / Full
+            </span>
+          )}
+          {status === "loading" && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono bg-slate-50 text-slate-500 border border-slate-300">
+              ···
+            </span>
+          )}
+        </div>
+
+        {/* Event Title & Tagline */}
+        <h3 className="font-display text-2xl font-bold text-slate-900 tracking-tight leading-snug">
+          {event.name}
+        </h3>
+        <p className="mt-1.5 text-xs text-slate-500 font-medium line-clamp-2 leading-relaxed">
+          {event.tagline || event.description || "Compete, collaborate, and display your technical brilliance."}
+        </p>
+
+        {/* Organized 4-Box Meta Grid */}
+        <div className="mt-5 grid grid-cols-2 gap-2.5">
+          {/* Date */}
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span className="text-base select-none">📅</span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Date</p>
+              <p className="text-xs font-bold text-slate-800 truncate">{event.date || "30 Oct 2026"}</p>
             </div>
+          </div>
+
+          {/* Time */}
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span className="text-base select-none">⏰</span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Time</p>
+              <p className="text-xs font-bold text-slate-800 truncate">{event.time || "09:00 AM"}</p>
+            </div>
+          </div>
+
+          {/* Venue */}
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span className="text-base select-none">📍</span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Venue</p>
+              <p className="text-xs font-bold text-slate-800 truncate">{event.venue}</p>
+            </div>
+          </div>
+
+          {/* Capacity */}
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span className="text-base select-none">👥</span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Capacity</p>
+              <p className="text-xs font-bold text-slate-800 truncate">{capacity} Seats</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Live Seat Tracker & Progress Bar */}
+        <div className="mt-5 p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/90 space-y-2">
+          <div className="flex justify-between items-center text-xs font-mono">
+            <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
+              Seats Status
+            </span>
+            <span className="font-bold text-slate-900">
+              {registered} <span className="font-normal text-slate-400">/ {capacity} filled</span>
+            </span>
+          </div>
+
+          {/* Progress bar track */}
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80">
+            <div
+              className={`h-full rounded-full transition-all duration-700 ease-out ${
+                isClosed
+                  ? "bg-red-500"
+                  : percentageFilled >= 80
+                  ? "bg-gradient-to-r from-amber-400 to-red-500"
+                  : `bg-gradient-to-r ${theme.gradientBar}`
+              }`}
+              style={{ width: `${percentageFilled}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between items-center text-[11px] font-mono">
+            <span
+              className={`font-semibold px-2 py-0.5 rounded ${
+                isClosed
+                  ? "text-red-700 bg-red-100/70"
+                  : available <= capacity * 0.2
+                  ? "text-amber-800 bg-amber-100/70"
+                  : "text-blue-700 bg-blue-100/60"
+              }`}
+            >
+              {isClosed ? "0 spots remaining" : `${available} spots left`}
+            </span>
+            <span className="text-slate-500 font-medium">{percentageFilled.toFixed(0)}% Booked</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Section: Action Buttons */}
+      <div className="mt-6 pt-5 border-t border-slate-100">
+        <div className="flex items-center gap-2.5">
+          {/* Toggle Details Button */}
+          <button
+            onClick={onToggle}
+            className={`
+              flex-1 inline-flex items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all
+              ${isOpen ? "bg-blue-50/80 border-blue-400 text-blue-700 shadow-sm" : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"}
+            `}
+          >
+            <span>{isOpen ? "Hide Details" : "View Details"}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-3.5 w-3.5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {/* Register Action CTA */}
+          {isClosed ? (
+            <span className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
+              </svg>
+              Closed
+            </span>
+          ) : (
+            <a
+              href={formHref}
+              target={formTarget}
+              rel="noreferrer"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
+            >
+              <span>Register Now</span>
+              <span className="text-sky-200">↗</span>
+            </a>
+          )}
+        </div>
+
+        {/* Expandable Details Accordion */}
+        <div
+          className={`
+            overflow-hidden transition-all duration-300 ease-in-out
+            ${isOpen ? "max-h-[800px] opacity-100 mt-5 pt-4 border-t border-slate-200/80" : "max-h-0 opacity-0"}
+          `}
+        >
+          <div className="space-y-4">
+            {/* Description */}
+            <div>
+              <p className="eyebrow text-[10px] text-slate-500 mb-1">About This Event</p>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                {event.description || "Join this flagship symposium arena to test your skills, innovate alongside peers, and earn prestigious accolades."}
+              </p>
+            </div>
+
+            {/* Schedule Timeline */}
+            {event.schedule && event.schedule.length > 0 && (
+              <div>
+                <p className="eyebrow text-[10px] text-slate-500 mb-2.5">Event Flow &amp; Schedule</p>
+                <div className="relative pl-5 space-y-2.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-sky-400 before:to-indigo-300">
+                  {event.schedule.map((s, i) => (
+                    <div key={i} className="relative flex items-start gap-2.5 text-xs">
+                      <span className="absolute -left-5 mt-1 h-2 w-2 rounded-full border-2 border-white bg-sky-500 shadow-sm" />
+                      <span className="font-mono font-bold text-sky-700 shrink-0 w-20">{s.time}</span>
+                      <span className="text-slate-700 font-medium">{s.item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Coordinators Contact Section */}
+            <div>
+              <p className="eyebrow text-[10px] text-slate-500 mb-2">Event Coordinators</p>
+              {event.coordinators && event.coordinators.length > 0 ? (
+                <div className="grid grid-cols-1 gap-2 max-h-52 overflow-y-auto overscroll-contain pr-1">
+                  {event.coordinators.map((c, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/60"
+                    >
+                      <div className="min-w-0 pr-2 flex items-center gap-2">
+                        {event.coordinators.length > 1 && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80 shrink-0">
+                            #{i + 1}
+                          </span>
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-900 truncate">{c.name}</p>
+                          <p className="text-[10px] font-mono text-slate-500 truncate">{c.role}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {c.phone && (
+                          <a
+                            href={`tel:${c.phone}`}
+                            title={`Call ${c.name} (${c.phone})`}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-mono text-[10px] font-bold transition-colors"
+                          >
+                            <span>📞</span>
+                            <span className="hidden sm:inline">Call</span>
+                          </a>
+                        )}
+                        {c.email && (
+                          <a
+                            href={`mailto:${c.email}`}
+                            title={`Email ${c.name}`}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 font-mono text-[10px] font-bold transition-colors"
+                          >
+                            <span>✉️</span>
+                            <span className="hidden sm:inline">Email</span>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[11px] text-slate-500 italic bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+                  Student and faculty coordinators will be on ground at the venue help desk.
+                </p>
+              )}
+            </div>
+
+            {/* Rulebook / Guidelines Button if available */}
+            {event.rulebookUrl && (
+              <a
+                href={event.rulebookUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl border border-blue-200 bg-blue-50/70 font-mono text-xs font-bold text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-colors shadow-sm"
+              >
+                <span>📘</span>
+                <span>Official Rulebook &amp; Guidelines ↗</span>
+              </a>
+            )}
           </div>
         </div>
       </div>

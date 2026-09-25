@@ -16,7 +16,10 @@ import {
   updateEventAction,
   deleteEventAction,
   assignCoordinatorAction,
+  reorderEventCoordinatorsAction,
+  removeCoordinatorFromEventAction,
   updateSiteSettingsAction,
+  updateRunningAnnouncementAction,
   createGalleryItemAction,
   deleteGalleryItemAction,
 } from "@/lib/actions";
@@ -261,12 +264,236 @@ export default function AdminDashboardClient({
   const [announcementSearch, setAnnouncementSearch] = useState("");
   const [resourceSearch, setResourceSearch] = useState("");
 
-  // Gallery search & filter state
+  // Announcements tab sub-navigation state (ticker, bulletins, resources, settings)
+  const [announcementsSubTab, setAnnouncementsSubTab] = useState<
+    "ticker" | "bulletins" | "resources" | "settings"
+  >("ticker");
+
+  // Running Announcement local state & templates
+  const [runningAnnouncementText, setRunningAnnouncementText] = useState(
+    settings?.runningAnnouncement ||
+      "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!"
+  );
+  const [isRunningAnnouncementActive, setIsRunningAnnouncementActive] = useState(
+    settings?.runningAnnouncementActive !== "false"
+  );
+  const [isSavingRunningAnnouncement, setIsSavingRunningAnnouncement] = useState(false);
+  const [runningAnnouncementSaveSuccess, setRunningAnnouncementSaveSuccess] = useState(false);
+
+  const runningAnnouncementTemplates = [
+    {
+      label: "🎉 Registrations Open",
+      text: "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
+    },
+    {
+      label: "⏳ Last Chance Reminder",
+      text: "⏳ Only 2 days left to register for Symposium 2.0! Limited seats available for Coding Sprint, Web Crafters & Circuit Design • Register before slots fill!",
+    },
+    {
+      label: "📍 Spot Registrations Open",
+      text: "📍 Spot Registrations open at the Registration Desk (Main Campus Entrance) from 8:30 AM to 10:00 AM! Walk-ins welcome for all events.",
+    },
+    {
+      label: "🏆 Results & Valedictory",
+      text: "🏆 Event results are now out! Valedictory and Prize Distribution ceremony will commence at 4:30 PM in the Main Auditorium • All participants are invited.",
+    },
+    {
+      label: "⚡ Schedule Adjustment",
+      text: "⚡ Important Schedule Update: Technical Quiz prelims moved to 11:30 AM in Seminar Hall 2 • Please report 15 mins prior.",
+    },
+  ];
+
+  const handleSaveRunningAnnouncement = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSavingRunningAnnouncement(true);
+    setRunningAnnouncementSaveSuccess(false);
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.set("runningAnnouncement", runningAnnouncementText);
+      formData.set("runningAnnouncementActive", isRunningAnnouncementActive ? "true" : "false");
+      await updateRunningAnnouncementAction(formData);
+      setRunningAnnouncementSaveSuccess(true);
+      setTimeout(() => setRunningAnnouncementSaveSuccess(false), 5000);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save running announcement. Please try again.");
+    } finally {
+      setIsSavingRunningAnnouncement(false);
+    }
+  };
+
+  // Gallery Management state
+  const [localGalleryItems, setLocalGalleryItems] = useState<GalleryItem[]>(galleryItems);
   const [gallerySearch, setGallerySearch] = useState("");
   const [galleryTypeFilter, setGalleryTypeFilter] = useState<"all" | "photo" | "video">("all");
 
+  useEffect(() => {
+    setLocalGalleryItems(galleryItems);
+  }, [galleryItems]);
+
+  // Gallery Upload state (Drag & Drop + Choose File)
+  const [galleryUploadMode, setGalleryUploadMode] = useState<"file" | "url">("file");
+  const [galleryFile, setGalleryFile] = useState<File | null>(null);
+  const [galleryPreviewUrl, setGalleryPreviewUrl] = useState<string | null>(null);
+  const [isDraggingGallery, setIsDraggingGallery] = useState(false);
+  const [galleryTitle, setGalleryTitle] = useState("");
+  const [galleryCaption, setGalleryCaption] = useState("");
+  const [galleryMediaType, setGalleryMediaType] = useState<"photo" | "video">("photo");
+  const [galleryExternalUrl, setGalleryExternalUrl] = useState("");
+  const [isUploadingGallery, setIsUploadingGallery] = useState(false);
+  const [galleryUploadSuccess, setGalleryUploadSuccess] = useState(false);
+  const [galleryUploadError, setGalleryUploadError] = useState<string | null>(null);
+  const galleryFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleGalleryFileSelect = (file: File) => {
+    setGalleryUploadError(null);
+    setGalleryFile(file);
+
+    // Auto-detect type
+    const isVid = file.type.startsWith("video/") || /\.(mp4|webm|mov|ogg|mkv)$/i.test(file.name);
+    const detectedType: "photo" | "video" = isVid ? "video" : "photo";
+    setGalleryMediaType(detectedType);
+
+    // Auto-populate title if empty
+    if (!galleryTitle.trim()) {
+      const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      const formattedTitle = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+      setGalleryTitle(formattedTitle);
+    }
+
+    // Generate local preview URL
+    if (galleryPreviewUrl) {
+      URL.revokeObjectURL(galleryPreviewUrl);
+    }
+    const preview = URL.createObjectURL(file);
+    setGalleryPreviewUrl(preview);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingGallery(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingGallery(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingGallery(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      handleGalleryFileSelect(file);
+    }
+  };
+
+  const handleClearSelectedFile = () => {
+    if (galleryPreviewUrl) {
+      URL.revokeObjectURL(galleryPreviewUrl);
+    }
+    setGalleryFile(null);
+    setGalleryPreviewUrl(null);
+    if (galleryFileInputRef.current) {
+      galleryFileInputRef.current.value = "";
+    }
+  };
+
+  const handleUploadGalleryMedia = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setGalleryUploadError(null);
+    setGalleryUploadSuccess(false);
+
+    if (galleryUploadMode === "file") {
+      if (!galleryFile) {
+        setGalleryUploadError("Please choose or drag & drop a photo or video file.");
+        return;
+      }
+
+      setIsUploadingGallery(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", galleryFile);
+        formData.append("title", galleryTitle.trim());
+        formData.append("caption", galleryCaption.trim());
+        formData.append("type", galleryMediaType);
+
+        const res = await fetch("/api/gallery/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Failed to upload file");
+        }
+
+        if (data.item) {
+          setLocalGalleryItems((prev) => [data.item, ...prev]);
+        }
+
+        setGalleryUploadSuccess(true);
+        handleClearSelectedFile();
+        setGalleryTitle("");
+        setGalleryCaption("");
+
+        setTimeout(() => setGalleryUploadSuccess(false), 5000);
+      } catch (err: any) {
+        console.error("Gallery upload error:", err);
+        setGalleryUploadError(err.message || "Failed to upload media. Please try again.");
+      } finally {
+        setIsUploadingGallery(false);
+      }
+    } else {
+      // URL Mode
+      if (!galleryExternalUrl.trim()) {
+        setGalleryUploadError("Please enter a valid media link or YouTube URL.");
+        return;
+      }
+
+      setIsUploadingGallery(true);
+      try {
+        const formData = new FormData();
+        formData.append("type", galleryMediaType);
+        formData.append("url", galleryExternalUrl.trim());
+        formData.append("title", galleryTitle.trim() || "Gallery Media");
+        formData.append("caption", galleryCaption.trim());
+
+        await createGalleryItemAction(formData);
+
+        setLocalGalleryItems((prev) => [
+          {
+            id: `g-temp-${Date.now()}`,
+            type: galleryMediaType,
+            url: galleryExternalUrl.trim(),
+            title: galleryTitle.trim() || "Gallery Media",
+            caption: galleryCaption.trim(),
+            created_at: new Date().toISOString(),
+          },
+          ...prev,
+        ]);
+
+        setGalleryUploadSuccess(true);
+        setGalleryExternalUrl("");
+        setGalleryTitle("");
+        setGalleryCaption("");
+
+        setTimeout(() => setGalleryUploadSuccess(false), 5000);
+      } catch (err: any) {
+        console.error("Gallery create error:", err);
+        setGalleryUploadError(err.message || "Failed to save media URL. Please try again.");
+      } finally {
+        setIsUploadingGallery(false);
+      }
+    }
+  };
+
   const filteredGalleryItems = useMemo(() => {
-    return galleryItems.filter((item) => {
+    return localGalleryItems.filter((item) => {
       if (galleryTypeFilter !== "all" && item.type !== galleryTypeFilter) return false;
       if (!gallerySearch.trim()) return true;
       const q = gallerySearch.toLowerCase();
@@ -276,7 +503,178 @@ export default function AdminDashboardClient({
         item.url.toLowerCase().includes(q)
       );
     });
-  }, [galleryItems, gallerySearch, galleryTypeFilter]);
+  }, [localGalleryItems, gallerySearch, galleryTypeFilter]);
+
+  // Coordinator Management & Ordering state
+  const [localEvents, setLocalEvents] = useState<EventConfig[]>(events);
+  useEffect(() => {
+    setLocalEvents(events);
+  }, [events]);
+
+  const [selectedOrderEventId, setSelectedOrderEventId] = useState<string>(
+    events.find((e) => e.coordinators && e.coordinators.length > 0)?.id || (events[0]?.id ?? "")
+  );
+
+  const [orderStatusMessage, setOrderStatusMessage] = useState<string | null>(null);
+  const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
+
+  // Coordinator Profile Photo Upload state (Drag & Drop + Choose File)
+  const [coordPhotoFile, setCoordPhotoFile] = useState<File | null>(null);
+  const [coordPhotoPreview, setCoordPhotoPreview] = useState<string | null>(null);
+  const [coordPhotoUrl, setCoordPhotoUrl] = useState<string>("");
+  const [isDraggingCoordPhoto, setIsDraggingCoordPhoto] = useState(false);
+  const [isUploadingCoordPhoto, setIsUploadingCoordPhoto] = useState(false);
+  const [coordPhotoUploadError, setCoordPhotoUploadError] = useState<string | null>(null);
+  const [coordPhotoUploadSuccess, setCoordPhotoUploadSuccess] = useState(false);
+  const [coordPhotoManualUrlMode, setCoordPhotoManualUrlMode] = useState(false);
+  const coordFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCoordPhotoSelect = async (file: File) => {
+    setCoordPhotoUploadError(null);
+    setCoordPhotoUploadSuccess(false);
+
+    const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(file.name);
+    if (!isImage) {
+      setCoordPhotoUploadError("Please choose an image file (PNG, JPG, WEBP, etc.)");
+      return;
+    }
+
+    setCoordPhotoFile(file);
+
+    if (coordPhotoPreview) {
+      URL.revokeObjectURL(coordPhotoPreview);
+    }
+    const preview = URL.createObjectURL(file);
+    setCoordPhotoPreview(preview);
+
+    setIsUploadingCoordPhoto(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/coordinators/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to upload photo");
+      }
+
+      setCoordPhotoUrl(data.url);
+      setCoordPhotoUploadSuccess(true);
+    } catch (err: any) {
+      console.error("Coord photo upload error:", err);
+      setCoordPhotoUploadError(err.message || "Upload failed, but you can still use the local preview or enter URL.");
+    } finally {
+      setIsUploadingCoordPhoto(false);
+    }
+  };
+
+  const handleClearCoordPhoto = () => {
+    if (coordPhotoPreview) {
+      URL.revokeObjectURL(coordPhotoPreview);
+    }
+    setCoordPhotoFile(null);
+    setCoordPhotoPreview(null);
+    setCoordPhotoUrl("");
+    setCoordPhotoUploadSuccess(false);
+    setCoordPhotoUploadError(null);
+    if (coordFileInputRef.current) {
+      coordFileInputRef.current.value = "";
+    }
+  };
+
+  const handleMoveCoordinator = async (eventId: string, index: number, direction: "up" | "down") => {
+    const targetEvent = localEvents.find((e) => e.id === eventId);
+    if (!targetEvent || !targetEvent.coordinators) return;
+
+    const list = [...targetEvent.coordinators];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+
+    const temp = list[index];
+    list[index] = list[targetIndex];
+    list[targetIndex] = temp;
+
+    setLocalEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, coordinators: list } : e))
+    );
+
+    setIsUpdatingOrder(true);
+    setOrderStatusMessage("Saving new order…");
+    try {
+      const fd = new FormData();
+      fd.append("eventId", eventId);
+      fd.append("coordinatorsJson", JSON.stringify(list));
+      await reorderEventCoordinatorsAction(fd);
+      setOrderStatusMessage(`✓ Order updated! ${temp.name} is now #${targetIndex + 1} Lead`);
+      setTimeout(() => setOrderStatusMessage(null), 3500);
+    } catch (err: any) {
+      setOrderStatusMessage("❌ Failed to save order: " + err.message);
+    } finally {
+      setIsUpdatingOrder(false);
+    }
+  };
+
+  const handleSetCoordinatorRank = async (eventId: string, currentIndex: number, newRankIndex: number) => {
+    if (currentIndex === newRankIndex) return;
+    const targetEvent = localEvents.find((e) => e.id === eventId);
+    if (!targetEvent || !targetEvent.coordinators) return;
+
+    const list = [...targetEvent.coordinators];
+    const [moved] = list.splice(currentIndex, 1);
+    list.splice(newRankIndex, 0, moved);
+
+    setLocalEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, coordinators: list } : e))
+    );
+
+    setIsUpdatingOrder(true);
+    setOrderStatusMessage("Saving new order…");
+    try {
+      const fd = new FormData();
+      fd.append("eventId", eventId);
+      fd.append("coordinatorsJson", JSON.stringify(list));
+      await reorderEventCoordinatorsAction(fd);
+      setOrderStatusMessage(`✓ ${moved.name} is now #${newRankIndex + 1} Lead!`);
+      setTimeout(() => setOrderStatusMessage(null), 3500);
+    } catch (err: any) {
+      setOrderStatusMessage("❌ Failed to save order: " + err.message);
+    } finally {
+      setIsUpdatingOrder(false);
+    }
+  };
+
+  const handleRemoveCoordinatorFromEvent = async (eventId: string, coordinatorName: string) => {
+    if (!confirm(`Are you sure you want to remove "${coordinatorName}" from this event?`)) {
+      return;
+    }
+
+    const targetEvent = localEvents.find((e) => e.id === eventId);
+    if (!targetEvent) return;
+
+    const updated = (targetEvent.coordinators || []).filter((c) => c.name !== coordinatorName);
+
+    setLocalEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, coordinators: updated } : e))
+    );
+
+    setIsUpdatingOrder(true);
+    try {
+      const fd = new FormData();
+      fd.append("eventId", eventId);
+      fd.append("coordinatorName", coordinatorName);
+      await removeCoordinatorFromEventAction(fd);
+      setOrderStatusMessage(`✓ Removed ${coordinatorName} from event.`);
+      setTimeout(() => setOrderStatusMessage(null), 3000);
+    } catch (err: any) {
+      alert("Failed to remove coordinator: " + err.message);
+    } finally {
+      setIsUpdatingOrder(false);
+    }
+  };
 
   // Edit Event Modal state
   const [editingEvent, setEditingEvent] = useState<EventConfig | null>(null);
@@ -1626,108 +2024,512 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
           {/* ========================================================================= */}
           {activeNavTab === "coordinator" && (
             <div className="space-y-8">
-              {/* Assign Coordinator to Event */}
-              <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-5 max-w-3xl`}>
-                <div>
-                  <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2.5`}>
-                    <span className="h-2.5 w-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/60" />
-                    Assign Coordinator to Event
-                  </h3>
-                  <p className={`font-mono text-xs ${subText} mt-1`}>
-                    Select an event and assign lead coordinators from committee members.
-                  </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* 1. Assign Coordinator to Event */}
+                <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-5`}>
+                  <div>
+                    <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2.5`}>
+                      <span className="h-2.5 w-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/60" />
+                      Assign Coordinator to Event
+                    </h3>
+                    <p className={`font-mono text-xs ${subText} mt-1`}>
+                      Select an event, choose committee member, upload profile photo, and set priority.
+                    </p>
+                  </div>
+
+                  <form
+                    action={assignCoordinatorAction}
+                    onSubmit={() => {
+                      // Reset photo states after a small delay
+                      setTimeout(() => {
+                        handleClearCoordPhoto();
+                      }, 1000);
+                    }}
+                    className="space-y-4 font-mono text-xs"
+                  >
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Select Event *
+                      </label>
+                      <select
+                        name="eventId"
+                        required
+                        value={selectedOrderEventId}
+                        onChange={(e) => setSelectedOrderEventId(e.target.value)}
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
+                      >
+                        <option value="">-- Choose an Event --</option>
+                        {localEvents.map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.name} ({(e.coordinators || []).length} assigned)
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Select Coordinator *
+                      </label>
+                      <select
+                        name="name"
+                        required
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
+                      >
+                        <option value="">-- Choose Coordinator / Admin --</option>
+                        {users.map((u) => (
+                          <option key={u.id} value={u.name}>
+                            {u.name} ({u.role}) — {u.phone || u.username}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                          Role Title
+                        </label>
+                        <input
+                          name="role"
+                          defaultValue="Event Lead"
+                          className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                        />
+                      </div>
+                      <div>
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                          Display Position / Priority
+                        </label>
+                        <select
+                          name="position"
+                          defaultValue="end"
+                          className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
+                        >
+                          <option value="end">Add at end (Default order)</option>
+                          <option value="start">1st Lead (At the top / Primary)</option>
+                          <option value="1">2nd Lead (Second position)</option>
+                          <option value="2">3rd Lead (Third position)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                          Contact Phone
+                        </label>
+                        <input
+                          name="phone"
+                          placeholder="+91 90000 00000"
+                          className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                        />
+                      </div>
+                      <div>
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                          Email
+                        </label>
+                        <input
+                          name="email"
+                          placeholder="coord@symposium.com"
+                          className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Coordinator Profile Photo (Choose File or Drag & Drop) */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
+                          Coordinator Profile Photo (Optional)
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setCoordPhotoManualUrlMode(!coordPhotoManualUrlMode)}
+                          className="text-[10px] font-mono text-indigo-500 hover:text-indigo-400 hover:underline"
+                        >
+                          {coordPhotoManualUrlMode ? "📁 Switch to File Upload / Drag & Drop" : "🔗 Or enter direct URL link"}
+                        </button>
+                      </div>
+
+                      {/* Hidden File Input */}
+                      <input
+                        type="file"
+                        ref={coordFileInputRef}
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files.length > 0) {
+                            handleCoordPhotoSelect(e.target.files[0]);
+                          }
+                        }}
+                      />
+
+                      {/* MODE 1: FILE DRAG & DROP / CHOOSER */}
+                      {!coordPhotoManualUrlMode ? (
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsDraggingCoordPhoto(true);
+                          }}
+                          onDragLeave={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsDraggingCoordPhoto(false);
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsDraggingCoordPhoto(false);
+                            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                              handleCoordPhotoSelect(e.dataTransfer.files[0]);
+                            }
+                          }}
+                          onClick={() => {
+                            if (!coordPhotoPreview && !coordPhotoUrl && coordFileInputRef.current) {
+                              coordFileInputRef.current.click();
+                            }
+                          }}
+                          className={`relative rounded-2xl border-2 border-dashed p-4 transition-all text-center cursor-pointer ${
+                            isDraggingCoordPhoto
+                              ? "border-indigo-500 bg-indigo-500/10 scale-[1.01]"
+                              : isDark
+                              ? "border-white/15 bg-white/[0.02] hover:border-indigo-400/50 hover:bg-white/[0.04]"
+                              : "border-slate-300 bg-slate-50/80 hover:border-indigo-400 hover:bg-indigo-50/30"
+                          }`}
+                        >
+                          {coordPhotoPreview || coordPhotoUrl ? (
+                            <div className="flex items-center gap-4 text-left">
+                              {/* Thumbnail */}
+                              <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-2xl overflow-hidden border-2 border-indigo-500 shadow-md bg-slate-900 flex items-center justify-center">
+                                <img
+                                  src={coordPhotoPreview || coordPhotoUrl}
+                                  alt="Profile Preview"
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+
+                              <div className="flex-1 min-w-0">
+                                <p className={`font-bold text-xs ${headerText} truncate`}>
+                                  {coordPhotoFile?.name || "Profile Photo Uploaded"}
+                                </p>
+                                <p className="text-[10px] text-slate-500 mt-0.5">
+                                  {coordPhotoFile ? `${(coordPhotoFile.size / 1024).toFixed(1)} KB` : "Image link attached"}
+                                </p>
+                                {isUploadingCoordPhoto ? (
+                                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-indigo-400 mt-1.5">
+                                    <span className="animate-spin">🌀</span> Uploading photo…
+                                  </span>
+                                ) : coordPhotoUploadSuccess || coordPhotoUrl ? (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-1.5">
+                                    <span>✓</span> Photo ready &amp; saved!
+                                  </span>
+                                ) : null}
+                              </div>
+
+                              <div className="flex flex-col gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                  type="button"
+                                  onClick={() => coordFileInputRef.current?.click()}
+                                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition"
+                                >
+                                  Change
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleClearCoordPhoto}
+                                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="py-3 flex flex-col items-center justify-center gap-2">
+                              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500 text-xl">
+                                📸
+                              </div>
+                              <div>
+                                <p className={`font-bold text-xs ${headerText}`}>
+                                  Choose a photo, or drag &amp; drop it here
+                                </p>
+                                <p className={`text-[10px] ${subText} mt-0.5`}>
+                                  Supports PNG, JPG, WEBP, GIF (up to 10MB)
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  coordFileInputRef.current?.click();
+                                }}
+                                className="mt-1 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition"
+                              >
+                                Browse Photo
+                              </button>
+                            </div>
+                          )}
+
+                          {coordPhotoUploadError && (
+                            <p className="mt-2 text-[10px] font-semibold text-rose-500">
+                              ⚠️ {coordPhotoUploadError}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        /* MODE 2: DIRECT URL */
+                        <input
+                          name="imageUrlManual"
+                          value={coordPhotoUrl}
+                          onChange={(e) => setCoordPhotoUrl(e.target.value)}
+                          placeholder="https://... (Direct image link or photo URL)"
+                          className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                        />
+                      )}
+
+                      {/* Hidden field that is submitted with the form */}
+                      <input type="hidden" name="image" value={coordPhotoUrl} />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isUploadingCoordPhoto}
+                      className="w-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 hover:from-indigo-400 hover:via-purple-400 hover:to-indigo-400 shadow-md shadow-indigo-500/25 transition-all active:scale-[0.99] disabled:opacity-50"
+                    >
+                      {isUploadingCoordPhoto ? "Uploading Photo..." : "Assign Coordinator"}
+                    </button>
+                  </form>
                 </div>
 
-                <form action={assignCoordinatorAction} className="space-y-4 font-mono text-xs">
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Select Event *
-                </label>
-                <select
-                  name="eventId"
-                  required
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
-                >
-                  <option value="">-- Choose an Event --</option>
-                  {events.map((e) => (
-                    <option key={e.id} value={e.id}>
-                      {e.name} ({e.date})
-                    </option>
-                  ))}
-                </select>
-              </div>
+                {/* 2. Customize Coordinators Display Order (1st, 2nd, 3rd...) */}
+                <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-5`}>
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2.5`}>
+                        <span className="h-2.5 w-2.5 rounded-full bg-purple-500 shadow-sm shadow-purple-500/60" />
+                        Coordinators Display Order
+                      </h3>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                        1st, 2nd, 3rd Leads
+                      </span>
+                    </div>
+                    <p className={`font-mono text-xs ${subText} mt-1`}>
+                      Orderwise customization: control which person shows 1st, 2nd, or 3rd on the website.
+                    </p>
+                  </div>
 
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Select Coordinator *
-                </label>
-                <select
-                  name="name"
-                  required
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
-                >
-                  <option value="">-- Choose Coordinator / Admin --</option>
-                  {users.map((u) => (
-                    <option key={u.id} value={u.name}>
-                      {u.name} ({u.role}) — {u.phone || u.username}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  {/* Select Event for Ordering */}
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Select Event to Order Coordinators:
+                    </label>
+                    <select
+                      value={selectedOrderEventId}
+                      onChange={(e) => setSelectedOrderEventId(e.target.value)}
+                      className={`w-full rounded-xl border px-3.5 py-2.5 font-mono text-xs outline-none transition ${selectBg}`}
+                    >
+                      {localEvents.map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.name} ({(e.coordinators || []).length} assigned)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Role Title
-                </label>
-                <input
-                  name="role"
-                  defaultValue="Event Lead"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                />
-              </div>
+                  {/* Order Status Feedback */}
+                  {orderStatusMessage && (
+                    <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-mono text-xs font-semibold flex items-center gap-2 transition-all">
+                      <span>⚡</span>
+                      <span>{orderStatusMessage}</span>
+                    </div>
+                  )}
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                    Contact Phone
-                  </label>
-                  <input
-                    name="phone"
-                    placeholder="+91 90000 00000"
-                    className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                  />
+                  {/* Coordinators List for Selected Event */}
+                  {(() => {
+                    const currentEvent = localEvents.find((e) => e.id === selectedOrderEventId) || localEvents[0];
+                    const coords = currentEvent?.coordinators || [];
+
+                    if (coords.length === 0) {
+                      return (
+                        <div className={`p-6 text-center rounded-2xl border border-dashed ${isDark ? "border-white/10" : "border-slate-200"} space-y-2`}>
+                          <p className="text-2xl">👥</p>
+                          <p className={`font-mono text-xs font-bold ${headerText}`}>
+                            No Coordinators Assigned to {currentEvent?.name || "this event"}
+                          </p>
+                          <p className={`font-mono text-[11px] ${subText}`}>
+                            Use the form on the left to assign coordinators to this event.
+                          </p>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 font-semibold px-1">
+                          <span>{coords.length} Assigned Leads (Ranked Order)</span>
+                          <span className="text-[10px]">Top (#1) displays first on front page</span>
+                        </div>
+
+                        <div className="space-y-2.5 max-h-[460px] overflow-y-auto overscroll-contain pr-1">
+                          {coords.map((c, idx) => (
+                            <div
+                              key={`${c.name}-${idx}`}
+                              className={`relative flex items-center justify-between gap-3 p-3.5 rounded-2xl border transition-all ${
+                                idx === 0
+                                  ? isDark
+                                    ? "bg-indigo-950/20 border-indigo-500/40 shadow-xs"
+                                    : "bg-indigo-50/60 border-indigo-200 shadow-xs"
+                                  : isDark
+                                  ? "bg-white/[0.02] border-white/10 hover:border-white/20"
+                                  : "bg-white border-slate-200 hover:border-slate-300"
+                              }`}
+                            >
+                              {/* Left: Rank Badge + Avatar + Info */}
+                              <div className="flex items-center gap-3 min-w-0">
+                                {/* Position Rank Badge */}
+                                <div
+                                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold ${
+                                    idx === 0
+                                      ? "bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 shadow-xs"
+                                      : idx === 1
+                                      ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xs"
+                                      : isDark
+                                      ? "bg-white/10 text-slate-300"
+                                      : "bg-slate-100 text-slate-700 border border-slate-200"
+                                  }`}
+                                  title={`Position #${idx + 1}`}
+                                >
+                                  #{idx + 1}
+                                </div>
+
+                                {/* Avatar */}
+                                <div className="relative h-10 w-10 shrink-0 rounded-xl overflow-hidden border border-slate-300 dark:border-white/15 bg-slate-900 flex items-center justify-center">
+                                  {c.image ? (
+                                    <img
+                                      src={c.image}
+                                      alt={c.name}
+                                      className="h-full w-full object-cover"
+                                      onError={(e) => {
+                                        (e.target as HTMLElement).style.display = "none";
+                                      }}
+                                    />
+                                  ) : null}
+                                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-600 text-xs font-bold text-white uppercase">
+                                    {c.name
+                                      .split(" ")
+                                      .map((n) => n[0])
+                                      .join("")
+                                      .slice(0, 2)
+                                      .toUpperCase()}
+                                  </div>
+                                </div>
+
+                                {/* Coordinator Details */}
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <p className={`font-display text-sm font-bold ${headerText} truncate`}>
+                                      {c.name}
+                                    </p>
+                                    {idx === 0 && (
+                                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-extrabold uppercase tracking-wider bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-400/40">
+                                        1st Lead
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="font-mono text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold truncate">
+                                    {c.role || "Event Lead"}
+                                  </p>
+                                  {(c.phone || c.email) && (
+                                    <p className="font-mono text-[10px] text-slate-500 truncate">
+                                      {c.phone ? `📞 ${c.phone}` : ""} {c.email ? `✉️ ${c.email}` : ""}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Right: Reorder Controls (Move Up, Move Down, Rank Selector, Remove) */}
+                              <div className="flex items-center gap-1 shrink-0">
+                                {/* Direct Rank Dropdown */}
+                                <select
+                                  value={idx}
+                                  onChange={(e) =>
+                                    handleSetCoordinatorRank(
+                                      selectedOrderEventId,
+                                      idx,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                  disabled={isUpdatingOrder}
+                                  title="Change rank directly"
+                                  className={`rounded-lg border px-1.5 py-1 font-mono text-[11px] font-bold outline-none ${selectBg}`}
+                                >
+                                  {coords.map((_, i) => (
+                                    <option key={i} value={i}>
+                                      Rank #{i + 1}
+                                    </option>
+                                  ))}
+                                </select>
+
+                                {/* Move Up Button */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveCoordinator(selectedOrderEventId, idx, "up")}
+                                  disabled={idx === 0 || isUpdatingOrder}
+                                  title="Move Up"
+                                  className={`p-1.5 rounded-lg border font-bold text-xs transition ${
+                                    idx === 0 || isUpdatingOrder
+                                      ? "opacity-30 cursor-not-allowed border-transparent"
+                                      : isDark
+                                      ? "border-white/10 hover:bg-white/10 text-slate-200"
+                                      : "border-slate-200 hover:bg-slate-100 text-slate-700"
+                                  }`}
+                                >
+                                  ▲
+                                </button>
+
+                                {/* Move Down Button */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveCoordinator(selectedOrderEventId, idx, "down")}
+                                  disabled={idx === coords.length - 1 || isUpdatingOrder}
+                                  title="Move Down"
+                                  className={`p-1.5 rounded-lg border font-bold text-xs transition ${
+                                    idx === coords.length - 1 || isUpdatingOrder
+                                      ? "opacity-30 cursor-not-allowed border-transparent"
+                                      : isDark
+                                      ? "border-white/10 hover:bg-white/10 text-slate-200"
+                                      : "border-slate-200 hover:bg-slate-100 text-slate-700"
+                                  }`}
+                                >
+                                  ▼
+                                </button>
+
+                                {/* Remove from event button */}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleRemoveCoordinatorFromEvent(selectedOrderEventId, c.name)
+                                  }
+                                  disabled={isUpdatingOrder}
+                                  title={`Remove ${c.name} from this event`}
+                                  className="p-1.5 rounded-lg border border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 transition"
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="pt-2 text-[10px] font-mono text-slate-500 flex items-center justify-between border-t border-slate-200 dark:border-white/10">
+                          <span>💡 Saved instantly to database</span>
+                          <span>Reorder updates front page live</span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
-                <div>
-                  <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                    Email
-                  </label>
-                  <input
-                    name="email"
-                    placeholder="coord@symposium.com"
-                    className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                  />
-                </div>
               </div>
-
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Coordinator Profile Photo URL (Optional)
-                </label>
-                <input
-                  name="image"
-                  placeholder="https://... (Direct image link or photo URL)"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 hover:from-indigo-400 hover:via-purple-400 hover:to-indigo-400 shadow-md shadow-indigo-500/25 transition-all active:scale-[0.99]"
-              >
-                Assign Coordinator
-              </button>
-            </form>
-          </div>
 
         {/* ========================================================================= */}
         {/* SECTION 3: ADMINS & COORDINATORS MANAGEMENT                               */}
@@ -1892,206 +2694,564 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
           {/* TAB 4: ANNOUNCEMENTS (Announcements, Resources & Site Information)         */}
           {/* ========================================================================= */}
           {activeNavTab === "announcements" && (
-            <div className="space-y-8">
-              {/* SECTION 4: ANNOUNCEMENTS & RESOURCES (2-COLUMN GRID) */}
-              <section id="section-comms" className="grid gap-6 lg:grid-cols-2">
-          
-          {/* Announcements */}
-          <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-4`}>
-            <div className="flex items-center justify-between">
-              <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2`}>
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-                Announcements
-              </h3>
-              <input
-                type="text"
-                value={announcementSearch}
-                onChange={(e) => setAnnouncementSearch(e.target.value)}
-                placeholder="🔍 Search…"
-                className={`w-36 rounded-xl border px-3 py-1.5 font-mono text-[11px] outline-none ${inputBg}`}
-              />
-            </div>
-
-            <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-              {filteredAnnouncements.map((a) => (
-                <div
-                  key={a.id}
-                  className={`flex items-start justify-between gap-3 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.04]" : "border-slate-200 bg-slate-50/70 hover:bg-slate-100/70"} p-4 transition`}
-                >
-                  <div>
-                    <p className={`text-xs ${isDark ? "text-slate-200" : "text-slate-800"} font-medium leading-relaxed`}>{a.message}</p>
-                    <p className={`mt-1 font-mono text-[10px] uppercase tracking-wider ${subText}`}>
-                      by @{a.created_by} · {new Date(a.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <form action={deleteAnnouncementAction}>
-                    <input type="hidden" name="id" value={a.id} />
-                    <button className={`font-mono text-[11px] font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline`}>
-                      Remove
-                    </button>
-                  </form>
-                </div>
-              ))}
-
-              {filteredAnnouncements.length === 0 && (
-                <p className={`font-mono text-xs ${subText} py-4 text-center`}>No announcements found.</p>
-              )}
-            </div>
-
-            <form action={createAnnouncementAction} className="flex gap-2 font-mono text-xs pt-2">
-              <input
-                name="message"
-                required
-                placeholder="Broadcast a note to coordinators…"
-                className={`flex-1 rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-              />
-              <button
-                type="submit"
-                className="rounded-xl px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold uppercase tracking-wider shadow-sm transition"
-              >
-                Post
-              </button>
-            </form>
-          </div>
-
-          {/* Resources */}
-          <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-4`}>
-            <div className="flex items-center justify-between">
-              <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2`}>
-                <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />
-                Resources &amp; Links
-              </h3>
-              <input
-                type="text"
-                value={resourceSearch}
-                onChange={(e) => setResourceSearch(e.target.value)}
-                placeholder="🔍 Search…"
-                className={`w-36 rounded-xl border px-3 py-1.5 font-mono text-[11px] outline-none ${inputBg}`}
-              />
-            </div>
-
-            <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-              {filteredResources.map((r) => (
-                <div
-                  key={r.id}
-                  className={`flex items-center justify-between gap-3 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.04]" : "border-slate-200 bg-slate-50/70 hover:bg-slate-100/70"} p-4 transition`}
-                >
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`font-mono text-xs hover:underline font-bold flex items-center gap-2 truncate ${isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-800 hover:text-sky-950"}`}
-                  >
-                    <span>📄</span>
-                    <span className="truncate">{r.title}</span>
-                  </a>
-                  <form action={deleteResourceAction}>
-                    <input type="hidden" name="id" value={r.id} />
-                    <button className={`font-mono text-[11px] font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline`}>
-                      Remove
-                    </button>
-                  </form>
-                </div>
-              ))}
-
-              {filteredResources.length === 0 && (
-                <p className={`font-mono text-xs ${subText} py-4 text-center`}>No resources found.</p>
-              )}
-            </div>
-
-            <form action={createResourceAction} className="space-y-2 font-mono text-xs pt-2">
-              <input
-                name="title"
-                required
-                placeholder="Resource Title (e.g. Schedule PDF)"
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-              />
-              <div className="flex gap-2">
-                <input
-                  name="url"
-                  required
-                  placeholder="https://drive.google.com/…"
-                  className={`flex-1 rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-                />
+            <div className="space-y-6">
+              {/* SUB-NAV TABS FOR ANNOUNCEMENTS */}
+              <div className={`flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border ${isDark ? "border-white/10 bg-slate-900/60" : "border-slate-200 bg-slate-100/80"} backdrop-blur-md`}>
                 <button
-                  type="submit"
-                  className="rounded-xl px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold uppercase tracking-wider shadow-sm transition"
+                  type="button"
+                  onClick={() => setAnnouncementsSubTab("ticker")}
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
+                    announcementsSubTab === "ticker"
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md shadow-amber-500/25 scale-[1.01]"
+                      : isDark
+                      ? "text-slate-400 hover:text-white hover:bg-white/5"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                  }`}
                 >
-                  Add Link
+                  <span className="text-sm">⚡</span>
+                  <span>Running Announcement (Ticker)</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-black/20 text-white font-extrabold uppercase">
+                    Front Page
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAnnouncementsSubTab("bulletins")}
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
+                    announcementsSubTab === "bulletins"
+                      ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md shadow-rose-500/25 scale-[1.01]"
+                      : isDark
+                      ? "text-slate-400 hover:text-white hover:bg-white/5"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                  }`}
+                >
+                  <span className="text-sm">📢</span>
+                  <span>Broadcast Bulletins</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-extrabold ${announcementsSubTab === "bulletins" ? "bg-white/20 text-white" : isDark ? "bg-white/10 text-slate-300" : "bg-slate-200 text-slate-700"}`}>
+                    {filteredAnnouncements.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAnnouncementsSubTab("resources")}
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
+                    announcementsSubTab === "resources"
+                      ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/25 scale-[1.01]"
+                      : isDark
+                      ? "text-slate-400 hover:text-white hover:bg-white/5"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                  }`}
+                >
+                  <span className="text-sm">📄</span>
+                  <span>Resources &amp; Links</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-extrabold ${announcementsSubTab === "resources" ? "bg-white/20 text-white" : isDark ? "bg-white/10 text-slate-300" : "bg-slate-200 text-slate-700"}`}>
+                    {filteredResources.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAnnouncementsSubTab("settings")}
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
+                    announcementsSubTab === "settings"
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25 scale-[1.01]"
+                      : isDark
+                      ? "text-slate-400 hover:text-white hover:bg-white/5"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                  }`}
+                >
+                  <span className="text-sm">⚙️</span>
+                  <span>Site Settings</span>
                 </button>
               </div>
-            </form>
-          </div>
 
-        </section>
+              {/* ========================================================================= */}
+              {/* SUB-TAB 1: RUNNING ANNOUNCEMENT (HEADER TICKER)                           */}
+              {/* ========================================================================= */}
+              {announcementsSubTab === "ticker" && (
+                <div className="space-y-6">
+                  {/* MAIN CONTROL CARD */}
+                  <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}>
+                    {/* Header with Title & Status Badge */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                      <div>
+                        <div className="flex items-center gap-2.5">
+                          <span className="flex h-3 w-3 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50" />
+                          <h3 className={`font-display text-xl sm:text-2xl font-bold ${headerText}`}>
+                            Front Page Running Announcement
+                          </h3>
+                        </div>
+                        <p className={`font-mono text-xs ${subText} mt-1.5 max-w-2xl`}>
+                          Configure the live animated ticker banner that displays directly under the navigation header on the front page of the website.
+                        </p>
+                      </div>
 
-        {/* ========================================================================= */}
-        {/* SECTION 5: GENERAL SITE INFORMATION & SETTINGS                           */}
-        {/* ========================================================================= */}
-        <section
-          id="section-settings"
-          className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-5`}
-        >
-          <div>
-            <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2.5`}>
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-              General Site Information &amp; Links
-            </h3>
-            <p className={`font-mono text-xs ${subText} mt-1`}>
-              Configure symposium title, hosting club, college name, and registration form URL.
-            </p>
-          </div>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-xs font-bold border transition-colors ${
+                            isRunningAnnouncementActive
+                              ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                              : "bg-slate-500/15 text-slate-400 border-slate-500/30"
+                          }`}
+                        >
+                          <span
+                            className={`h-2 w-2 rounded-full ${
+                              isRunningAnnouncementActive ? "bg-emerald-400 animate-pulse" : "bg-slate-400"
+                            }`}
+                          />
+                          {isRunningAnnouncementActive ? "Active on Front Page" : "Hidden / Inactive"}
+                        </span>
+                      </div>
+                    </div>
 
-          <form action={updateSiteSettingsAction} className="grid gap-4 sm:grid-cols-2 font-mono text-xs">
-            <div>
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Symposium Title
-              </label>
-              <input
-                name="symposiumName"
-                defaultValue={settings.symposiumName}
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-              />
-            </div>
-            <div>
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Hosting Club Name
-              </label>
-              <input
-                name="clubName"
-                defaultValue={settings.clubName}
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-              />
-            </div>
-            <div>
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                College Name
-              </label>
-              <input
-                name="collegeName"
-                defaultValue={settings.collegeName}
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-              />
-            </div>
-            <div>
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Google Form Registration URL
-              </label>
-              <input
-                name="registerFormUrl"
-                defaultValue={settings.registerFormUrl}
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-              />
-            </div>
+                    {/* LIVE INTERACTIVE PREVIEW MOCKUP */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className={`font-mono text-xs font-bold uppercase tracking-wider ${subText} flex items-center gap-2`}>
+                          <span>🖥️</span> Live Header Preview (Real-time Simulation)
+                        </span>
+                        <span className="font-mono text-[11px] text-amber-500 font-semibold hidden sm:inline">
+                          Hover pauses ticker · Matches front page header
+                        </span>
+                      </div>
 
-            <button
-              type="submit"
-              className="col-span-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 hover:from-emerald-400 hover:via-teal-400 hover:to-emerald-400 shadow-md shadow-emerald-500/20 transition-all active:scale-[0.99]"
-            >
-              Save Site Settings
-            </button>
-          </form>
-        </section>
+                      {/* Mock Header Shell */}
+                      <div className="rounded-2xl border border-slate-300/80 bg-slate-100/90 p-3 sm:p-4 shadow-inner space-y-2 select-none">
+                        {/* Mock Navbar Pill */}
+                        <div className="rounded-xl border border-slate-200 bg-white/95 px-4 py-2 flex items-center justify-between shadow-xs">
+                          <div className="flex items-center gap-2">
+                            <div className="h-6 w-6 rounded bg-slate-950 flex items-center justify-center text-[10px] text-white font-bold">
+                              II
+                            </div>
+                            <span className="font-display text-xs font-bold text-slate-900">
+                              Innovation Ignite Symposium 2.0
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="hidden md:inline font-mono text-[10px] text-slate-400">
+                              Home · Events · Achievements · Gallery
+                            </span>
+                            <span className="rounded-full bg-blue-600 px-2.5 py-0.5 font-mono text-[10px] font-bold text-white">
+                              Admin
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Actual Ticker Simulation */}
+                        {isRunningAnnouncementActive && !!runningAnnouncementText.trim() ? (
+                          <div className="relative overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-xs flex items-center">
+                            {/* Live Badge */}
+                            <div className="relative z-10 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-mono text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 shrink-0 shadow-xs">
+                              <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-85" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                              </span>
+                              <span>Live Notice</span>
+                            </div>
+
+                            {/* Marquee Track */}
+                            <div className="relative flex-1 overflow-hidden py-1.5 group">
+                              <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white via-white/80 to-transparent z-1" />
+                              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent z-1" />
+
+                              <div className="flex w-max animate-marquee hover:[animation-play-state:paused] font-mono text-xs font-semibold text-slate-800 whitespace-nowrap">
+                                <div className="flex items-center gap-6 px-4">
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="text-amber-500 font-bold">⚡</span>
+                                    <span>{runningAnnouncementText}</span>
+                                  </span>
+                                  <span className="text-amber-400 font-bold">•</span>
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="text-blue-500 font-bold">📢</span>
+                                    <span>{runningAnnouncementText}</span>
+                                  </span>
+                                  <span className="text-amber-400 font-bold">•</span>
+                                </div>
+                                <div className="flex items-center gap-6 px-4" aria-hidden="true">
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="text-amber-500 font-bold">⚡</span>
+                                    <span>{runningAnnouncementText}</span>
+                                  </span>
+                                  <span className="text-amber-400 font-bold">•</span>
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="text-blue-500 font-bold">📢</span>
+                                    <span>{runningAnnouncementText}</span>
+                                  </span>
+                                  <span className="text-amber-400 font-bold">•</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="rounded-xl border border-dashed border-slate-300 py-3 text-center font-mono text-xs text-slate-400">
+                            {isRunningAnnouncementActive ? "⚠️ Ticker text is empty. Enter text below to activate." : "🔒 Ticker is currently disabled. Toggle active below to enable."}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* EDIT & PUBLISH FORM */}
+                    <form onSubmit={handleSaveRunningAnnouncement} className="space-y-5">
+                      {/* Active Status Toggle */}
+                      <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-slate-50/70"}`}>
+                        <div>
+                          <p className={`font-mono text-xs font-bold ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+                            Display on Front Page
+                          </p>
+                          <p className={`font-mono text-[11px] ${subText} mt-0.5`}>
+                            When turned ON, the running announcement bar will appear directly under the navbar header on the main landing page.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsRunningAnnouncementActive(!isRunningAnnouncementActive)}
+                          className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                            isRunningAnnouncementActive ? "bg-amber-500" : isDark ? "bg-slate-700" : "bg-slate-300"
+                          }`}
+                          role="switch"
+                          aria-checked={isRunningAnnouncementActive}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                              isRunningAnnouncementActive ? "translate-x-6" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Announcement Text Input */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className={`font-mono text-xs font-bold uppercase tracking-wider ${subText}`}>
+                            Running Announcement Text
+                          </label>
+                          <div className="flex items-center gap-3">
+                            <span className={`font-mono text-[11px] ${subText}`}>
+                              {runningAnnouncementText.length} characters
+                            </span>
+                            {runningAnnouncementText && (
+                              <button
+                                type="button"
+                                onClick={() => setRunningAnnouncementText("")}
+                                className="font-mono text-[11px] text-rose-400 hover:text-rose-300 hover:underline"
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        <textarea
+                          name="runningAnnouncement"
+                          rows={3}
+                          value={runningAnnouncementText}
+                          onChange={(e) => setRunningAnnouncementText(e.target.value)}
+                          placeholder="e.g. 📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical events • Spot entries available • Register now!"
+                          className={`w-full rounded-2xl border p-4 font-mono text-xs sm:text-sm leading-relaxed outline-none transition focus:ring-2 focus:ring-amber-500/40 ${inputBg}`}
+                          required={isRunningAnnouncementActive}
+                        />
+                      </div>
+
+                      {/* Quick Template Chips */}
+                      <div className="space-y-2">
+                        <p className={`font-mono text-[11px] font-bold uppercase tracking-wider ${subText}`}>
+                          ⚡ Quick Templates (Click to fill)
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {runningAnnouncementTemplates.map((t, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setRunningAnnouncementText(t.text)}
+                              className={`px-3 py-1.5 rounded-xl font-mono text-[11px] font-semibold border transition-all ${
+                                isDark
+                                  ? "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-amber-500/10 hover:border-amber-400/40 hover:text-amber-300"
+                                  : "border-slate-200 bg-white text-slate-700 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-900 shadow-xs"
+                              }`}
+                            >
+                              {t.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Success Feedback Notification */}
+                      {runningAnnouncementSaveSuccess && (
+                        <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 font-mono text-xs text-emerald-400 flex items-center justify-between gap-3 animate-fade-up">
+                          <div className="flex items-center gap-2">
+                            <span>✓</span>
+                            <span className="font-bold">
+                              Announcement successfully saved and published to the front page header!
+                            </span>
+                          </div>
+                          <Link
+                            href="/"
+                            target="_blank"
+                            className="underline font-bold hover:text-emerald-300 shrink-0"
+                          >
+                            Check Front Page ↗
+                          </Link>
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                        <button
+                          type="submit"
+                          disabled={isSavingRunningAnnouncement}
+                          className="w-full sm:w-auto flex-1 rounded-2xl py-3.5 px-6 font-mono text-xs font-bold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:via-amber-400 hover:to-orange-400 shadow-md shadow-amber-500/25 transition-all active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          {isSavingRunningAnnouncement ? (
+                            <>
+                              <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24" fill="none">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                              </svg>
+                              <span>Saving &amp; Publishing Announcement…</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>💾</span>
+                              <span>Save &amp; Publish Announcement</span>
+                            </>
+                          )}
+                        </button>
+
+                        <Link
+                          href="/"
+                          target="_blank"
+                          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border py-3.5 px-6 font-mono text-xs font-bold uppercase tracking-wider transition ${
+                            isDark
+                              ? "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
+                              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-xs"
+                          }`}
+                        >
+                          <span>Open Front Page</span>
+                          <span>↗</span>
+                        </Link>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* SUB-TAB 2: BROADCAST BULLETINS (COORDINATOR NOTES)                        */}
+              {/* ========================================================================= */}
+              {announcementsSubTab === "bulletins" && (
+                <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-4`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2`}>
+                        <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+                        Broadcast Bulletins to Coordinators
+                      </h3>
+                      <p className={`font-mono text-xs ${subText} mt-1`}>
+                        Post announcements visible to coordinators in their private dashboard.
+                      </p>
+                    </div>
+                    <input
+                      type="text"
+                      value={announcementSearch}
+                      onChange={(e) => setAnnouncementSearch(e.target.value)}
+                      placeholder="🔍 Search…"
+                      className={`w-36 rounded-xl border px-3 py-1.5 font-mono text-[11px] outline-none ${inputBg}`}
+                    />
+                  </div>
+
+                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+                    {filteredAnnouncements.map((a) => (
+                      <div
+                        key={a.id}
+                        className={`flex items-start justify-between gap-3 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.04]" : "border-slate-200 bg-slate-50/70 hover:bg-slate-100/70"} p-4 transition`}
+                      >
+                        <div>
+                          <p className={`text-xs ${isDark ? "text-slate-200" : "text-slate-800"} font-medium leading-relaxed`}>{a.message}</p>
+                          <p className={`mt-1 font-mono text-[10px] uppercase tracking-wider ${subText}`}>
+                            by @{a.created_by} · {new Date(a.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <form action={deleteAnnouncementAction}>
+                          <input type="hidden" name="id" value={a.id} />
+                          <button className={`font-mono text-[11px] font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline`}>
+                            Remove
+                          </button>
+                        </form>
+                      </div>
+                    ))}
+
+                    {filteredAnnouncements.length === 0 && (
+                      <p className={`font-mono text-xs ${subText} py-4 text-center`}>No announcements found.</p>
+                    )}
+                  </div>
+
+                  <form action={createAnnouncementAction} className="flex gap-2 font-mono text-xs pt-2">
+                    <input
+                      name="message"
+                      required
+                      placeholder="Broadcast a note to coordinators…"
+                      className={`flex-1 rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-xl px-4 py-2.5 bg-rose-500 hover:bg-rose-400 text-white font-bold uppercase tracking-wider shadow-sm transition"
+                    >
+                      Post Note
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* SUB-TAB 3: RESOURCES & LINKS                                             */}
+              {/* ========================================================================= */}
+              {announcementsSubTab === "resources" && (
+                <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-4`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2`}>
+                        <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />
+                        Resources &amp; Document Links
+                      </h3>
+                      <p className={`font-mono text-xs ${subText} mt-1`}>
+                        Upload official Google Drive schedules, rulebooks, and templates for coordinators.
+                      </p>
+                    </div>
+                    <input
+                      type="text"
+                      value={resourceSearch}
+                      onChange={(e) => setResourceSearch(e.target.value)}
+                      placeholder="🔍 Search…"
+                      className={`w-36 rounded-xl border px-3 py-1.5 font-mono text-[11px] outline-none ${inputBg}`}
+                    />
+                  </div>
+
+                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+                    {filteredResources.map((r) => (
+                      <div
+                        key={r.id}
+                        className={`flex items-center justify-between gap-3 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.04]" : "border-slate-200 bg-slate-50/70 hover:bg-slate-100/70"} p-4 transition`}
+                      >
+                        <a
+                          href={r.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`font-mono text-xs hover:underline font-bold flex items-center gap-2 truncate ${isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-800 hover:text-sky-950"}`}
+                        >
+                          <span>📄</span>
+                          <span className="truncate">{r.title}</span>
+                        </a>
+                        <form action={deleteResourceAction}>
+                          <input type="hidden" name="id" value={r.id} />
+                          <button className={`font-mono text-[11px] font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline`}>
+                            Remove
+                          </button>
+                        </form>
+                      </div>
+                    ))}
+
+                    {filteredResources.length === 0 && (
+                      <p className={`font-mono text-xs ${subText} py-4 text-center`}>No resources found.</p>
+                    )}
+                  </div>
+
+                  <form action={createResourceAction} className="space-y-2 font-mono text-xs pt-2">
+                    <input
+                      name="title"
+                      required
+                      placeholder="Resource Title (e.g. Symposium Event Schedule PDF)"
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                    />
+                    <div className="flex gap-2">
+                      <input
+                        name="url"
+                        required
+                        placeholder="https://drive.google.com/…"
+                        className={`flex-1 rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                      />
+                      <button
+                        type="submit"
+                        className="rounded-xl px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold uppercase tracking-wider shadow-sm transition"
+                      >
+                        Add Link
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* SUB-TAB 4: GENERAL SITE INFORMATION & SETTINGS                           */}
+              {/* ========================================================================= */}
+              {announcementsSubTab === "settings" && (
+                <section
+                  id="section-settings"
+                  className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-5`}
+                >
+                  <div>
+                    <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2.5`}>
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                      General Site Information &amp; Links
+                    </h3>
+                    <p className={`font-mono text-xs ${subText} mt-1`}>
+                      Configure symposium title, hosting club, college name, and registration form URL.
+                    </p>
+                  </div>
+
+                  <form action={updateSiteSettingsAction} className="grid gap-4 sm:grid-cols-2 font-mono text-xs">
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Symposium Title
+                      </label>
+                      <input
+                        name="symposiumName"
+                        defaultValue={settings.symposiumName}
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Hosting Club Name
+                      </label>
+                      <input
+                        name="clubName"
+                        defaultValue={settings.clubName}
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        College Name
+                      </label>
+                      <input
+                        name="collegeName"
+                        defaultValue={settings.collegeName}
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Google Form Registration URL
+                      </label>
+                      <input
+                        name="registerFormUrl"
+                        defaultValue={settings.registerFormUrl}
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="col-span-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 hover:from-emerald-400 hover:via-teal-400 hover:to-emerald-400 shadow-md shadow-emerald-500/20 transition-all active:scale-[0.99]"
+                    >
+                      Save Site Settings
+                    </button>
+                  </form>
+                </section>
+              )}
             </div>
           )}
 
@@ -2142,72 +3302,268 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
             </div>
           </div>
 
-          {/* Form to Add New Gallery Media */}
+          {/* Form to Add New Gallery Media with Drag & Drop / File Picker */}
           <form
-            action={createGalleryItemAction}
-            className={`grid gap-3.5 rounded-2xl border ${searchBoxBg} p-5 font-mono text-xs sm:grid-cols-2 lg:grid-cols-4`}
+            onSubmit={handleUploadGalleryMedia}
+            className={`space-y-4 rounded-3xl border ${searchBoxBg} p-5 sm:p-6 font-mono text-xs`}
           >
-            <p className={`col-span-full font-bold uppercase tracking-wider flex items-center gap-2 ${
-              isDark ? "text-purple-400" : "text-purple-900"
-            }`}>
-              <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
-              Add New Photo or Video to Gallery
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+              <p className={`font-bold uppercase tracking-wider flex items-center gap-2 ${
+                isDark ? "text-purple-400" : "text-purple-900"
+              }`}>
+                <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
+                Upload New Photo or Video to Gallery
+              </p>
 
-            <div>
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Media Type *
-              </label>
-              <select
-                name="type"
-                required
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none font-bold ${selectBg}`}
-              >
-                <option value="photo">📸 Photo</option>
-                <option value="video">🎬 Video (YouTube / MP4)</option>
-              </select>
+              {/* Mode Switcher: Choose File (Drag & Drop) vs Web URL */}
+              <div className={`inline-flex rounded-xl p-1 border ${isDark ? "border-white/10 bg-slate-900/60" : "border-slate-200 bg-slate-100"}`}>
+                <button
+                  type="button"
+                  onClick={() => setGalleryUploadMode("file")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                    galleryUploadMode === "file"
+                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs"
+                      : isDark
+                      ? "text-slate-400 hover:text-white"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <span>📁 Choose / Drag &amp; Drop File</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGalleryUploadMode("url")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                    galleryUploadMode === "url"
+                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs"
+                      : isDark
+                      ? "text-slate-400 hover:text-white"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <span>🔗 Web Link / YouTube</span>
+                </button>
+              </div>
             </div>
 
-            <div>
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Media Title *
-              </label>
-              <input
-                name="title"
-                required
-                placeholder="e.g. Hackathon Final Presentation"
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-              />
+            {/* ERROR NOTIFICATION */}
+            {galleryUploadError && (
+              <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-rose-400 text-xs flex items-center justify-between">
+                <span>⚠️ {galleryUploadError}</span>
+                <button
+                  type="button"
+                  onClick={() => setGalleryUploadError(null)}
+                  className="font-bold hover:underline"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* SUCCESS NOTIFICATION */}
+            {galleryUploadSuccess && (
+              <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-emerald-400 text-xs flex items-center gap-2 animate-fade-up">
+                <span>✓</span>
+                <span className="font-bold">Media successfully uploaded and added to the gallery!</span>
+              </div>
+            )}
+
+            {/* MODE 1: FILE DRAG & DROP / CHOOSER */}
+            {galleryUploadMode === "file" && (
+              <div className="space-y-4">
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  ref={galleryFileInputRef}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleGalleryFileSelect(e.target.files[0]);
+                    }
+                  }}
+                  accept="image/*,video/*"
+                  className="hidden"
+                />
+
+                {/* Dropzone Container */}
+                {!galleryFile ? (
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => galleryFileInputRef.current?.click()}
+                    className={`relative cursor-pointer rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center transition-all ${
+                      isDraggingGallery
+                        ? "border-purple-500 bg-purple-500/15 scale-[1.01] shadow-lg shadow-purple-500/20"
+                        : isDark
+                        ? "border-white/15 bg-white/[0.02] hover:border-purple-400/50 hover:bg-white/[0.04]"
+                        : "border-purple-200 bg-purple-50/40 hover:border-purple-400 hover:bg-purple-50/80"
+                    }`}
+                  >
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/30 mb-3 group-hover:scale-105 transition-transform">
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+
+                    <h4 className={`font-display text-base sm:text-lg font-bold ${headerText}`}>
+                      Choose a photo or video, or drag &amp; drop it here
+                    </h4>
+                    <p className={`font-mono text-xs ${subText} mt-1 max-w-md mx-auto`}>
+                      Supports JPG, PNG, WEBP, GIF for photos and MP4, WEBM, MOV for videos (up to 50MB).
+                    </p>
+
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider shadow-sm transition">
+                      <span>📂</span>
+                      <span>Browse from Computer</span>
+                    </div>
+                  </div>
+                ) : (
+                  /* File Selected with Live Media Preview */
+                  <div className={`rounded-2xl border p-4 sm:p-5 ${isDark ? "border-purple-500/30 bg-purple-500/5" : "border-purple-200 bg-purple-50/50"} space-y-4`}>
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-2">
+                        <span>✨</span> Selected Media File Preview
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleClearSelectedFile}
+                        className="text-xs text-rose-400 hover:text-rose-300 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        ✕ Remove / Change File
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-5">
+                      {/* Media Thumbnail / Player */}
+                      <div className="relative w-full sm:w-60 h-40 rounded-xl overflow-hidden bg-black/90 flex items-center justify-center border border-white/10 shrink-0">
+                        {galleryMediaType === "photo" && galleryPreviewUrl ? (
+                          <img
+                            src={galleryPreviewUrl}
+                            alt="Upload preview"
+                            className="w-full h-full object-contain"
+                          />
+                        ) : galleryMediaType === "video" && galleryPreviewUrl ? (
+                          <video
+                            src={galleryPreviewUrl}
+                            controls
+                            className="w-full h-full object-contain"
+                          />
+                        ) : null}
+
+                        <span className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-black/80 text-white border border-white/20">
+                          {galleryMediaType === "photo" ? "📸 Photo" : "🎬 Video"}
+                        </span>
+                      </div>
+
+                      {/* File Metadata */}
+                      <div className="flex-1 space-y-2 text-left w-full">
+                        <div>
+                          <p className={`font-mono text-xs font-bold ${isDark ? "text-white" : "text-slate-900"} truncate`}>
+                            {galleryFile.name}
+                          </p>
+                          <p className={`font-mono text-[11px] ${subText} mt-0.5`}>
+                            {(galleryFile.size / (1024 * 1024)).toFixed(2)} MB · {galleryFile.type || "Media File"}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => galleryFileInputRef.current?.click()}
+                            className={`px-3 py-1.5 rounded-lg border font-mono text-[11px] font-bold transition cursor-pointer ${
+                              isDark
+                                ? "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
+                                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                            }`}
+                          >
+                            Replace File…
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* MODE 2: WEB URL */}
+            {galleryUploadMode === "url" && (
+              <div className="space-y-2">
+                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
+                  Media URL / Image Link / YouTube Link *
+                </label>
+                <input
+                  type="url"
+                  value={galleryExternalUrl}
+                  onChange={(e) => setGalleryExternalUrl(e.target.value)}
+                  placeholder="https://images.unsplash.com/... or https://www.youtube.com/watch?v=..."
+                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                />
+              </div>
+            )}
+
+            {/* Common Metadata Fields: Title, Media Type, Caption */}
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 pt-2">
+              <div>
+                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                  Media Title *
+                </label>
+                <input
+                  value={galleryTitle}
+                  onChange={(e) => setGalleryTitle(e.target.value)}
+                  required
+                  placeholder="e.g. Hackathon Final Presentation"
+                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                />
+              </div>
+
+              <div>
+                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                  Media Type *
+                </label>
+                <select
+                  value={galleryMediaType}
+                  onChange={(e: any) => setGalleryMediaType(e.target.value)}
+                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none font-bold ${selectBg}`}
+                >
+                  <option value="photo">📸 Photo</option>
+                  <option value="video">🎬 Video (MP4 / YouTube)</option>
+                </select>
+              </div>
+
+              <div className="sm:col-span-2 lg:col-span-1">
+                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                  Caption / Description
+                </label>
+                <input
+                  value={galleryCaption}
+                  onChange={(e) => setGalleryCaption(e.target.value)}
+                  placeholder="Brief tagline or description…"
+                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                />
+              </div>
             </div>
 
-            <div className="lg:col-span-2">
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Media URL / Image Link *
-              </label>
-              <input
-                name="url"
-                required
-                placeholder="https://... (Image link or YouTube URL)"
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-              />
-            </div>
-
-            <div className="col-span-full">
-              <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                Caption / Short Description
-              </label>
-              <input
-                name="caption"
-                placeholder="Brief tagline or description of the photo/video…"
-                className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-              />
-            </div>
-
+            {/* Submit Button */}
             <button
               type="submit"
-              className="col-span-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-md shadow-purple-600/25 transition-all active:scale-[0.99]"
+              disabled={isUploadingGallery || (galleryUploadMode === "file" && !galleryFile)}
+              className="w-full rounded-xl py-3.5 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:via-indigo-500 hover:to-purple-500 shadow-md shadow-purple-600/25 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
-              Upload / Save to Gallery
+              {isUploadingGallery ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  <span>Uploading to Gallery… Please wait</span>
+                </>
+              ) : (
+                <>
+                  <span>🚀</span>
+                  <span>Upload &amp; Save to Gallery</span>
+                </>
+              )}
             </button>
           </form>
 
@@ -2230,6 +3586,25 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                           (e.target as HTMLElement).style.display = "none";
                         }}
                       />
+                    ) : item.type === "video" && item.url ? (
+                      item.url.includes("youtube.com") || item.url.includes("youtu.be") ? (
+                        <img
+                          src={`https://img.youtube.com/vi/${(item.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/) || [])[1] || ""}/hqdefault.jpg`}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          preload="metadata"
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )
                     ) : null}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
 
@@ -2261,7 +3636,10 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                   <span className={`font-mono text-[10px] ${subText}`}>
                     ID: {item.id.slice(0, 8)}
                   </span>
-                  <form action={deleteGalleryItemAction}>
+                  <form action={async (formData) => {
+                    setLocalGalleryItems((prev) => prev.filter((i) => i.id !== item.id));
+                    await deleteGalleryItemAction(formData);
+                  }}>
                     <input type="hidden" name="id" value={item.id} />
                     <button
                       type="submit"
@@ -2270,7 +3648,7 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                           evt.preventDefault();
                         }
                       }}
-                      className={`font-mono text-xs font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-800 hover:text-rose-950"} hover:underline inline-flex items-center gap-1 transition`}
+                      className={`font-mono text-xs font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-800 hover:text-rose-950"} hover:underline inline-flex items-center gap-1 transition cursor-pointer`}
                     >
                       🗑️ Delete
                     </button>

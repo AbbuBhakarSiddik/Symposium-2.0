@@ -263,11 +263,19 @@
 /* ===== Marquee (continuous auto-slide) ===== */
 @layer utilities {
   .animate-marquee {
-    animation: marquee linear infinite;
+    animation: marquee 35s linear infinite;
+  }
+
+  .animate-marquee:hover {
+    animation-play-state: paused;
   }
 
   .animate-marquee-reverse {
-    animation: marquee-reverse linear infinite;
+    animation: marquee-reverse 35s linear infinite;
+  }
+
+  .animate-marquee-reverse:hover {
+    animation-play-state: paused;
   }
 
   .animate-pause {

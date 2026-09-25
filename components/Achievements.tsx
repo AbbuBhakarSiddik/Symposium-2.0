@@ -9,7 +9,7 @@ const ACHIEVEMENTS = [
 
 export default function Achievements() {
   return (
-    <section id="achievements" className="border-t border-slate-200 bg-gradient-to-br from-white via-blue-50/30 to-slate-50 section-spacing">
+    <section id="achievements" className="scroll-mt-24 border-t border-slate-200 bg-gradient-to-br from-white via-blue-50/30 to-slate-50 section-spacing">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="text-center mb-12">
           <p className="eyebrow mb-2">About</p>

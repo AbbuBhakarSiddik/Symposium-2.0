@@ -53,8 +53,14 @@ export default function Gallery({ items = [] }: GalleryProps) {
   const [activePhoto, setActivePhoto] = useState<GalleryItem | null>(null);
   const [activeVideo, setActiveVideo] = useState<GalleryItem | null>(null);
 
+  // Video display mode: "featured" (shows only 2 videos) vs "all" (shows all videos)
+  const [videoDisplayMode, setVideoDisplayMode] = useState<"featured" | "all">("featured");
+
+  const visibleVideos = videoDisplayMode === "all" ? displayVideos : displayVideos.slice(0, 2);
+  const remainingVideoCount = Math.max(0, displayVideos.length - 2);
+
   return (
-    <section id="gallery" className="border-t border-sky-200/60 bg-gradient-to-br from-[#F0F7FF] via-[#F8FAFC] to-[#F1F5F9] section-spacing relative overflow-hidden text-slate-900 shadow-sm">
+    <section id="gallery" className="scroll-mt-24 border-t border-sky-200/60 bg-gradient-to-br from-[#F0F7FF] via-[#F8FAFC] to-[#F1F5F9] section-spacing relative overflow-hidden text-slate-900 shadow-sm">
       {/* Soft Ambient Light Gradient Orbs */}
       <div
         aria-hidden="true"
@@ -158,21 +164,51 @@ export default function Gallery({ items = [] }: GalleryProps) {
         </div>
 
         {/* ===== VIDEO SECTION – Highlighted Cards & Interactive Player ===== */}
-        <div>
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
-              <span>🎬 Recap &amp; Highlights</span>
-              <span className="text-xs font-mono text-pink-700 bg-pink-100 border border-pink-300 px-3.5 py-1 rounded-full font-bold shadow-sm">
-                {displayVideos.length} Videos
-              </span>
-            </h3>
-            <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
-              Click video to watch recap
-            </span>
+        <div id="video-album-section">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div className="flex items-center gap-3">
+              <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
+                <span>🎬 Recap &amp; Highlights</span>
+                <span className="text-xs font-mono text-pink-700 bg-pink-100 border border-pink-300 px-3.5 py-1 rounded-full font-bold shadow-sm">
+                  {videoDisplayMode === "all"
+                    ? `All ${displayVideos.length} Videos`
+                    : `2 Featured Videos`}
+                </span>
+              </h3>
+            </div>
+
+            {/* View Switcher Tabs (Only shown when there are more than 2 videos) */}
+            {displayVideos.length > 2 && (
+              <div className="inline-flex rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={() => setVideoDisplayMode("featured")}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all cursor-pointer ${
+                    videoDisplayMode === "featured"
+                      ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>⭐ 2 Featured</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setVideoDisplayMode("all")}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all cursor-pointer ${
+                    videoDisplayMode === "all"
+                      ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>📂 Full Album ({displayVideos.length})</span>
+                </button>
+              </div>
+            )}
           </div>
 
+          {/* Videos Grid – Shows 2 videos initially, expands to all videos upon click */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {displayVideos.map((video, index) => {
+            {visibleVideos.map((video, index) => {
               const thumb = getVideoThumbnail(video.url) || video.url;
               return (
                 <div
@@ -185,17 +221,25 @@ export default function Gallery({ items = [] }: GalleryProps) {
                     flex flex-col justify-end p-6 sm:p-8 cursor-pointer
                   `}
                 >
-                  {/* Thumbnail Image */}
-                  {thumb && (
+                  {/* Thumbnail Image or Video Poster */}
+                  {getVideoThumbnail(video.url) ? (
                     <img
-                      src={thumb}
+                      src={getVideoThumbnail(video.url)!}
                       alt={video.title}
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-95"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
                       }}
                     />
-                  )}
+                  ) : video.url ? (
+                    <video
+                      src={video.url}
+                      preload="metadata"
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-95"
+                    />
+                  ) : null}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 
@@ -227,16 +271,73 @@ export default function Gallery({ items = [] }: GalleryProps) {
             })}
           </div>
 
-          <div className="mt-14 text-center">
-            <a
-              href="#contact"
-              className="btn-cyber inline-flex px-8 py-3.5 text-sm font-bold shadow-lg shadow-sky-500/25"
-            >
-              View Full Event Album &amp; Socials
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
+          {/* Action Trigger Area: View Full Event Album & Socials */}
+          <div className="mt-14 flex flex-col items-center justify-center gap-4 text-center">
+            {displayVideos.length > 2 && videoDisplayMode === "featured" && (
+              <button
+                type="button"
+                onClick={() => setVideoDisplayMode("all")}
+                className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+              >
+                <span>View Full Event Album &amp; Socials</span>
+                <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white font-mono text-xs font-extrabold">
+                  +{remainingVideoCount} More Videos
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 transition-transform group-hover:translate-y-0.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            )}
+
+            {displayVideos.length > 2 && videoDisplayMode === "all" && (
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVideoDisplayMode("featured");
+                    const el = document.getElementById("video-album-section");
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-mono text-xs font-bold shadow-sm transition hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                  </svg>
+                  <span>Show Less (2 Featured Videos)</span>
+                </button>
+
+                <a
+                  href="#contact"
+                  className="btn-cyber inline-flex items-center gap-2 px-6 py-3 text-xs font-bold shadow-lg shadow-sky-500/25 cursor-pointer"
+                >
+                  <span>Connect on Socials &amp; Contact</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+              </div>
+            )}
+
+            {displayVideos.length <= 2 && (
+              <a
+                href="#contact"
+                className="btn-cyber inline-flex px-8 py-3.5 text-sm font-bold shadow-lg shadow-sky-500/25"
+              >
+                <span>View Full Event Album &amp; Socials</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            )}
           </div>
         </div>
       </div>

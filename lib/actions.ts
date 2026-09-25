@@ -96,6 +96,8 @@ import {
   updateEvent,
   deleteEvent,
   assignCoordinatorToEvent,
+  reorderEventCoordinators,
+  removeCoordinatorFromEvent,
   updateSiteSetting,
   createGalleryItem,
   deleteGalleryItem,
@@ -192,16 +194,59 @@ export async function assignCoordinatorAction(formData: FormData) {
   const phone = String(formData.get("phone") || "").trim();
   const email = String(formData.get("email") || "").trim();
   const image = String(formData.get("image") || "").trim();
+  const positionRaw = String(formData.get("position") || "end").trim();
 
   if (!eventId || !name) throw new Error("Missing eventId or coordinator name");
 
-  await assignCoordinatorToEvent(eventId, {
-    name,
-    role,
-    phone: phone || undefined,
-    email: email || undefined,
-    image: image || undefined,
-  });
+  let position: "start" | "end" | number = "end";
+  if (positionRaw === "start" || positionRaw === "0") {
+    position = "start";
+  } else if (!isNaN(Number(positionRaw))) {
+    position = Number(positionRaw);
+  }
+
+  await assignCoordinatorToEvent(
+    eventId,
+    {
+      name,
+      role,
+      phone: phone || undefined,
+      email: email || undefined,
+      image: image || undefined,
+    },
+    position
+  );
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/coordinators");
+}
+
+export async function reorderEventCoordinatorsAction(formData: FormData) {
+  await requireAdmin();
+
+  const eventId = String(formData.get("eventId") || "").trim();
+  const coordinatorsJson = String(formData.get("coordinatorsJson") || "").trim();
+
+  if (!eventId || !coordinatorsJson) throw new Error("Missing eventId or coordinators data");
+
+  const reordered = JSON.parse(coordinatorsJson);
+  await reorderEventCoordinators(eventId, reordered);
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/coordinators");
+}
+
+export async function removeCoordinatorFromEventAction(formData: FormData) {
+  await requireAdmin();
+
+  const eventId = String(formData.get("eventId") || "").trim();
+  const coordinatorName = String(formData.get("coordinatorName") || "").trim();
+
+  if (!eventId || !coordinatorName) throw new Error("Missing eventId or coordinatorName");
+
+  await removeCoordinatorFromEvent(eventId, coordinatorName);
 
   revalidatePath("/");
   revalidatePath("/admin");
@@ -221,8 +266,32 @@ export async function updateSiteSettingsAction(formData: FormData) {
   if (collegeName) await updateSiteSetting("collegeName", collegeName);
   if (registerFormUrl) await updateSiteSetting("registerFormUrl", registerFormUrl);
 
+  const runningAnnouncement = formData.get("runningAnnouncement");
+  if (runningAnnouncement !== null) {
+    await updateSiteSetting("runningAnnouncement", String(runningAnnouncement).trim());
+  }
+  const runningAnnouncementActive = formData.get("runningAnnouncementActive");
+  if (runningAnnouncementActive !== null) {
+    await updateSiteSetting("runningAnnouncementActive", String(runningAnnouncementActive).trim());
+  }
+
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath("/coordinators");
+}
+
+export async function updateRunningAnnouncementAction(formData: FormData) {
+  await requireAdmin();
+
+  const runningAnnouncement = String(formData.get("runningAnnouncement") || "").trim();
+  const runningAnnouncementActive = String(formData.get("runningAnnouncementActive") || "true").trim();
+
+  await updateSiteSetting("runningAnnouncement", runningAnnouncement);
+  await updateSiteSetting("runningAnnouncementActive", runningAnnouncementActive);
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/announcements");
   revalidatePath("/coordinators");
 }
 
@@ -231,14 +300,61 @@ export async function updateSiteSettingsAction(formData: FormData) {
 export async function createGalleryItemAction(formData: FormData) {
   await requireAdmin();
 
-  const type = String(formData.get("type") || "photo") as "photo" | "video";
-  const url = String(formData.get("url") || "").trim();
-  const title = String(formData.get("title") || "").trim();
+  let type = String(formData.get("type") || "photo") as "photo" | "video";
+  let url = String(formData.get("url") || "").trim();
+  let title = String(formData.get("title") || "").trim();
   const caption = String(formData.get("caption") || "").trim();
+  const file = formData.get("file") as File | null;
 
-  if (!url) throw new Error("Media URL is required");
+  if (file && file.size > 0) {
+    const isVideo = file.type.startsWith("video/") || /\.(mp4|webm|mov|ogg|mkv)$/i.test(file.name);
+    type = isVideo ? "video" : "photo";
+    if (!title) {
+      title = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+    }
 
-  await createGalleryItem({ type, url, title, caption });
+    const sanitizedBase = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    const uniqueFileName = `${Date.now()}-${sanitizedBase}`;
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Try Supabase Storage first
+    try {
+      const { supabaseAdmin } = await import("@/lib/supabase");
+      const db = supabaseAdmin();
+      const { error: uploadError } = await db.storage
+        .from("gallery")
+        .upload(uniqueFileName, buffer, {
+          contentType: file.type || (isVideo ? "video/mp4" : "image/jpeg"),
+          upsert: true,
+        });
+
+      if (!uploadError) {
+        const { data: publicUrlData } = db.storage.from("gallery").getPublicUrl(uniqueFileName);
+        if (publicUrlData?.publicUrl) {
+          url = publicUrlData.publicUrl;
+        }
+      }
+    } catch (err) {
+      console.warn("Supabase storage upload error in action:", err);
+    }
+
+    // Fallback to /public/uploads
+    if (!url) {
+      const fs = await import("fs");
+      const path = await import("path");
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(uploadsDir, uniqueFileName), buffer);
+      url = `/uploads/${uniqueFileName}`;
+    }
+  }
+
+  if (!url) throw new Error("A media file or valid URL is required");
+
+  await createGalleryItem({ type, url, title: title || "Gallery Media", caption });
 
   revalidatePath("/");
   revalidatePath("/admin");

@@ -18,6 +18,7 @@ export type EventConfig = {
   sheetEventLabel: string;
   schedule: { time: string; item: string }[];
   coordinators: { name: string; role: string; phone?: string; email?: string; image?: string }[];
+  rulebookUrl?: string | null;
 };
 
 export const CLUB_NAME = "Creative Codex";

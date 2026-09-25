@@ -171,6 +171,7 @@ export async function listEvents(): Promise<EventConfig[]> {
       sheetEventLabel: item.sheet_event_label,
       schedule: Array.isArray(item.schedule) ? item.schedule : [],
       coordinators: Array.isArray(item.coordinators) ? item.coordinators : [],
+      rulebookUrl: item.rulebook_url || item.rulebookUrl || null,
     }));
   } catch {
     return EVENTS;
@@ -224,7 +225,7 @@ export async function updateEvent(
     capacity: number;
     sheetEventLabel: string;
     schedule: { time: string; item: string }[];
-    coordinators: { name: string; role: string; phone?: string; email?: string }[];
+    coordinators: { name: string; role: string; phone?: string; email?: string; image?: string }[];
   }>
 ) {
   const db = supabaseAdmin();
@@ -259,13 +260,45 @@ export async function deleteEvent(id: string) {
 
 export async function assignCoordinatorToEvent(
   eventId: string,
-  coordinator: { name: string; role: string; phone?: string; email?: string; image?: string }
+  coordinator: { name: string; role: string; phone?: string; email?: string; image?: string },
+  position?: "start" | "end" | number
 ) {
   const events = await listEvents();
   const event = events.find((e) => e.id === eventId);
   if (!event) throw new Error("Event not found");
 
-  const updatedCoordinators = [...event.coordinators.filter((c) => c.name !== coordinator.name), coordinator];
+  const filtered = (event.coordinators || []).filter((c) => c.name !== coordinator.name);
+  let updatedCoordinators: typeof event.coordinators;
+
+  if (position === "start" || position === 0) {
+    updatedCoordinators = [coordinator, ...filtered];
+  } else if (typeof position === "number" && position > 0 && position <= filtered.length) {
+    updatedCoordinators = [...filtered];
+    updatedCoordinators.splice(position, 0, coordinator);
+  } else {
+    updatedCoordinators = [...filtered, coordinator];
+  }
+
+  await updateEvent(eventId, { coordinators: updatedCoordinators });
+}
+
+export async function reorderEventCoordinators(
+  eventId: string,
+  reorderedCoordinators: { name: string; role: string; phone?: string; email?: string; image?: string }[]
+) {
+  const events = await listEvents();
+  const event = events.find((e) => e.id === eventId);
+  if (!event) throw new Error("Event not found");
+
+  await updateEvent(eventId, { coordinators: reorderedCoordinators });
+}
+
+export async function removeCoordinatorFromEvent(eventId: string, coordinatorName: string) {
+  const events = await listEvents();
+  const event = events.find((e) => e.id === eventId);
+  if (!event) throw new Error("Event not found");
+
+  const updatedCoordinators = (event.coordinators || []).filter((c) => c.name !== coordinatorName);
   await updateEvent(eventId, { coordinators: updatedCoordinators });
 }
 
@@ -276,6 +309,8 @@ export type SiteSettings = {
   clubName: string;
   collegeName: string;
   registerFormUrl: string;
+  runningAnnouncement?: string;
+  runningAnnouncementActive?: string;
 };
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -284,6 +319,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     clubName: CLUB_NAME,
     collegeName: COLLEGE_NAME,
     registerFormUrl: REGISTER_FORM_URL,
+    runningAnnouncement: "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
+    runningAnnouncementActive: "true",
   };
 
   try {
@@ -297,6 +334,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       clubName: map.clubName || defaults.clubName,
       collegeName: map.collegeName || defaults.collegeName,
       registerFormUrl: map.registerFormUrl || defaults.registerFormUrl,
+      runningAnnouncement: map.runningAnnouncement !== undefined ? map.runningAnnouncement : defaults.runningAnnouncement,
+      runningAnnouncementActive: map.runningAnnouncementActive !== undefined ? map.runningAnnouncementActive : defaults.runningAnnouncementActive,
     };
   } catch {
     return defaults;

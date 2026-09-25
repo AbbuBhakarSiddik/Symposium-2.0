@@ -4,7 +4,7 @@ import { CLUB_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
 export default function Contact() {
   return (
     <>
-      <section id="contact" className="border-t border-slate-200 bg-gradient-to-br from-white via-green-50/30 to-blue-50/20 py-20">
+      <section id="contact" className="scroll-mt-24 border-t border-slate-200 bg-gradient-to-br from-white via-green-50/30 to-blue-50/20 py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="text-center mb-12">
             <p className="eyebrow mb-2">Reach Us</p>

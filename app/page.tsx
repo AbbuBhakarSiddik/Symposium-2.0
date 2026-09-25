@@ -6,18 +6,24 @@ import Achievements from "@/components/Achievements";
 import CoordinatorsSection from "@/components/CoordinatorsSection";
 import Contact from "@/components/Contact";
 import CollegeBanner from "@/components/CollegeBanner";
-import { listGalleryItems, listEvents } from "@/lib/db";
+import { listGalleryItems, listEvents, getSiteSettings } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [galleryItems, events] = await Promise.all([
+  const [galleryItems, events, settings] = await Promise.all([
     listGalleryItems().catch(() => []),
     listEvents().catch(() => []),
+    getSiteSettings().catch(() => null),
   ]);
 
   return (
     <main>
       <CollegeBanner />
-      <Header />
+      <Header
+        runningAnnouncement={settings?.runningAnnouncement}
+        runningAnnouncementActive={settings?.runningAnnouncementActive !== "false"}
+      />
       <Hero />
       <EventBoard />
       <Achievements />

@@ -11,6 +11,8 @@ export default async function AnnouncementsPage() {
       clubName: "Creative Codex",
       collegeName: "Shridevi Institute Of Engineering And Technology,Tumkur",
       registerFormUrl: "#",
+      runningAnnouncement: "",
+      runningAnnouncementActive: "true",
     })),
   ]);
 
@@ -18,6 +20,8 @@ export default async function AnnouncementsPage() {
     <AnnouncementsClient
       announcements={announcements}
       symposiumName={settings.symposiumName}
+      runningAnnouncement={settings.runningAnnouncement}
+      runningAnnouncementActive={settings.runningAnnouncementActive !== "false"}
     />
   );
 }

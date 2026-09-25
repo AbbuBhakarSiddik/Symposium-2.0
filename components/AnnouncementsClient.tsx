@@ -31,9 +31,13 @@ function formatRelativeTime(dateString: string): string {
 export default function AnnouncementsClient({
   announcements: initialAnnouncements,
   symposiumName,
+  runningAnnouncement,
+  runningAnnouncementActive = true,
 }: {
   announcements: Announcement[];
   symposiumName: string;
+  runningAnnouncement?: string;
+  runningAnnouncementActive?: boolean;
 }) {
   const [announcements, setAnnouncements] = useState<Announcement[]>(initialAnnouncements);
   const [isLive, setIsLive] = useState(true);
@@ -79,7 +83,10 @@ export default function AnnouncementsClient({
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900">
-      <Header />
+      <Header
+        runningAnnouncement={runningAnnouncement}
+        runningAnnouncementActive={runningAnnouncementActive}
+      />
 
       <main className="mx-auto max-w-4xl px-5 py-12 sm:px-8 space-y-8">
         {/* Top Hero Heading */}
