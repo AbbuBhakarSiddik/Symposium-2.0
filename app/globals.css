@@ -262,6 +262,18 @@
 
 /* ===== Marquee (continuous auto-slide) ===== */
 @layer utilities {
+  /* Hide scrollbar completely while allowing scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none !important; /* IE and Edge */
+    scrollbar-width: none !important; /* Firefox */
+  }
+
   .animate-marquee {
     animation: marquee 35s linear infinite;
   }

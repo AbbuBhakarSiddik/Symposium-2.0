@@ -442,16 +442,16 @@ export default function Header({
 
           {/* Running Announcement Marquee Ticker */}
           {runningAnnouncementActive && !!runningAnnouncement?.trim() && (
-            <div className="mt-1.5 sm:mt-2 relative overflow-hidden rounded-xl border border-amber-300/80 bg-white/95 shadow-xs backdrop-blur-md flex items-center">
+            <div className="mt-2 sm:mt-2.5 relative overflow-hidden rounded-xl border border-amber-300/80 bg-white/95 shadow-sm backdrop-blur-md flex items-center">
               {/* Left Live Badge */}
               <Link
                 href="/announcements"
-                className="relative z-10 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-mono text-[10px] sm:text-[16px] font-extrabold uppercase tracking-wider px-2.5 sm:px-3 py-7 shrink-0 shadow-xs transition-colors"
+                className="relative z-10 flex items-center self-stretch gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-mono text-xs sm:text-[13px] font-black uppercase tracking-wider px-3.5 sm:px-4 py-2.5 sm:py-3 shrink-0 shadow-xs transition-colors"
                 title="View all official announcements"
               >
-                <span className="relative flex h-2 w-2">
+                <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-85" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
                 </span>
                 <span className="hidden sm:inline">Notice</span>
                 <span className="sm:hidden">Alert</span>
@@ -460,37 +460,37 @@ export default function Header({
               {/* Marquee Track */}
               <Link
                 href="/announcements"
-                className="relative flex-1 overflow-hidden py-5 group select-none block"
+                className="relative flex-1 overflow-hidden py-2.5 sm:py-3 group select-none block"
                 title="Click to view all announcements"
               >
                 {/* Left/Right soft fade gradients */}
-                <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white via-white/80 to-transparent z-1" />
-                <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent z-1" />
+                <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent z-1" />
+                <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white via-white/80 to-transparent z-1" />
 
-                <div className="flex w-max animate-marquee hover:[animation-play-state:paused] font-mono text-[16px] sm:text-m font-semibold text-slate-800 whitespace-nowrap">
+                <div className="flex w-max animate-marquee hover:[animation-play-state:paused] font-mono text-sm sm:text-[15px] font-semibold text-slate-800 whitespace-nowrap">
                   {/* Track 1 */}
-                  <div className="flex items-center gap-6 sm:gap-8 px-4">
+                  <div className="flex items-center gap-8 sm:gap-10 px-4">
                     <span className="inline-flex items-center gap-2">
-                      <span className="text-amber-500 font-bold">⚡</span>
+                      <span className="text-amber-500 font-bold text-base">⚡</span>
                       <span>{runningAnnouncement}</span>
                     </span>
                     <span className="text-amber-400 font-bold">•</span>
                     <span className="inline-flex items-center gap-2">
-                      <span className="text-blue-500 font-bold">📢</span>
+                      <span className="text-blue-500 font-bold text-base">📢</span>
                       <span>{runningAnnouncement}</span>
                     </span>
                     <span className="text-amber-400 font-bold">•</span>
                   </div>
 
                   {/* Track 2 for seamless loop */}
-                  <div className="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true">
+                  <div className="flex items-center gap-8 sm:gap-10 px-4" aria-hidden="true">
                     <span className="inline-flex items-center gap-2">
-                      <span className="text-amber-500 font-bold">⚡</span>
+                      <span className="text-amber-500 font-bold text-base">⚡</span>
                       <span>{runningAnnouncement}</span>
                     </span>
                     <span className="text-amber-400 font-bold">•</span>
                     <span className="inline-flex items-center gap-2">
-                      <span className="text-blue-500 font-bold">📢</span>
+                      <span className="text-blue-500 font-bold text-base">📢</span>
                       <span>{runningAnnouncement}</span>
                     </span>
                     <span className="text-amber-400 font-bold">•</span>

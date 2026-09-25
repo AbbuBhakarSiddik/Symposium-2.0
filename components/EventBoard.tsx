@@ -67,7 +67,7 @@ export default function EventBoard() {
   );
 
   return (
-    <section id="events" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 sm:px-8">
+    <section id="events" className="scroll-mt-24 mx-auto max-w-7xl px-5 pt-20 pb-10 sm:px-8 sm:pt-24 sm:pb-12">
       {/* Section Header */}
       <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200/80">
         <div>
