@@ -60,11 +60,11 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
   return (
     <section
       id="coordinators"
-      className="scroll-mt-24 border-t border-slate-200 bg-gradient-to-br from-white via-indigo-50/25 to-purple-50/25 py-24 sm:py-32"
+      className="scroll-mt-24 border-t border-slate-200 bg-gradient-to-br from-white via-indigo-50/25 to-purple-50/25 pt-10 pb-16 sm:pt-14 sm:pb-24"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {/* Header */}
-        <div className="mb-14 flex flex-wrap items-end justify-between gap-6 pb-6 border-b border-slate-200/80">
+        <div className="mb-10 sm:mb-12 flex flex-wrap items-end justify-between gap-6 pb-6 border-b border-slate-200/80">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="h-2.5 w-2.5 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.6)]" />

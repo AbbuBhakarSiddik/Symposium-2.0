@@ -67,7 +67,7 @@ export default function Achievements() {
   return (
     <section
       id="achievements"
-      className="scroll-mt-24 border-t border-slate-200/80 bg-gradient-to-b from-white via-indigo-50/20 to-slate-50/50 pt-10 pb-16 sm:pt-14 sm:pb-20"
+      className="scroll-mt-24 border-t border-slate-200/80 bg-gradient-to-b from-white via-indigo-50/20 to-slate-50/50 pt-10 pb-10 sm:pt-14 sm:pb-14"
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         {/* Header Section — Highlighted & Structured */}

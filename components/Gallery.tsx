@@ -60,7 +60,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
   const remainingVideoCount = Math.max(0, displayVideos.length - 2);
 
   return (
-    <section id="gallery" className="scroll-mt-24 border-t border-sky-200/60 bg-gradient-to-br from-[#F0F7FF] via-[#F8FAFC] to-[#F1F5F9] section-spacing relative overflow-hidden text-slate-900 shadow-sm">
+    <section id="gallery" className="scroll-mt-24 border-t border-sky-200/60 bg-gradient-to-br from-[#F0F7FF] via-[#F8FAFC] to-[#F1F5F9] pt-10 pb-12 sm:pt-14 sm:pb-16 relative overflow-hidden text-slate-900 shadow-sm">
       {/* Soft Ambient Light Gradient Orbs */}
       <div
         aria-hidden="true"
@@ -77,7 +77,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
 
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16 flex flex-col items-center">
+        <div className="text-center mb-10 sm:mb-12 flex flex-col items-center">
           <p className="eyebrow mb-3 font-mono text-xs uppercase tracking-widest text-sky-700 font-bold bg-sky-100/90 border border-sky-300/80 px-4 py-1.5 rounded-full shadow-sm">
             Archive &amp; Memories
           </p>
@@ -90,7 +90,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
         </div>
 
         {/* ===== PHOTO CAROUSEL – Light Gradient Container & Continuous Auto-Slide ===== */}
-        <div className="mb-24">
+        <div className="mb-14 sm:mb-16">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
               <span>📸 Symposium Gallery</span>

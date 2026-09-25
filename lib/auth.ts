@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyLogin } from "./db";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   providers: [

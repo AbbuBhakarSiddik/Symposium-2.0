@@ -29,17 +29,62 @@ export type Resource = {
 // ---------- Auth ----------
 
 export async function verifyLogin(
-  username: string,
+  identifier: string,
   password: string
 ): Promise<AppUser | null> {
+  const clean = (identifier || "").trim();
+  if (!clean || !password) return null;
+
   const db = supabaseAdmin();
-  const { data, error } = await db
+
+  // 1. Case-insensitive exact search by username
+  let { data, error } = await db
     .from("users")
     .select("id, username, password_hash, name, role, phone, email")
-    .eq("username", username)
+    .ilike("username", clean)
     .maybeSingle();
 
-  if (error || !data) return null;
+  // 2. If not found and identifier looks like email, search by email
+  if (!data && clean.includes("@")) {
+    const res = await db
+      .from("users")
+      .select("id, username, password_hash, name, role, phone, email")
+      .ilike("email", clean)
+      .maybeSingle();
+    data = res.data;
+  }
+
+  // 3. If not found, try search by name
+  if (!data) {
+    const res = await db
+      .from("users")
+      .select("id, username, password_hash, name, role, phone, email")
+      .ilike("name", clean)
+      .maybeSingle();
+    data = res.data;
+  }
+
+  // 4. Special alias: if user typed "admin", check "admin1" if "admin" row didn't exist
+  if (!data && clean.toLowerCase() === "admin") {
+    const res = await db
+      .from("users")
+      .select("id, username, password_hash, name, role, phone, email")
+      .ilike("username", "admin1")
+      .maybeSingle();
+    data = res.data;
+  }
+
+  // 5. Special alias: if user typed "yash", check "patil"
+  if (!data && clean.toLowerCase() === "yash") {
+    const res = await db
+      .from("users")
+      .select("id, username, password_hash, name, role, phone, email")
+      .ilike("username", "patil")
+      .maybeSingle();
+    data = res.data;
+  }
+
+  if (error || !data || !data.password_hash) return null;
 
   const ok = await bcrypt.compare(password, data.password_hash);
   if (!ok) return null;

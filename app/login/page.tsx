@@ -12,40 +12,50 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const res = await signIn("credentials", {
-      username,
-      password,
-      redirect: false,
-    });
+    const cleanUsername = username.trim();
 
-    if (res?.error) {
-      setLoading(false);
-      setError("Incorrect username or password.");
-      return;
-    }
+    try {
+      const res = await signIn("credentials", {
+        username: cleanUsername,
+        password,
+        redirect: false,
+      });
 
-    const session = await getSession();
-    setLoading(false);
-
-    const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl");
-    if (callbackUrl) {
-      router.push(callbackUrl);
-    } else {
-      const role = (session?.user as any)?.role;
-      if (role === "admin") {
-        router.push("/admin");
-      } else if (role === "coordinator") {
-        router.push("/coordinators");
-      } else {
-        router.push("/");
+      if (res?.error) {
+        setLoading(false);
+        setError("Incorrect username or password. Please verify your credentials.");
+        return;
       }
+
+      // Check callback URL if user was redirected from a protected page
+      const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl");
+      if (callbackUrl) {
+        window.location.href = callbackUrl;
+        return;
+      }
+
+      // Read session to navigate to correct dashboard
+      const session = await getSession();
+      const role = (session?.user as any)?.role;
+
+      if (role === "admin") {
+        window.location.href = "/admin";
+      } else if (role === "coordinator") {
+        window.location.href = "/coordinators";
+      } else {
+        window.location.href = "/admin";
+      }
+    } catch (err: any) {
+      setLoading(false);
+      setError(err?.message || "An error occurred during sign in. Please try again.");
     }
-    router.refresh();
   }
 
   return (
@@ -89,15 +99,18 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest font-bold text-slate-600">
-                Username
+                Username or Email
               </label>
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-mono text-xs text-slate-900 outline-none transition shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
                 autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 required
-                placeholder="Enter username"
+                placeholder="Enter username or email"
               />
             </div>
 
@@ -105,20 +118,30 @@ export default function LoginPage() {
               <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest font-bold text-slate-600">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-mono text-xs text-slate-900 outline-none transition shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
-                autoComplete="current-password"
-                required
-                placeholder="Enter password"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 font-mono text-xs text-slate-900 outline-none transition shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+                  autoComplete="current-password"
+                  required
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
             </div>
 
             {error && (
               <div className="flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-3 font-mono text-xs text-rose-700">
-                <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse shrink-0" />
                 <p>{error}</p>
               </div>
             )}
