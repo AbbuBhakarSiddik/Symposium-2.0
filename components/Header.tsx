@@ -12,7 +12,7 @@ type HeaderProps = {
 };
 
 export default function Header({
-  runningAnnouncement = "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
+  runningAnnouncement = "📢 Registrations are now open for Innovation Ignite Symposium 2.0!  Register now!",
   runningAnnouncementActive = true,
 }: HeaderProps = {}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -290,9 +290,8 @@ export default function Header({
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-300 px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 border-b ${
-          scrolled ? "border-slate-300/80 shadow-md" : "border-slate-200/60 shadow-xs"
-        }`}
+        className={`sticky top-0 z-50 w-full transition-all duration-300 px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 border-b ${scrolled ? "border-slate-300/80 shadow-md" : "border-slate-200/60 shadow-xs"
+          }`}
         style={{
           background: 'linear-gradient(135deg, rgba(238,244,255,0.96) 0%, rgba(245,238,255,0.94) 33%, rgba(255,240,246,0.92) 66%, rgba(237,252,251,0.94) 100%)',
           backdropFilter: 'blur(20px)',
@@ -309,10 +308,10 @@ export default function Header({
           {/* Card Container with Top Vibrant Gradient Border */}
           <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-xl transition-all">
             {/* Top Gradient Stripe */}
-            <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-500" />
+            <div className="h-2 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-500" />
 
             {/* Header Content Bar */}
-            <div className="flex items-center justify-between px-3 sm:px-5 py-2 sm:py-2.5 gap-2 lg:gap-3">
+            <div className="flex items-center justify-between min-h-[80px] px-3 sm:px-5 py-4 sm:py-5 gap-4 lg:gap-3">
               {/* Left: Brand Identity */}
               <Link
                 href="/"
@@ -321,7 +320,7 @@ export default function Header({
                 aria-label="Innovation Ignite Symposium 2.0"
               >
                 {/* Logo Image in Dark Rounded Square Box */}
-                <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-slate-950 p-1 flex items-center justify-center overflow-hidden border border-slate-800 shadow-xs shrink-0 transition-transform duration-200 group-hover:scale-105">
+                <div className="h-12 w-12 sm:h-11 sm:w-11 rounded-xl bg-slate-950 p-1 flex items-center justify-center overflow-hidden border border-slate-800 shadow-xs shrink-0 transition-transform duration-200 group-hover:scale-105">
                   <Image
                     src="/logos/sympo2.0.jpeg"
                     alt={`${CLUB_NAME} logo`}
@@ -363,10 +362,9 @@ export default function Header({
                       onClick={(e) => handleNavClick(e, link.id, link.href)}
                       className={`
                         relative flex items-center gap-1.5 px-2 lg:px-2.5 2xl:px-3.5 py-1.5 rounded-full font-mono text-[11px] 2xl:text-xs font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer
-                        ${
-                          isActive
-                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
-                            : "text-slate-700 hover:text-blue-600 hover:bg-slate-50"
+                        ${isActive
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
+                          : "text-slate-700 hover:text-blue-600 hover:bg-slate-50"
                         }
                       `}
                     >
@@ -388,10 +386,10 @@ export default function Header({
               </nav>
 
               {/* Right: Coordinator/Admin Action Button & Hamburger */}
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 h-11 px-5 shrink-0">
                 <Link
                   href="/login"
-                  className="relative group inline-flex items-center gap-2 px-3.5 sm:px-4 2xl:px-5 py-2 rounded-full font-mono text-[11px] 2xl:text-xs font-semibold text-white bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-md shadow-blue-500/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap shrink-0"
+                  className="relative group inline-flex items-center gap-3 px-3.5 sm:px-4 2xl:px-5 py-2 rounded-full font-mono text-[11px] 2xl:text-xs font-semibold text-white bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-md shadow-blue-500/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap shrink-0"
                 >
                   {/* User Icon Circle */}
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-white shrink-0">
@@ -426,19 +424,16 @@ export default function Header({
                   aria-expanded={isMobileMenuOpen}
                 >
                   <span
-                    className={`block h-0.5 w-5 bg-slate-800 transition-all duration-300 ${
-                      isMobileMenuOpen ? "translate-y-2 rotate-45" : ""
-                    }`}
+                    className={`block h-0.5 w-5 bg-slate-800 transition-all duration-300 ${isMobileMenuOpen ? "translate-y-2 rotate-45" : ""
+                      }`}
                   />
                   <span
-                    className={`block h-0.5 w-5 bg-slate-800 transition-all duration-300 ${
-                      isMobileMenuOpen ? "opacity-0" : ""
-                    }`}
+                    className={`block h-0.5 w-5 bg-slate-800 transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""
+                      }`}
                   />
                   <span
-                    className={`block h-0.5 w-5 bg-slate-800 transition-all duration-300 ${
-                      isMobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
-                    }`}
+                    className={`block h-0.5 w-5 bg-slate-800 transition-all duration-300 ${isMobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
+                      }`}
                   />
                 </button>
               </div>
@@ -451,7 +446,7 @@ export default function Header({
               {/* Left Live Badge */}
               <Link
                 href="/announcements"
-                className="relative z-10 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-mono text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2.5 sm:px-3 py-1.5 shrink-0 shadow-xs transition-colors"
+                className="relative z-10 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-mono text-[10px] sm:text-[16px] font-extrabold uppercase tracking-wider px-2.5 sm:px-3 py-7 shrink-0 shadow-xs transition-colors"
                 title="View all official announcements"
               >
                 <span className="relative flex h-2 w-2">
@@ -465,14 +460,14 @@ export default function Header({
               {/* Marquee Track */}
               <Link
                 href="/announcements"
-                className="relative flex-1 overflow-hidden py-1.5 group select-none block"
+                className="relative flex-1 overflow-hidden py-5 group select-none block"
                 title="Click to view all announcements"
               >
                 {/* Left/Right soft fade gradients */}
                 <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white via-white/80 to-transparent z-1" />
                 <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent z-1" />
 
-                <div className="flex w-max animate-marquee hover:[animation-play-state:paused] font-mono text-[11px] sm:text-xs font-semibold text-slate-800 whitespace-nowrap">
+                <div className="flex w-max animate-marquee hover:[animation-play-state:paused] font-mono text-[16px] sm:text-m font-semibold text-slate-800 whitespace-nowrap">
                   {/* Track 1 */}
                   <div className="flex items-center gap-6 sm:gap-8 px-4">
                     <span className="inline-flex items-center gap-2">
@@ -558,10 +553,9 @@ export default function Header({
                     onClick={(e) => handleNavClick(e, link.id, link.href)}
                     className={`
                       flex items-center justify-between px-4 py-2.5 rounded-xl font-mono text-xs font-semibold transition-colors
-                      ${
-                        isActive
-                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-                          : "text-slate-800 hover:bg-slate-100"
+                      ${isActive
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                        : "text-slate-800 hover:bg-slate-100"
                       }
                     `}
                   >
