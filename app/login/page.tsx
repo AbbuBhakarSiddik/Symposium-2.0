@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { SYMPOSIUM_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
@@ -64,18 +65,28 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 to-indigo-950 relative overflow-hidden items-center justify-center p-12 text-white">
         <div className="absolute inset-0 bg-sky-500/10" />
         <div className="cyber-orb top-1/4 left-1/4 w-96 h-96 bg-sky-500/20" />
-        <div className="relative z-10 max-w-md">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 text-sm font-bold text-white shadow-lg">
-              {SYMPOSIUM_NAME.split(" ")
-                .map((w) => w[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()}
-            </span>
-            <span className="font-display text-2xl font-bold text-white">{SYMPOSIUM_NAME}</span>
+        <div className="relative z-10 max-w-xl">
+          <div className="flex items-center gap-5 mb-8">
+            <div className="relative h-24 w-24 shrink-0 rounded-2xl overflow-hidden ring-2 ring-sky-400/40 shadow-2xl shadow-sky-500/30 bg-slate-950 flex items-center justify-center p-2 group">
+              <Image
+                src="/logos/sympo2.0.jpeg"
+                alt="Innovation Ignite Symposium 2.0 Logo"
+                width={96}
+                height={96}
+                className="h-full w-full object-contain rounded-xl drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+                priority
+              />
+            </div>
+            <div className="flex flex-col justify-center">
+              <span className="font-display text-2xl xl:text-3xl font-extrabold text-white leading-tight tracking-tight">
+                Innovation Ignite
+              </span>
+              <span className="font-display text-xl xl:text-2xl font-bold bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-300 bg-clip-text text-transparent leading-tight mt-1">
+                Symposium 2.0
+              </span>
+            </div>
           </div>
-          <h1 className="font-display text-4xl font-bold text-white leading-tight">
+          <h1 className="font-display text-4xl sm:text-5xl font-bold text-white leading-tight">
             Welcome back, <br />
             <span className="bg-gradient-to-r from-sky-400 to-indigo-300 bg-clip-text text-transparent">Organizer.</span>
           </h1>
@@ -91,6 +102,28 @@ export default function LoginPage() {
       {/* Right side – login form */}
       <div className="flex w-full lg:w-1/2 items-center justify-center px-6 py-12 sm:px-12 relative">
         <div className="w-full max-w-md glass rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-depth bg-white">
+          {/* Mobile Logo Branding Header */}
+          <div className="lg:hidden flex items-center justify-center gap-4 mb-6 pb-4 border-b border-slate-100">
+            <div className="relative h-16 w-16 shrink-0 rounded-xl overflow-hidden ring-2 ring-sky-400/30 shadow-md bg-slate-950 flex items-center justify-center p-1.5">
+              <Image
+                src="/logos/sympo2.0.jpeg"
+                alt="Innovation Ignite Symposium 2.0 Logo"
+                width={64}
+                height={64}
+                className="h-full w-full object-contain rounded-lg"
+                priority
+              />
+            </div>
+            <div className="flex flex-col justify-center">
+              <span className="font-display text-lg font-bold text-slate-900 leading-tight">
+                Innovation Ignite
+              </span>
+              <span className="font-display text-base font-bold text-sky-600 leading-tight">
+                Symposium 2.0
+              </span>
+            </div>
+          </div>
+
           <div className="mb-8 text-center lg:text-left">
             <h2 className="font-display text-2xl font-bold text-slate-900">Sign In</h2>
             <p className="mt-1 text-xs font-mono text-slate-500">Enter your credentials to access committee portal</p>

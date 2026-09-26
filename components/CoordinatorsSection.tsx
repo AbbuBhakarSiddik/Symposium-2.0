@@ -159,7 +159,16 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                       {event.coordinators.length > 0 ? (
                         <>
                           <div
-                            className="h-full space-y-3.5 overflow-y-auto overflow-x-hidden no-scrollbar overscroll-contain select-text pr-0.5"
+                            onWheel={(e) => {
+                              const el = e.currentTarget;
+                              const isAtBottom = el.scrollHeight - Math.ceil(el.scrollTop) <= el.clientHeight + 2;
+                              const isAtTop = el.scrollTop <= 0;
+
+                              if ((e.deltaY > 0 && isAtBottom) || (e.deltaY < 0 && isAtTop)) {
+                                window.scrollBy({ top: e.deltaY, behavior: "auto" });
+                              }
+                            }}
+                            className="h-full space-y-3.5 overflow-y-auto overflow-x-hidden no-scrollbar overscroll-auto select-text pr-0.5"
                             style={{
                               scrollbarWidth: "none",
                               msOverflowStyle: "none",
