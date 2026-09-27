@@ -15,7 +15,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="scroll-mt-24 relative overflow-hidden min-h-[92vh] flex flex-col justify-between z-10 bg-[#020b18] text-white pt-10 pb-16 sm:pt-14 sm:pb-24"
+      className="scroll-mt-24 relative overflow-hidden min-h-[92vh] flex flex-col justify-between z-10 bg-[#020b18] text-white pt-10 pb-20 sm:pt-14 sm:pb-28"
       aria-label="Hero section"
     >
       {/* ── CINEMATIC ARTWORK BACKGROUND ─────────────────────────── */}
@@ -32,10 +32,10 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#020b18]/50 via-transparent to-transparent pointer-events-none" />
       </div>
 
-      {/* ── FLOWING WHITE BOTTOM WAVE TRANSITION ───────────────────── */}
+      {/* ── SUBTLE SMOOTH BOTTOM FADE TRANSITION ───────────────────── */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 inset-x-0 h-44 sm:h-64 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none -z-10"
+        className="absolute bottom-0 inset-x-0 h-20 sm:h-28 bg-gradient-to-t from-[#e8f0fe] via-[#e8f0fe]/40 to-transparent pointer-events-none -z-10"
       />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full z-10 flex flex-col items-center text-center">
@@ -93,7 +93,7 @@ export default function Hero() {
         {/* ── 4. INFO CHIPS ─────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium mb-7 sm:mb-8 max-w-3xl px-2">
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
-            <span>📅</span> Coming Soon
+            <span>📅</span> October 30th, 2026
           </span>
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
             <span>📍</span> Shridevi Institute of Engineering and Technology, Tumkur

@@ -2,135 +2,125 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { SYMPOSIUM_NAME, COLLEGE_NAME, CLUB_NAME } from "@/lib/eventsConfig";
 
 export default function LogoCards() {
-  const cards = [
-    {
-      id: "college",
-      badge: "HOST INSTITUTION",
-      badgeType: "blue",
-      logo: "/logos/SIETLOGO2.jpeg",
-      logoAlt: "Shridevi Education Logo",
-      title: "Shridevi Institute Of Engineering And Technology, Tumkur",
-      subtitle: "Shridevi Institute of Engineering & Technology",
-      href: "#about",
-      isFeatured: false,
-      btnColor: "blue",
-      ariaLabel: "Learn about Shridevi Institute Of Engineering And Technology",
-    },
-    {
-      id: "symposium",
-      badge: "MAIN EVENT",
-      badgeType: "orange",
-      logo: "/logos/sympo2.0.jpeg",
-      logoAlt: "Innovation Ignite Symposium 2.0",
-      title: "Innovation Ignite Symposium 2.0",
-      subtitle: "National Level Technical Symposium 2.0",
-      href: "#events",
-      isFeatured: true,
-      btnColor: "orange",
-      ariaLabel: "View Innovation Ignite Symposium Events",
-    },
-    {
-      id: "club",
-      badge: "ORGANIZING CLUB",
-      badgeType: "blue",
-      logo: "/logos/cclogo1.png",
-      logoAlt: "Creative Codex Logo",
-      title: "Creative Codex",
-      subtitle: "Department Student Technical Club",
-      href: "#creative-codex",
-      isFeatured: false,
-      btnColor: "blue",
-      ariaLabel: "Learn about Creative Codex Technical Club",
-    },
-  ];
-
   return (
-    <div
-      className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-7 items-stretch"
-      aria-label="Symposium Highlights and Partners"
-    >
-      {cards.map((card) => {
-        const isFeatured = card.isFeatured;
-        return (
-          <div
-            key={card.id}
-            className={`group relative rounded-3xl p-6 sm:p-7 flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
-              isFeatured
-                ? "bg-gradient-to-b from-[#fffef9] to-[#ffffff] border-2 border-amber-300 ring-4 ring-amber-400/20 shadow-2xl shadow-amber-500/15"
-                : "bg-white border border-slate-100 shadow-xl shadow-slate-900/10 hover:border-sky-200"
-            }`}
-          >
-            {/* Top Pill Tag */}
-            <div className="w-full flex justify-center mb-4">
-              <span
-                className={`font-mono text-[11px] font-bold uppercase tracking-wider px-4 py-1 rounded-full ${
-                  card.badgeType === "orange"
-                    ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-orange-500/20"
-                    : "bg-[#eaf2ff] text-[#2563eb] border border-blue-100/80"
-                }`}
-              >
-                {card.badge}
-              </span>
-            </div>
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-2 sm:px-0">
+      {/* ── UNIFIED STRUCTURED LOGO BADGE CONTAINER ────────────────── */}
+      <div className="relative rounded-3xl p-5 sm:p-7 md:p-8 bg-[#040e24]/90 backdrop-blur-xl border border-sky-500/35 shadow-[0_0_35px_rgba(0,110,255,0.22),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300">
+        {/* Subtle top inner accent highlight */}
+        <div className="absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent pointer-events-none" />
 
-            {/* Logo Display Container */}
-            <div
-              className={`w-full h-32 sm:h-36 flex items-center justify-center p-3 mb-4 rounded-2xl transition-transform duration-300 group-hover:scale-105 ${
-                isFeatured ? "bg-slate-950/5" : "bg-white"
-              }`}
-            >
+        {/* ── TOP SECTION: ORGANIZED BY ───────────────────────────── */}
+        <div className="flex flex-col items-center text-center">
+          {/* Header with flanking horizontal accent lines */}
+          <div className="flex items-center justify-center w-full max-w-xs sm:max-w-sm mx-auto mb-4 sm:mb-5">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-600 to-slate-500/80" />
+            <span className="px-3 sm:px-4 font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-slate-400 font-semibold whitespace-nowrap">
+              ORGANIZED BY
+            </span>
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent via-slate-600 to-slate-500/80" />
+          </div>
+
+          {/* Circular Golden Medallion holding college logo */}
+          <a
+            href="https://shrideviengineering.org/"
+            target="_blank"
+            rel="noreferrer"
+            className="group/college relative inline-flex items-center justify-center rounded-full p-[3px] bg-gradient-to-b from-[#ffe58f] via-[#faad14] to-[#d48806] shadow-[0_0_30px_rgba(250,173,20,0.5),0_0_55px_rgba(250,173,20,0.22)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(250,173,20,0.7)]"
+            aria-label="Visit Shridevi Education website"
+          >
+            {/* White Circular Disc */}
+            <div className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-white flex items-center justify-center p-2 sm:p-2.5 overflow-hidden shadow-inner">
               <Image
-                src={card.logo}
-                alt={card.logoAlt}
-                width={360}
-                height={200}
-                className="max-h-24 sm:max-h-28 max-w-full w-auto object-contain drop-shadow-sm rounded-lg"
+                src="/logos/SIETLOGO2.jpeg"
+                alt="Shridevi Education Logo"
+                width={160}
+                height={160}
                 priority
+                className="w-full h-full object-contain scale-[1.28] select-none transition-transform duration-300 group-hover/college:scale-[1.34]"
+              />
+            </div>
+          </a>
+
+          {/* College Name text */}
+          <h3 className="font-sans font-semibold text-xs sm:text-sm md:text-base text-slate-100 text-center mt-3.5 sm:mt-4 leading-snug max-w-xs sm:max-w-sm">
+            Shridevi Institute of Engineering
+            <br />
+            and Technology, Tumakuru
+          </h3>
+        </div>
+
+        {/* ── MIDDLE DIVIDER: IN ASSOCIATION WITH ─────────────────── */}
+        <div className="flex items-center justify-center w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto my-5 sm:my-6">
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-600 to-slate-500/80" />
+          <span className="px-3 sm:px-4 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-slate-400 font-semibold whitespace-nowrap">
+            IN ASSOCIATION WITH
+          </span>
+          <span className="h-px flex-1 bg-gradient-to-l from-transparent via-slate-600 to-slate-500/80" />
+        </div>
+
+        {/* ── BOTTOM SECTION: 2 CARDS SIDE-BY-SIDE ─────────────────── */}
+        <div className="grid grid-cols-2 gap-3.5 sm:gap-4.5 w-full">
+          {/* Card 1: Innovation Ignite Symposium 2.0 */}
+          <Link
+            href="#events"
+            className="group/sympo relative rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between text-center bg-[#06142e]/70 hover:bg-[#07193b]/95 border border-sky-500/30 hover:border-sky-400/60 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(255,140,0,0.22)]"
+            aria-label="Innovation Ignite Symposium 2.0 Events"
+          >
+            {/* Round Logo */}
+            <div className="relative w-18 h-18 sm:w-22 sm:h-22 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-[0_0_18px_rgba(255,140,0,0.4)] group-hover/sympo:scale-105 transition-transform duration-300">
+              <Image
+                src="/logos/sympo2.0.jpeg"
+                alt="Innovation Ignite Symposium 2.0 Emblem"
+                width={100}
+                height={100}
+                className="w-full h-full object-cover"
               />
             </div>
 
-            {/* Card Titles */}
-            <div className="flex flex-col items-center gap-1.5 mb-6 px-1">
-              <h3 className="font-display font-bold text-slate-900 text-base sm:text-lg leading-snug group-hover:text-sky-600 transition-colors">
-                {card.title}
-              </h3>
-              <p className="font-mono text-xs text-slate-500 font-medium">
-                {card.subtitle}
-              </p>
+            {/* Title */}
+            <div className="mt-3 sm:mt-3.5 flex flex-col items-center">
+              <span className="font-display font-bold text-white text-xs sm:text-sm md:text-[15px] leading-tight group-hover/sympo:text-amber-300 transition-colors">
+                Innovation Ignite
+              </span>
+              <span className="font-display font-bold text-white text-xs sm:text-sm md:text-[15px] leading-tight group-hover/sympo:text-amber-300 transition-colors">
+                Symposium 2.0
+              </span>
+            </div>
+          </Link>
+
+          {/* Card 2: Creative Codex Technical Club */}
+          <Link
+            href="#contact"
+            className="group/club relative rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between text-center bg-[#06142e]/70 hover:bg-[#07193b]/95 border border-sky-500/30 hover:border-sky-400/60 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,160,255,0.22)]"
+            aria-label="Creative Codex Department Student Technical Club"
+          >
+            {/* Round Logo */}
+            <div className="relative w-18 h-18 sm:w-22 sm:h-22 md:w-24 md:h-24 rounded-full overflow-hidden flex items-center justify-center shadow-[0_0_18px_rgba(0,160,255,0.4)] group-hover/club:scale-105 transition-transform duration-300">
+              <Image
+                src="/logos/cclogo1.png"
+                alt="Creative Codex Club Emblem"
+                width={100}
+                height={100}
+                className="w-full h-full object-contain"
+              />
             </div>
 
-            {/* Circular Action Button at Bottom */}
-            <a
-              href={card.href}
-              aria-label={card.ariaLabel}
-              className={`w-11 h-11 rounded-full text-white flex items-center justify-center transition-all duration-300 group-hover:scale-110 active:scale-95 shadow-md ${
-                card.btnColor === "orange"
-                  ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-orange-500/30 hover:from-amber-600 hover:to-orange-600"
-                  : "bg-[#0088ff] hover:bg-[#0070e0] shadow-blue-500/25"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </a>
-          </div>
-        );
-      })}
+            {/* Title & Subtitle */}
+            <div className="mt-3 sm:mt-3.5 flex flex-col items-center">
+              <span className="font-display font-bold text-white text-xs sm:text-sm md:text-[15px] leading-tight group-hover/club:text-sky-300 transition-colors">
+                Creative Codex
+              </span>
+              <span className="text-[10px] sm:text-xs text-slate-400 font-medium mt-1 leading-snug">
+                Department Student
+                <br />
+                Technical Club
+              </span>
+            </div>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
