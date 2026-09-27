@@ -19,6 +19,7 @@ export type EventConfig = {
   schedule: { time: string; item: string }[];
   coordinators: { name: string; role: string; phone?: string; email?: string; image?: string }[];
   rulebookUrl?: string | null;
+  domains?: string[];
 };
 
 export const CLUB_NAME = "Creative Codex";

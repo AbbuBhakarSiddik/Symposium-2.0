@@ -93,7 +93,7 @@ export default function Hero() {
         {/* ── 4. INFO CHIPS ─────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium mb-7 sm:mb-8 max-w-3xl px-2">
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
-            <span>📅</span> October 30th, 2026
+            <span>📅</span> October 28th, 2026
           </span>
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
             <span>📍</span> Shridevi Institute of Engineering and Technology, Tumkur

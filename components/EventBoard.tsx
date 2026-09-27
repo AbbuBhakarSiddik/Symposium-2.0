@@ -151,6 +151,79 @@ const THEME_ACCENTS = [
   },
 ];
 
+type CustomTrackConfig = {
+  sectionTitle: string;
+  badgePrefix: string;
+  items: string[];
+};
+
+const EVENT_CUSTOM_CONFIG: Record<string, CustomTrackConfig> = {
+  // Mini Hackathon
+  "event-3": {
+    sectionTitle: "DOMAIN",
+    badgePrefix: "Track",
+    items: ["Fintech", "Smartcity", "Healthcare"],
+  },
+  "mini hackathon": {
+    sectionTitle: "DOMAIN",
+    badgePrefix: "Track",
+    items: ["Fintech", "Smartcity", "Healthcare"],
+  },
+
+  // Agentic AI
+  "event-1789796722143": {
+    sectionTitle: "DOMAIN",
+    badgePrefix: "Track",
+    items: ["E-Commerce", "Industrial automation", "Business Productivity"],
+  },
+  "agentic ai": {
+    sectionTitle: "DOMAIN",
+    badgePrefix: "Track",
+    items: ["E-Commerce", "Industrial automation", "Business Productivity"],
+  },
+
+  // Modal presentation
+  "event-1789796788245": {
+    sectionTitle: "KEY ROUNDS",
+    badgePrefix: "Round",
+    items: ["Presentation", "Innovation & Approach", "Jury Evaluation"],
+  },
+  "modal presentation": {
+    sectionTitle: "KEY ROUNDS",
+    badgePrefix: "Round",
+    items: ["Presentation", "Innovation & Approach", "Jury Evaluation"],
+  },
+};
+
+function getDomainIcon(dom: string): string {
+  const clean = dom.toLowerCase();
+  if (clean.includes("presentation")) return "🎤";
+  if (clean.includes("innovation") || clean.includes("approach")) return "💡";
+  if (clean.includes("jury") || clean.includes("evaluat")) return "🏆";
+  if (clean.includes("fintech") || clean.includes("finance")) return "💳";
+  if (clean.includes("smart") || clean.includes("city")) return "🏙️";
+  if (clean.includes("health") || clean.includes("med")) return "🏥";
+  if (clean.includes("commerce") || clean.includes("shop") || clean.includes("e-com")) return "🛒";
+  if (clean.includes("industrial") || clean.includes("automation")) return "⚙️";
+  if (clean.includes("business") || clean.includes("productivity")) return "📊";
+  return "⚡";
+}
+
+function parseTrackItem(item: string) {
+  const trimmed = item.trim();
+  const emojiMatch = trimmed.match(/^([\p{Extended_Pictographic}\u200d]+)\s*(.*)$/u);
+  if (emojiMatch) {
+    return {
+      icon: emojiMatch[1],
+      name: emojiMatch[2] || trimmed,
+    };
+  }
+  return {
+    icon: getDomainIcon(trimmed),
+    name: trimmed,
+  };
+}
+
 function EventCard({
   event,
   index,
@@ -166,6 +239,29 @@ function EventCard({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const eventNameKey = (event.name || "").toLowerCase().trim();
+  const customConfig =
+    EVENT_CUSTOM_CONFIG[event.id] ||
+    EVENT_CUSTOM_CONFIG[eventNameKey] ||
+    (eventNameKey.includes("hackathon")
+      ? EVENT_CUSTOM_CONFIG["mini hackathon"]
+      : eventNameKey.includes("agentic")
+      ? EVENT_CUSTOM_CONFIG["agentic ai"]
+      : eventNameKey.includes("modal") || eventNameKey.includes("presentation")
+      ? EVENT_CUSTOM_CONFIG["modal presentation"]
+      : null);
+
+  const customItems =
+    event.domains && event.domains.length > 0
+      ? event.domains
+      : customConfig
+      ? customConfig.items
+      : null;
+
+  const sectionTitle = customConfig?.sectionTitle || "DOMAIN";
+  const badgePrefix = customConfig?.badgePrefix || "Track";
+  const hasCustomItems = Boolean(customItems && customItems.length > 0);
+
   const registered = seat?.registered ?? 0;
   const capacity = event.capacity;
   const available = seat?.available ?? Math.max(capacity - registered, 0);
@@ -192,7 +288,7 @@ function EventCard({
       className={`
         relative flex flex-col justify-between rounded-3xl transition-all duration-300 border
         bg-white/95 backdrop-blur-xl p-6 sm:p-7
-        ${isOpen ? "border-blue-400 shadow-[0_20px_45px_-12px_rgba(59,130,246,0.25)] ring-1 ring-blue-300" : "border-slate-200/90 shadow-sm"}
+        ${isOpen && !hasCustomItems ? "border-blue-400 shadow-[0_20px_45px_-12px_rgba(59,130,246,0.25)] ring-1 ring-blue-300" : "border-slate-200/90 shadow-sm"}
         ${theme.hoverBorder} hover:-translate-y-1.5
       `}
     >
@@ -202,13 +298,15 @@ function EventCard({
       {/* Top Card Section */}
       <div>
         {/* Category Badge & Status Pill */}
-        <div className="flex items-center justify-between gap-2 pt-1 mb-4">
-          <div className="flex items-center gap-2">
-            <span className={`inline-block px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold uppercase tracking-wider border ${theme.badgeBg}`}>
-              {event.sheetEventLabel || "Competition"}
-            </span>
-            <span className="font-mono text-[10px] text-slate-400 font-semibold">{theme.tagNumber}</span>
-          </div>
+        <div className={`flex items-center ${hasCustomItems ? "justify-end" : "justify-between"} gap-2 pt-1 mb-4`}>
+          {!hasCustomItems && (
+            <div className="flex items-center gap-2">
+              <span className={`inline-block px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold uppercase tracking-wider border ${theme.badgeBg}`}>
+                {event.sheetEventLabel || "Competition"}
+              </span>
+              <span className="font-mono text-[10px] text-slate-400 font-semibold">{theme.tagNumber}</span>
+            </div>
+          )}
 
           {/* Status Badge */}
           {status === "open" && (
@@ -243,7 +341,7 @@ function EventCard({
           {event.tagline || event.description || "Compete, collaborate, and display your technical brilliance."}
         </p>
 
-        {/* Organized 4-Box Meta Grid */}
+        {/* Date and Time / Meta Grid */}
         <div className="mt-5 grid grid-cols-2 gap-2.5">
           {/* Date */}
           <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
@@ -263,95 +361,112 @@ function EventCard({
             </div>
           </div>
 
-          {/* Venue */}
-          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
-            <span className="text-base select-none">📍</span>
-            <div className="min-w-0">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Venue</p>
-              <p className="text-xs font-bold text-slate-800 truncate">{event.venue}</p>
-            </div>
-          </div>
+          {!hasCustomItems && (
+            <>
+              {/* Venue */}
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+                <span className="text-base select-none">📍</span>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Venue</p>
+                  <p className="text-xs font-bold text-slate-800 truncate">{event.venue}</p>
+                </div>
+              </div>
 
-          {/* Capacity */}
-          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
-            <span className="text-base select-none">👥</span>
-            <div className="min-w-0">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Capacity</p>
-              <p className="text-xs font-bold text-slate-800 truncate">{capacity} Seats</p>
-            </div>
-          </div>
+              {/* Capacity */}
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+                <span className="text-base select-none">👥</span>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Capacity</p>
+                  <p className="text-xs font-bold text-slate-800 truncate">{capacity} Seats</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Live Seat Tracker & Progress Bar */}
-        <div className="mt-5 p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/90 space-y-2">
-          <div className="flex justify-between items-center text-xs font-mono">
-            <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
-              Seats Status
-            </span>
-            <span className="font-bold text-slate-900">
-              {registered} <span className="font-normal text-slate-400">/ {capacity} filled</span>
-            </span>
-          </div>
+        {/* DOMAIN / KEY ROUNDS Section (under by under) */}
+        {hasCustomItems && customItems && customItems.length > 0 ? (
+          <div className="mt-4 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+              <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-slate-700">
+                {sectionTitle}
+              </p>
+            </div>
 
-          {/* Progress bar track */}
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80">
-            <div
-              className={`h-full rounded-full transition-all duration-700 ease-out ${
-                isClosed
-                  ? "bg-red-500"
-                  : percentageFilled >= 80
-                  ? "bg-gradient-to-r from-amber-400 to-red-500"
-                  : `bg-gradient-to-r ${theme.gradientBar}`
-              }`}
-              style={{ width: `${percentageFilled}%` }}
-            />
+            <div className="flex flex-col gap-2">
+              {customItems.map((rawItem, i) => {
+                const parsed = parseTrackItem(rawItem);
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-sky-300 transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-base select-none">{parsed.icon}</span>
+                      <span className="font-sans text-xs sm:text-sm font-bold text-slate-800">
+                        {parsed.name}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[10px] font-bold text-blue-600 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100">
+                      {badgePrefix} 0{i + 1}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
+        ) : (
+          /* Live Seat Tracker & Progress Bar for regular events */
+          <div className="mt-5 p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/90 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono">
+              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
+                Seats Status
+              </span>
+              <span className="font-bold text-slate-900">
+                {registered} <span className="font-normal text-slate-400">/ {capacity} filled</span>
+              </span>
+            </div>
 
-          <div className="flex justify-between items-center text-[11px] font-mono">
-            <span
-              className={`font-semibold px-2 py-0.5 rounded ${
-                isClosed
-                  ? "text-red-700 bg-red-100/70"
-                  : available <= capacity * 0.2
-                  ? "text-amber-800 bg-amber-100/70"
-                  : "text-blue-700 bg-blue-100/60"
-              }`}
-            >
-              {isClosed ? "0 spots remaining" : `${available} spots left`}
-            </span>
-            <span className="text-slate-500 font-medium">{percentageFilled.toFixed(0)}% Booked</span>
+            {/* Progress bar track */}
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80">
+              <div
+                className={`h-full rounded-full transition-all duration-700 ease-out ${
+                  isClosed
+                    ? "bg-red-500"
+                    : percentageFilled >= 80
+                    ? "bg-gradient-to-r from-amber-400 to-red-500"
+                    : `bg-gradient-to-r ${theme.gradientBar}`
+                }`}
+                style={{ width: `${percentageFilled}%` }}
+              />
+            </div>
+
+            <div className="flex justify-between items-center text-[11px] font-mono">
+              <span
+                className={`font-semibold px-2 py-0.5 rounded ${
+                  isClosed
+                    ? "text-red-700 bg-red-100/70"
+                    : available <= capacity * 0.2
+                    ? "text-amber-800 bg-amber-100/70"
+                    : "text-blue-700 bg-blue-100/60"
+                }`}
+              >
+                {isClosed ? "0 spots remaining" : `${available} spots left`}
+              </span>
+              <span className="text-slate-500 font-medium">{percentageFilled.toFixed(0)}% Booked</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Bottom Section: Action Buttons */}
       <div className="mt-6 pt-5 border-t border-slate-100">
-        <div className="flex items-center gap-2.5">
-          {/* Toggle Details Button */}
-          <button
-            onClick={onToggle}
-            className={`
-              flex-1 inline-flex items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all
-              ${isOpen ? "bg-blue-50/80 border-blue-400 text-blue-700 shadow-sm" : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"}
-            `}
-          >
-            <span>{isOpen ? "Hide Details" : "View Details"}</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`h-3.5 w-3.5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {/* Register Action CTA */}
-          {isClosed ? (
-            <span className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
+        {hasCustomItems ? (
+          /* For Custom Track Events: Keep ONLY the Register Now button */
+          isClosed ? (
+            <span className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
               </svg>
@@ -362,21 +477,66 @@ function EventCard({
               href={formHref}
               target={formTarget}
               rel="noreferrer"
-              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
             >
               <span>Register Now</span>
               <span className="text-sky-200">↗</span>
             </a>
-          )}
-        </div>
+          )
+        ) : (
+          /* For Regular Events: Keep View Details and Register Now */
+          <div className="flex items-center gap-2.5">
+            {/* Toggle Details Button */}
+            <button
+              onClick={onToggle}
+              className={`
+                flex-1 inline-flex items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all
+                ${isOpen ? "bg-blue-50/80 border-blue-400 text-blue-700 shadow-sm" : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"}
+              `}
+            >
+              <span>{isOpen ? "Hide Details" : "View Details"}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-3.5 w-3.5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
 
-        {/* Expandable Details Accordion */}
-        <div
-          className={`
-            overflow-hidden transition-all duration-300 ease-in-out
-            ${isOpen ? "max-h-[800px] opacity-100 mt-5 pt-4 border-t border-slate-200/80" : "max-h-0 opacity-0"}
-          `}
-        >
+            {/* Register Action CTA */}
+            {isClosed ? (
+              <span className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
+                </svg>
+                Closed
+              </span>
+            ) : (
+              <a
+                href={formHref}
+                target={formTarget}
+                rel="noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
+              >
+                <span>Register Now</span>
+                <span className="text-sky-200">↗</span>
+              </a>
+            )}
+          </div>
+        )}
+
+        {/* Expandable Details Accordion (Only for regular events with details) */}
+        {!hasCustomItems && (
+          <div
+            className={`
+              overflow-hidden transition-all duration-300 ease-in-out
+              ${isOpen ? "max-h-[800px] opacity-100 mt-5 pt-4 border-t border-slate-200/80" : "max-h-0 opacity-0"}
+            `}
+          >
           <div className="space-y-4">
             {/* Description */}
             <div>
@@ -469,6 +629,7 @@ function EventCard({
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { EVENTS, COLLEGE_NAME, EventConfig } from "@/lib/eventsConfig";
 
 type CoordinatorsSectionProps = {
@@ -64,7 +63,7 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {/* Header */}
-        <div className="mb-10 sm:mb-12 flex flex-wrap items-end justify-between gap-6 pb-6 border-b border-slate-200/80">
+        <div className="mb-10 sm:mb-12 pb-6 border-b border-slate-200/80">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="h-2.5 w-2.5 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
@@ -75,12 +74,6 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
               Meet the faculty and student leads orchestrating each competition arena. Contact coordinators directly for queries, guidance, or internal operational access.
             </p>
           </div>
-          <Link
-            href="/login"
-            className="btn-cyber text-xs py-3 px-7 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
-          >
-            Coordinator Portal →
-          </Link>
         </div>
 
         {/* 3 Events Grid */}
@@ -91,7 +84,7 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
             return (
               <div
                 key={event.id}
-                className={`glass rounded-3xl p-6 sm:p-7 transition-all duration-300 border border-slate-200/90 bg-white/95 ${theme.hoverBorder} hover:-translate-y-1.5 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-100/80 h-full`}
+                className={`glass rounded-3xl p-5 sm:p-6 transition-all duration-300 border border-slate-200/90 bg-white/95 ${theme.hoverBorder} hover:-translate-y-1.5 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-slate-100/80 h-full`}
               >
                 {/* Top decorative gradient bar */}
                 <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${theme.gradientBar}`} />
@@ -102,26 +95,22 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                 />
 
                 <div className="relative z-10 flex flex-col flex-1">
-                  {/* Event Header Banner (Fixed Height & No-Wrap) */}
-                  <div className="flex items-center justify-between gap-2 mb-4 border-b border-slate-100 pb-3 h-10">
+                  {/* Event Header Banner */}
+                  <div className="flex items-center justify-between gap-2 mb-3.5 border-b border-slate-100 pb-3">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider ${theme.badgeBg} shrink-0`}
                     >
                       <span className={`h-2 w-2 rounded-full ${theme.pulseColor} animate-pulse shrink-0`} />
-                      <span className="truncate max-w-[140px] whitespace-nowrap">
+                      <span className="truncate max-w-[220px] whitespace-nowrap">
                         {event.name}
                       </span>
                     </span>
-                    <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100/90 text-slate-600 border border-slate-200/60 shrink-0 whitespace-nowrap">
-                      <span>📍</span>
-                      <span className="truncate max-w-[110px] whitespace-nowrap">{event.venue}</span>
-                    </span>
                   </div>
 
-                  {/* Event Title & Tagline (Structured Fixed Height) */}
-                  <div className="mb-4 h-16 flex flex-col justify-center">
+                  {/* Event Title & Tagline */}
+                  <div className="mb-3.5 flex flex-col justify-center">
                     <h3
-                      className="font-display text-2xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight truncate"
+                      className="font-display text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight truncate"
                       title={event.name}
                     >
                       {event.name}
@@ -133,29 +122,8 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
 
                   {/* Coordinators Section Container */}
                   <div className="relative flex-1 flex flex-col">
-                    {/* Header bar for coordinator count & indicator (Fixed Height) */}
-                    <div className="mb-4 h-10 flex items-center justify-between px-3.5 rounded-xl bg-slate-50/90 border border-slate-200/70 text-xs font-mono shrink-0">
-                      <span className="font-bold text-slate-700 flex items-center gap-2 whitespace-nowrap">
-                        <span>👥</span>
-                        <span>
-                          {event.coordinators.length > 0
-                            ? `${event.coordinators.length} ${event.coordinators.length === 1 ? "Coordinator" : "Coordinators"} Assigned`
-                            : "Leadership Team"}
-                        </span>
-                      </span>
-                      <span className="text-[11px] font-semibold shrink-0 whitespace-nowrap">
-                        {event.coordinators.length > 2 ? (
-                          <span className="text-indigo-600">↕ Scroll for all</span>
-                        ) : (
-                          <span className="text-slate-400 font-normal">
-                            {event.coordinators.length > 0 ? "Verified" : "Announcing soon"}
-                          </span>
-                        )}
-                      </span>
-                    </div>
-
-                    {/* Middle Area: Exactly 460px height across ALL cards */}
-                    <div className="relative h-[460px]">
+                    {/* Middle Area: Fits up to 3 coordinators and scrolls internally */}
+                    <div className="relative max-h-[300px] overflow-hidden flex flex-col">
                       {event.coordinators.length > 0 ? (
                         <>
                           <div
@@ -168,22 +136,21 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                                 window.scrollBy({ top: e.deltaY, behavior: "auto" });
                               }
                             }}
-                            className="h-full space-y-3.5 overflow-y-auto overflow-x-hidden no-scrollbar overscroll-auto select-text pr-0.5"
+                            className="max-h-[300px] space-y-2.5 overflow-y-auto overflow-x-hidden overscroll-contain select-text pr-1 scrollbar-thin"
                             style={{
-                              scrollbarWidth: "none",
-                              msOverflowStyle: "none",
+                              scrollbarWidth: "thin",
                             }}
                           >
                             {event.coordinators.map((c, idx) => (
                               <div
                                 key={`${c.name}-${idx}`}
-                                className="relative flex flex-col p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-indigo-300 shadow-sm hover:shadow-md transition-all duration-300 group/coord"
+                                className="relative flex flex-col p-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-indigo-300 shadow-xs hover:shadow-md transition-all duration-200 group/coord"
                               >
                                 {/* Top row: Avatar + Name & Rank Badge */}
-                                <div className="flex items-start gap-3.5">
+                                <div className="flex items-center gap-3">
                                   {/* Coordinator Avatar */}
                                   <div
-                                    className={`relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-2xl overflow-hidden ring-2 ${theme.ringColor} shadow-md shadow-indigo-500/10 bg-slate-900 flex items-center justify-center`}
+                                    className={`relative h-12 w-12 shrink-0 rounded-xl overflow-hidden ring-2 ${theme.ringColor} shadow-xs bg-slate-900 flex items-center justify-center`}
                                   >
                                     {c.image ? (
                                       <img
@@ -197,7 +164,7 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                                     ) : null}
                                     {/* Initials Fallback */}
                                     <div
-                                      className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${theme.avatarGrad} text-lg sm:text-xl font-bold text-white uppercase font-display tracking-wider`}
+                                      className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${theme.avatarGrad} text-base font-bold text-white uppercase font-display tracking-wider`}
                                     >
                                       {c.name
                                         .split(" ")
@@ -211,17 +178,17 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                                   {/* Name, Rank & Role */}
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-1 flex-wrap">
-                                      <h4 className="font-display text-base sm:text-lg font-bold text-slate-900 group-hover/coord:text-indigo-600 transition-colors leading-snug truncate">
+                                      <h4 className="font-display text-sm sm:text-base font-bold text-slate-900 group-hover/coord:text-indigo-600 transition-colors leading-snug truncate">
                                         {c.name}
                                       </h4>
                                       {event.coordinators.length > 1 && (
-                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-xs shrink-0">
+                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-bold tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-xs shrink-0">
                                           #{idx + 1} {idx === 0 ? "Lead" : "Co-Lead"}
                                         </span>
                                       )}
                                     </div>
 
-                                    <div className="mt-1">
+                                    <div className="mt-0.5">
                                       <span
                                         className={`inline-block font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${theme.roleBg} truncate max-w-full`}
                                       >
@@ -233,11 +200,11 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
 
                                 {/* Full-width Contact Chips underneath */}
                                 {(c.phone || c.email) && (
-                                  <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-col gap-1.5">
+                                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex flex-col gap-1.5">
                                     {c.phone && (
                                       <a
                                         href={`tel:${c.phone}`}
-                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200/80 hover:border-emerald-300 transition-all font-mono text-xs font-semibold group/contact"
+                                        className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200/80 hover:border-emerald-300 transition-all font-mono text-xs font-semibold group/contact"
                                         title={`Call ${c.name} at ${c.phone}`}
                                       >
                                         <span className="text-emerald-500 group-hover/contact:scale-110 transition-transform">
@@ -249,7 +216,7 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                                     {c.email && (
                                       <a
                                         href={`mailto:${c.email}`}
-                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200/80 hover:border-indigo-300 transition-all font-mono text-xs font-medium group/contact break-all"
+                                        className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-50 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200/80 hover:border-indigo-300 transition-all font-mono text-xs font-medium group/contact break-all"
                                         title={`Email ${c.name} (${c.email})`}
                                       >
                                         <span className="text-indigo-500 group-hover/contact:scale-110 transition-transform shrink-0">
@@ -264,27 +231,27 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                             ))}
                           </div>
 
-                          {/* Subtle bottom fade if list is scrollable */}
-                          {event.coordinators.length > 2 && (
-                            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white/95 via-white/40 to-transparent rounded-b-2xl z-10" />
+                          {/* Subtle bottom fade if list has more than 3 coordinators */}
+                          {event.coordinators.length > 3 && (
+                            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white/95 via-white/40 to-transparent rounded-b-2xl z-10" />
                           )}
                         </>
                       ) : (
                         /* Beautiful Balanced Placeholder for Upcoming Leads */
-                        <div className="w-full h-full flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 p-8 text-center bg-slate-50/70 space-y-3">
-                          <div className="h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-2xl shadow-xs">
+                        <div className="w-full flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 py-6 px-4 text-center bg-slate-50/70 space-y-2">
+                          <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xl shadow-xs">
                             📢
                           </div>
-                          <div className="space-y-1">
-                            <p className="font-display font-bold text-slate-800 text-base">
+                          <div className="space-y-0.5">
+                            <p className="font-display font-bold text-slate-800 text-sm">
                               Leads Being Finalized
                             </p>
-                            <p className="font-mono text-xs text-slate-500 max-w-[220px] mx-auto leading-relaxed">
+                            <p className="font-mono text-xs text-slate-500 max-w-[200px] mx-auto leading-relaxed">
                               Event coordinators and student heads will be announced shortly.
                             </p>
                           </div>
-                          <div className="pt-2">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                          <div className="pt-1">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
                               <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
                               Assignment In Progress
                             </span>
@@ -295,9 +262,8 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                   </div>
                 </div>
 
-                {/* Event Card Footer (Structured Grid & Full-Width CTA) */}
-                <div className="relative z-10 mt-6 pt-4 border-t border-slate-200/80 space-y-2.5 shrink-0">
-                  {/* Date & Time Row - Solid pill boxes that NEVER wrap awkwardly */}
+                {/* Event Card Footer (Structured Date & Time) */}
+                <div className="relative z-10 mt-4 pt-3 border-t border-slate-100 shrink-0">
                   <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                     <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200/70 text-slate-700 font-semibold whitespace-nowrap overflow-hidden">
                       <span className="text-sm shrink-0">🗓️</span>
@@ -308,15 +274,6 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                       <span className="truncate">{event.time}</span>
                     </div>
                   </div>
-
-                  {/* Clean Structured CTA Button */}
-                  <a
-                    href="#events"
-                    className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 group/btn ${theme.ctaBtn}`}
-                  >
-                    <span>View Event Schedule</span>
-                    <span className="transition-transform group-hover/btn:translate-x-1">→</span>
-                  </a>
                 </div>
               </div>
             );

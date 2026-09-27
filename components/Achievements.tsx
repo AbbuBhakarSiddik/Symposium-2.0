@@ -15,24 +15,6 @@ const ACHIEVEMENTS = [
     badgeBg: "bg-blue-50 text-blue-700 border-blue-200",
   },
   {
-    stat: "2000+",
-    label: "Students Hosted Across Editions",
-    icon: "👥",
-    color: "from-emerald-500/10 via-teal-500/10 to-transparent",
-    textGrad: "from-emerald-600 to-teal-600",
-    border: "hover:border-emerald-300",
-    badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
-  {
-    stat: "40+",
-    label: "Partner Colleges & Institutions",
-    icon: "🏛️",
-    color: "from-amber-500/10 via-orange-500/10 to-transparent",
-    textGrad: "from-amber-600 to-orange-600",
-    border: "hover:border-amber-300",
-    badgeBg: "bg-amber-50 text-amber-700 border-amber-200",
-  },
-  {
     stat: "12+",
     label: "Industry Speakers & Mentors",
     icon: "🎤",
@@ -166,8 +148,8 @@ export default function Achievements() {
           </div>
         </div>
 
-        {/* 4 Stat Cards */}
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-4 stagger-children">
+        {/* 2 Stat Cards Side by Side */}
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto stagger-children">
           {ACHIEVEMENTS.map((a) => (
             <div
               key={a.label}
