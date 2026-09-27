@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Announcement } from "@/lib/db";
 import Link from "next/link";
 import Header from "./Header";
+import CollegeBanner from "./CollegeBanner";
 
 const POLL_INTERVAL_MS = 5000;
 
@@ -43,6 +44,11 @@ export default function AnnouncementsClient({
   const [isLive, setIsLive] = useState(true);
   const [lastFetched, setLastFetched] = useState<Date>(new Date());
   const [search, setSearch] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Live polling for admin announcements
   useEffect(() => {
@@ -83,6 +89,7 @@ export default function AnnouncementsClient({
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900">
+      <CollegeBanner />
       <Header
         runningAnnouncement={runningAnnouncement}
         runningAnnouncementActive={runningAnnouncementActive}
@@ -127,8 +134,8 @@ export default function AnnouncementsClient({
             <span>
               Showing <strong className="text-sky-600">{filtered.length}</strong> of {announcements.length} notices
             </span>
-            <span className="text-[10px] text-slate-400">
-              Synced {lastFetched.toLocaleTimeString()}
+            <span suppressHydrationWarning className="text-[10px] text-slate-400">
+              Synced {mounted ? lastFetched.toLocaleTimeString() : "--:--"}
             </span>
           </div>
         </div>
@@ -160,13 +167,13 @@ export default function AnnouncementsClient({
                       </span>
                       Notice
                     </span>
-                    <span className="font-mono text-xs font-bold text-sky-600">
-                      {relTime}
+                    <span suppressHydrationWarning className="font-mono text-xs font-bold text-sky-600">
+                      {mounted ? relTime : ""}
                     </span>
                   </div>
 
-                  <span className="font-mono text-xs text-slate-400">
-                    {fullDate}
+                  <span suppressHydrationWarning className="font-mono text-xs text-slate-400">
+                    {mounted ? fullDate : ""}
                   </span>
                 </div>
 

@@ -49,9 +49,9 @@ export default function Hero() {
         </div>
 
         {/* ── 2. MAIN TITLE IN TWO BIG CAPITAL LINES ────────────────── */}
-        <h1 className="font-display font-black uppercase tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] leading-[1.08] max-w-5xl mx-auto flex flex-col items-center justify-center text-5xl sm:text-7xl md:text-8xl lg:text-[5.75rem] xl:text-[6.25rem]">
+        <h1 className="font-display font-black uppercase tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] leading-[1.08] max-w-5xl mx-auto flex flex-col items-center justify-center text-[2.2rem] min-[380px]:text-4xl min-[480px]:text-5xl sm:text-7xl md:text-8xl lg:text-[5.75rem] xl:text-[6.25rem]">
           {/* Line 1: INNOVATION IGNITE */}
-          <span className="inline-flex items-baseline justify-center flex-wrap gap-x-3 sm:gap-x-4">
+          <span className="inline-flex items-baseline justify-center flex-wrap gap-x-2 sm:gap-x-4">
             <span className="text-white drop-shadow-md">INNOVATION</span>
             <span className="text-[#0080ff] inline-flex items-baseline">
               IGN
@@ -61,7 +61,7 @@ export default function Hero() {
                   src="/media/flame-icon.png"
                   alt=""
                   aria-hidden="true"
-                  className="absolute -top-4 sm:-top-6 md:-top-7 lg:-top-8 xl:-top-9 left-1/2 -translate-x-1/2 w-3.5 sm:w-5 md:w-6 lg:w-7 h-auto drop-shadow-[0_0_12px_rgba(0,128,255,0.9)] pointer-events-none"
+                  className="absolute -top-3.5 sm:-top-6 md:-top-7 lg:-top-8 xl:-top-9 left-1/2 -translate-x-1/2 w-3 sm:w-5 md:w-6 lg:w-7 h-auto drop-shadow-[0_0_12px_rgba(0,128,255,0.9)] pointer-events-none"
                 />
                 <span className="inline-block">I</span>
               </span>
@@ -70,7 +70,7 @@ export default function Hero() {
           </span>
 
           {/* Line 2: SYMPOSIUM 2.O */}
-          <span className="inline-flex items-baseline justify-center flex-wrap gap-x-3 sm:gap-x-4 mt-0.5 sm:mt-1">
+          <span className="inline-flex items-baseline justify-center flex-wrap gap-x-2 sm:gap-x-4 mt-0.5 sm:mt-1">
             <span className="text-white drop-shadow-md">SYMPOSIUM</span>
             <span className="text-[#0080ff] drop-shadow-[0_0_16px_rgba(0,128,255,0.4)]">
               2.O
@@ -86,19 +86,19 @@ export default function Hero() {
         </div>
 
         {/* ── 3. TAGLINE ────────────────────────────────────────────── */}
-        <p className="font-sans text-sm sm:text-base md:text-lg text-slate-200/90 font-normal tracking-wider drop-shadow mb-6 sm:mb-7">
+        <p className="font-sans text-xs sm:text-base md:text-lg text-slate-200/90 font-normal tracking-wider drop-shadow mb-6 sm:mb-7">
           Explore &bull; Create &bull; Collaborate &bull; Innovate
         </p>
 
         {/* ── 4. INFO CHIPS ─────────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium mb-7 sm:mb-8">
-          <span className="flex items-center gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-4 py-1.5 text-slate-200 shadow-sm">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium mb-7 sm:mb-8 max-w-3xl px-2">
+          <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
             <span>📅</span> Coming Soon
           </span>
-          <span className="flex items-center gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-4 py-1.5 text-slate-200 shadow-sm">
+          <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
             <span>📍</span> Shridevi Institute of Engineering and Technology, Tumkur
           </span>
-          <span className="flex items-center gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-4 py-1.5 text-slate-200 shadow-sm">
+          <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
             <span>👥</span> Open for All Students
           </span>
         </div>

@@ -17,7 +17,6 @@ export default function Header({
 }: HeaderProps = {}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -46,7 +45,6 @@ export default function Header({
     }
 
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
 
       // If programmatic smooth scroll from clicking a nav item is in progress,
       // preserve the clicked active section and avoid intermediate fluctuation.
@@ -290,8 +288,7 @@ export default function Header({
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-300 px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 border-b ${scrolled ? "border-slate-300/80 shadow-md" : "border-slate-200/60 shadow-xs"
-          }`}
+        className="relative z-30 w-full px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 border-b border-slate-200/80"
         style={{
           background: 'linear-gradient(135deg, rgba(238,244,255,0.96) 0%, rgba(245,238,255,0.94) 33%, rgba(255,240,246,0.92) 66%, rgba(237,252,251,0.94) 100%)',
           backdropFilter: 'blur(20px)',
@@ -306,12 +303,12 @@ export default function Header({
       >
         <div className="mx-auto w-full max-w-[1400px]">
           {/* Card Container with Top Vibrant Gradient Border */}
-          <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-xl transition-all">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-sm backdrop-blur-xl transition-all">
             {/* Top Gradient Stripe */}
             <div className="h-2 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-500" />
 
             {/* Header Content Bar */}
-            <div className="flex items-center justify-between min-h-[80px] px-3 sm:px-5 py-4 sm:py-5 gap-4 lg:gap-3">
+            <div className="flex items-center justify-between min-h-[72px] sm:min-h-[80px] px-3 sm:px-5 py-3 sm:py-4 gap-3">
               {/* Left: Brand Identity */}
               <Link
                 href="/"
@@ -320,7 +317,7 @@ export default function Header({
                 aria-label="Innovation Ignite Symposium 2.0"
               >
                 {/* Logo Image in Dark Rounded Square Box */}
-                <div className="h-12 w-12 sm:h-11 sm:w-11 rounded-xl bg-slate-950 p-1 flex items-center justify-center overflow-hidden border border-slate-800 shadow-xs shrink-0 transition-transform duration-200 group-hover:scale-105">
+                <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-slate-950 p-1 flex items-center justify-center overflow-hidden border border-slate-800 shadow-xs shrink-0 transition-transform duration-200 group-hover:scale-105">
                   <Image
                     src="/logos/sympo2.0.jpeg"
                     alt={`${CLUB_NAME} logo`}
@@ -347,9 +344,9 @@ export default function Header({
                 </span>
               </Link>
 
-              {/* Center: Desktop Navigation Capsule Dock */}
+              {/* Center / Right: Desktop Navigation Capsule Dock */}
               <nav
-                className="hidden lg:flex items-center gap-0.5 xl:gap-1 p-1 rounded-full border border-slate-200/80 bg-white shadow-xs shrink"
+                className="hidden lg:flex items-center gap-1 xl:gap-1.5 p-1 rounded-full border border-slate-200/80 bg-white shadow-xs shrink-0"
                 aria-label="Main navigation"
               >
                 {navLinks.map((link) => {
@@ -361,7 +358,7 @@ export default function Header({
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link.id, link.href)}
                       className={`
-                        relative flex items-center gap-1.5 px-2 lg:px-2.5 2xl:px-3.5 py-1.5 rounded-full font-mono text-[11px] 2xl:text-xs font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer
+                        relative flex items-center gap-1.5 px-2.5 lg:px-3 xl:px-3.5 py-1.5 rounded-full font-mono text-[11px] 2xl:text-xs font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer
                         ${isActive
                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
                           : "text-slate-700 hover:text-blue-600 hover:bg-slate-50"
@@ -385,41 +382,11 @@ export default function Header({
                 })}
               </nav>
 
-              {/* Right: Coordinator/Admin Action Button & Hamburger */}
-              <div className="flex items-center gap-2 h-11 px-5 shrink-0">
-                <Link
-                  href="/login"
-                  className="relative group inline-flex items-center gap-3 px-3.5 sm:px-4 2xl:px-5 py-2 rounded-full font-mono text-[11px] 2xl:text-xs font-semibold text-white bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-md shadow-blue-500/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap shrink-0"
-                >
-                  {/* User Icon Circle */}
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-white shrink-0">
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-
-                  <span className="tracking-wide">Coordinator / Admin</span>
-
-                  {/* Down Chevron / Caret */}
-                  <svg
-                    className="w-3.5 h-3.5 text-white/90 transition-transform duration-200 group-hover:translate-y-0.5 shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </Link>
-
-                {/* Mobile Menu Hamburger (for screens < lg) */}
+              {/* Right: Mobile Menu 3-Lines Hamburger (visible on screens < lg) */}
+              <div className="flex items-center lg:hidden shrink-0">
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="lg:hidden flex h-9 w-9 sm:h-10 sm:w-10 flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white shadow-xs transition-colors hover:bg-slate-50 shrink-0"
+                  className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white shadow-xs transition-colors hover:bg-slate-50 active:scale-95 shrink-0"
                   aria-label="Toggle navigation menu"
                   aria-expanded={isMobileMenuOpen}
                 >
@@ -574,21 +541,10 @@ export default function Header({
             </nav>
           </div>
 
-          <div className="pt-6 border-t border-slate-200">
-            <Link
-              href="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-full font-mono text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md text-center"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>Coordinator / Admin</span>
-            </Link>
+          <div className="pt-6 border-t border-slate-200 text-center">
+            <p className="font-mono text-[11px] text-slate-400">
+              Innovation Ignite 2.0 • SIET
+            </p>
           </div>
         </div>
       </div>

@@ -45,8 +45,10 @@ export default function CoordinatorDashboardClient({
 }: CoordinatorDashboardClientProps) {
   // ── Theme State (Dark / Light) matching Admin Panel ──
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("admin-dashboard-theme");
     const initial = saved === "light" || saved === "dark" ? saved : "dark";
     setTheme(initial);
@@ -1256,7 +1258,7 @@ export default function CoordinatorDashboardClient({
                       </span>
                     </div>
                     <p className={`mt-2 font-mono text-[11px] ${subText} flex items-center justify-between`}>
-                      <span>Updated: {lastRefreshed.toLocaleTimeString()}</span>
+                      <span suppressHydrationWarning>Updated: {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}</span>
                       <button
                         onClick={handleRefreshCounts}
                         disabled={isRefreshing}
@@ -1437,8 +1439,8 @@ export default function CoordinatorDashboardClient({
                     </div>
                     <p className={`font-mono text-xs ${subText} mt-1`}>
                       Refreshes automatically every 30s · Last updated:{" "}
-                      <span className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                        {lastRefreshed.toLocaleTimeString()}
+                      <span suppressHydrationWarning className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
+                        {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}
                       </span>
                     </p>
                   </div>
@@ -2022,7 +2024,7 @@ export default function CoordinatorDashboardClient({
                           {idx === 0 ? "Latest Bulletin" : `Announcement #${announcements.length - idx}`}
                         </span>
                       </div>
-                      <span className={`font-mono text-[11px] ${subText}`}>
+                      <span suppressHydrationWarning className={`font-mono text-[11px] ${subText}`}>
                         {new Date(a.created_at).toLocaleString()}
                       </span>
                     </div>
@@ -2282,7 +2284,7 @@ export default function CoordinatorDashboardClient({
                             <span>{meta.icon}</span>
                             <span>{meta.label}</span>
                           </span>
-                          <span className={`font-mono text-[10px] ${subText}`}>
+                          <span suppressHydrationWarning className={`font-mono text-[10px] ${subText}`}>
                             {new Date(r.created_at).toLocaleDateString()}
                           </span>
                         </div>

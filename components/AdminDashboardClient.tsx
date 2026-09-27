@@ -49,8 +49,10 @@ export default function AdminDashboardClient({
 }: AdminDashboardClientProps) {
   // ── Theme State (Dark / Light) ──
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("admin-dashboard-theme");
     const initial = saved === "light" || saved === "dark" ? saved : "dark";
     setTheme(initial);
@@ -1412,7 +1414,7 @@ export default function AdminDashboardClient({
                 </span>
               </div>
               <p className={`mt-2 font-mono text-[11px] ${subText} flex items-center justify-between`}>
-                <span>Updated: {lastRefreshed.toLocaleTimeString()}</span>
+                <span suppressHydrationWarning>Updated: {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}</span>
                 <button
                   onClick={handleRefreshCounts}
                   disabled={isRefreshing}
@@ -1638,8 +1640,8 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
               </div>
               <p className={`font-mono text-xs ${subText} mt-1`}>
                 Auto-refreshes every 30s · Last updated:{" "}
-                <span className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                  {lastRefreshed.toLocaleTimeString()}
+                <span suppressHydrationWarning className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
+                  {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}
                 </span>
               </p>
             </div>
@@ -3070,7 +3072,7 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                       >
                         <div>
                           <p className={`text-xs ${isDark ? "text-slate-200" : "text-slate-800"} font-medium leading-relaxed`}>{a.message}</p>
-                          <p className={`mt-1 font-mono text-[10px] uppercase tracking-wider ${subText}`}>
+                          <p suppressHydrationWarning className={`mt-1 font-mono text-[10px] uppercase tracking-wider ${subText}`}>
                             by @{a.created_by} · {new Date(a.created_at).toLocaleDateString()}
                           </p>
                         </div>
