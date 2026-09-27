@@ -260,11 +260,13 @@ export async function updateSiteSettingsAction(formData: FormData) {
   const clubName = String(formData.get("clubName") || "").trim();
   const collegeName = String(formData.get("collegeName") || "").trim();
   const registerFormUrl = String(formData.get("registerFormUrl") || "").trim();
+  const googleSheetUrl = String(formData.get("googleSheetUrl") || "").trim();
 
   if (symposiumName) await updateSiteSetting("symposiumName", symposiumName);
   if (clubName) await updateSiteSetting("clubName", clubName);
   if (collegeName) await updateSiteSetting("collegeName", collegeName);
   if (registerFormUrl) await updateSiteSetting("registerFormUrl", registerFormUrl);
+  if (googleSheetUrl) await updateSiteSetting("googleSheetUrl", googleSheetUrl);
 
   const runningAnnouncement = formData.get("runningAnnouncement");
   if (runningAnnouncement !== null) {

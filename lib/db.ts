@@ -354,6 +354,7 @@ export type SiteSettings = {
   clubName: string;
   collegeName: string;
   registerFormUrl: string;
+  googleSheetUrl?: string;
   runningAnnouncement?: string;
   runningAnnouncementActive?: string;
 };
@@ -364,6 +365,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     clubName: CLUB_NAME,
     collegeName: COLLEGE_NAME,
     registerFormUrl: REGISTER_FORM_URL,
+    googleSheetUrl: "https://docs.google.com/spreadsheets/d/1KxPkq3bnXk-08Vr8g4mEMNjbxwiiavneUtHMl_M4SbY/edit?gid=1683046113#gid=1683046113",
     runningAnnouncement: "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
     runningAnnouncementActive: "true",
   };
@@ -379,6 +381,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       clubName: map.clubName || defaults.clubName,
       collegeName: map.collegeName || defaults.collegeName,
       registerFormUrl: map.registerFormUrl || defaults.registerFormUrl,
+      googleSheetUrl: map.googleSheetUrl || defaults.googleSheetUrl,
       runningAnnouncement: map.runningAnnouncement !== undefined ? map.runningAnnouncement : defaults.runningAnnouncement,
       runningAnnouncementActive: map.runningAnnouncementActive !== undefined ? map.runningAnnouncementActive : defaults.runningAnnouncementActive,
     };

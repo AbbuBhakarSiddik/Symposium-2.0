@@ -9,7 +9,7 @@ export async function GET() {
     listEvents(),
     getSiteSettings().catch(() => null),
   ]);
-  const { counts, isLive } = await getLiveCounts(events);
+  const { counts, isLive, error, totalResponses } = await getLiveCounts(events);
 
   const data = events.map((e) => ({
     id: e.id,
@@ -20,6 +20,8 @@ export async function GET() {
 
   return NextResponse.json({
     isLive,
+    error: error || null,
+    totalResponses: totalResponses ?? null,
     data,
     events,
     registerFormUrl: settings?.registerFormUrl || "#",

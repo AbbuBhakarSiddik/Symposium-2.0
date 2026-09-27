@@ -3241,8 +3241,33 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                       <input
                         name="registerFormUrl"
                         defaultValue={settings.registerFormUrl}
+                        placeholder="https://forms.gle/..."
                         className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
                       />
+                    </div>
+                    <div className="col-span-full">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
+                          Google Sheets Live Response URL / ID
+                        </label>
+                        <a
+                          href={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1KxPkq3bnXk-08Vr8g4mEMNjbxwiiavneUtHMl_M4SbY/edit?gid=1683046113#gid=1683046113"}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1 font-mono"
+                        >
+                          Open Sheet ↗
+                        </a>
+                      </div>
+                      <input
+                        name="googleSheetUrl"
+                        defaultValue={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1KxPkq3bnXk-08Vr8g4mEMNjbxwiiavneUtHMl_M4SbY/edit?gid=1683046113#gid=1683046113"}
+                        placeholder="https://docs.google.com/spreadsheets/d/..."
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                      <p className={`mt-1.5 font-mono text-[11px] ${subText}`}>
+                        💡 Responses are fetched live. In Google Sheets, make sure to click <strong className="text-amber-400">Share → Anyone with the link → Viewer</strong> so the website can read real-time registration counts.
+                      </p>
                     </div>
 
                     <button
