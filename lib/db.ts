@@ -458,22 +458,6 @@ export const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
     caption: "High-octane esports tournament stage action.",
     created_at: new Date().toISOString(),
   },
-  {
-    id: "g-v1",
-    type: "video",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    title: "Symposium 1.0 Official Aftermovie",
-    caption: "Highlights & energy from our previous national level edition.",
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "g-v2",
-    type: "video",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    title: "Hackathon Highlights & Winner Showcase",
-    caption: "24 hours of innovation distilled into a 3-minute recap.",
-    created_at: new Date().toISOString(),
-  },
 ];
 
 export async function listGalleryItems(): Promise<GalleryItem[]> {

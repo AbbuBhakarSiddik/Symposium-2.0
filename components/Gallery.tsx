@@ -40,11 +40,11 @@ export default function Gallery({ items = [] }: GalleryProps) {
   const activeItems = items.length > 0 ? items : DEFAULT_GALLERY_ITEMS;
 
   const photos = activeItems.filter((i) => i.type === "photo");
-  const videos = activeItems.filter((i) => i.type === "video");
+  // Only show real uploaded videos — no fallback to dummy/default videos
+  const uploadedVideos = items.filter((i) => i.type === "video");
 
-  // Fallback defaults if photos or videos are empty
+  // Fallback defaults if photos are empty
   const displayPhotos = photos.length > 0 ? photos : DEFAULT_GALLERY_ITEMS.filter((i) => i.type === "photo");
-  const displayVideos = videos.length > 0 ? videos : DEFAULT_GALLERY_ITEMS.filter((i) => i.type === "video");
 
   // Duplicate photos for smooth infinite marquee continuous scrolling
   const duplicatedPhotos = [...displayPhotos, ...displayPhotos];
@@ -53,7 +53,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
   const [activePhoto, setActivePhoto] = useState<GalleryItem | null>(null);
   const [activeVideo, setActiveVideo] = useState<GalleryItem | null>(null);
 
-  const visibleVideos = displayVideos;
+  const visibleVideos = uploadedVideos;
 
   return (
     <section id="gallery" className="scroll-mt-24 border-t border-sky-200/60 bg-gradient-to-br from-[#F0F7FF] via-[#F8FAFC] to-[#F1F5F9] pt-10 pb-12 sm:pt-14 sm:pb-16 relative overflow-hidden text-slate-900 shadow-sm">
@@ -144,93 +144,95 @@ export default function Gallery({ items = [] }: GalleryProps) {
           </div>
         </div>
 
-        {/* ===== VIDEO SECTION – Highlighted Cards & Interactive Player ===== */}
-        <div id="video-album-section">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8">
-            <div>
-              <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
-                <span>🎬 Event Highlights</span>
-              </h3>
-              <p className="text-sm text-slate-600 font-sans mt-1">
-                Videos capturing the key moments and activities from the event
-              </p>
+        {/* ===== VIDEO SECTION – Highlighted Cards & Interactive Player (only shown when uploaded) ===== */}
+        {visibleVideos.length > 0 && (
+          <div id="video-album-section" className="mb-14 sm:mb-16">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8">
+              <div>
+                <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
+                  <span>🎬 Event Highlights</span>
+                </h3>
+                <p className="text-sm text-slate-600 font-sans mt-1">
+                  Videos capturing the key moments and activities from the event
+                </p>
+              </div>
+              <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
+                Click video to play
+              </span>
             </div>
-            <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
-              Click video to play
-            </span>
-          </div>
 
-          {/* Videos Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {visibleVideos.map((video, index) => {
-              return (
-                <div
-                  key={`video-${video.id}-${index}`}
-                  onClick={() => setActiveVideo(video)}
-                  className={`
-                    group relative aspect-video overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xl
-                    bg-gradient-to-br ${gradientStyles[(index + 3) % gradientStyles.length]}
-                    transition-all duration-300 hover:scale-[1.03] hover:border-pink-500 hover:shadow-[0_25px_50px_rgba(236,72,153,0.25)]
-                    flex items-center justify-center cursor-pointer
-                  `}
-                >
-                  {/* Thumbnail Image or Video Poster */}
-                  {getVideoThumbnail(video.url) ? (
-                    <img
-                      src={getVideoThumbnail(video.url)!}
-                      alt={video.title || `Highlight Video ${index + 1}`}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = "none";
-                      }}
-                    />
-                  ) : video.url ? (
-                    <video
-                      src={video.url}
-                      preload="metadata"
-                      muted
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                    />
-                  ) : null}
+            {/* Videos Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+              {visibleVideos.map((video, index) => {
+                return (
+                  <div
+                    key={`video-${video.id}-${index}`}
+                    onClick={() => setActiveVideo(video)}
+                    className={`
+                      group relative aspect-video overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xl
+                      bg-gradient-to-br ${gradientStyles[(index + 3) % gradientStyles.length]}
+                      transition-all duration-300 hover:scale-[1.03] hover:border-pink-500 hover:shadow-[0_25px_50px_rgba(236,72,153,0.25)]
+                      flex items-center justify-center cursor-pointer
+                    `}
+                  >
+                    {/* Thumbnail Image or Video Poster */}
+                    {getVideoThumbnail(video.url) ? (
+                      <img
+                        src={getVideoThumbnail(video.url)!}
+                        alt={video.title || `Highlight Video ${index + 1}`}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                    ) : video.url ? (
+                      <video
+                        src={video.url}
+                        preload="metadata"
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                      />
+                    ) : null}
 
-                  {/* Subtle dark tint so play button pops */}
-                  <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/10 transition-colors" />
+                    {/* Subtle dark tint so play button pops */}
+                    <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/10 transition-colors" />
 
-                  {/* Play Button Overlay */}
-                  <div className="relative z-10 flex items-center justify-center">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white bg-slate-900/60 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-600 group-hover:border-pink-300 group-hover:scale-110 transition-all shadow-2xl">
-                      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1 transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+                    {/* Play Button Overlay */}
+                    <div className="relative z-10 flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white bg-slate-900/60 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-600 group-hover:border-pink-300 group-hover:scale-110 transition-all shadow-2xl">
+                        <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+        )}
 
-          {/* Action Trigger Area: View Full Event Album & Socials */}
-          <div className="mt-12 flex flex-col items-center justify-center gap-4 text-center">
-            <a
-              href="https://www.instagram.com/creative_codex_club"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+        {/* Action Trigger Area: View Full Event Album & Socials */}
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 text-center">
+          <a
+            href="https://www.instagram.com/creative_codex_club"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+          >
+            <span>View Full Event Album &amp; Socials</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 transition-transform group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
             >
-              <span>View Full Event Album &amp; Socials</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
       </div>
 
