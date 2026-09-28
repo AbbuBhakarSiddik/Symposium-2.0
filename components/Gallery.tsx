@@ -327,4 +327,4 @@ export default function Gallery({ items = [] }: GalleryProps) {
       )}
     </section>
   );
-}
+}

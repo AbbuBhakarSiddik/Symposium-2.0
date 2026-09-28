@@ -663,15 +663,14 @@ export default function CoordinatorDashboardClient({
                   Coordinator Panel
                 </h2>
                 <span
-                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase tracking-wider border shrink-0 ${
-                    liveIsLive
-                      ? isDark
-                        ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                        : "bg-emerald-100 text-emerald-950 border-emerald-300"
-                      : isDark
+                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase tracking-wider border shrink-0 ${liveIsLive
+                    ? isDark
+                      ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                      : "bg-emerald-100 text-emerald-950 border-emerald-300"
+                    : isDark
                       ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
                       : "bg-amber-100 text-amber-950 border-amber-300"
-                  }`}
+                    }`}
                 >
                   <span className={`h-1.5 w-1.5 rounded-full ${liveIsLive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
                   {liveIsLive ? "Live" : "Preview"}
@@ -688,11 +687,10 @@ export default function CoordinatorDashboardClient({
           {isMobile && (
             <button
               onClick={() => setIsMobileNavOpen(false)}
-              className={`p-1.5 rounded-lg border ${
-                isDark
-                  ? "border-white/10 text-slate-400 hover:text-white hover:bg-white/5"
-                  : "border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-              }`}
+              className={`p-1.5 rounded-lg border ${isDark
+                ? "border-white/10 text-slate-400 hover:text-white hover:bg-white/5"
+                : "border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                }`}
               aria-label="Close sidebar"
             >
               ✕
@@ -714,19 +712,17 @@ export default function CoordinatorDashboardClient({
               key={tab.id}
               type="button"
               onClick={() => handleNavTabClick(tab.id)}
-              className={`group w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-semibold ${
-                isActive
-                  ? tab.activePill
-                  : `${isDark ? "text-slate-300" : "text-slate-700"} ${tab.hoverClass}`
-              }`}
+              className={`group w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-semibold ${isActive
+                ? tab.activePill
+                : `${isDark ? "text-slate-300" : "text-slate-700"} ${tab.hoverClass}`
+                }`}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-200 shrink-0 ${
-                    isActive
-                      ? `${tab.activeIconBadge} scale-105`
-                      : `${tab.colorBadge} opacity-90 group-hover:opacity-100 group-hover:scale-105`
-                  }`}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-200 shrink-0 ${isActive
+                    ? `${tab.activeIconBadge} scale-105`
+                    : `${tab.colorBadge} opacity-90 group-hover:opacity-100 group-hover:scale-105`
+                    }`}
                 >
                   {tab.icon(isActive)}
                 </div>
@@ -734,11 +730,10 @@ export default function CoordinatorDashboardClient({
               </div>
               <div className="flex items-center gap-1.5">
                 {tab.badgeText && (
-                  <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold ${
-                    isActive
-                      ? isDark ? "bg-white/20 text-white" : "bg-sky-200 text-sky-900"
-                      : isDark ? "bg-white/5 text-slate-400" : "bg-slate-100 text-slate-600"
-                  }`}>
+                  <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold ${isActive
+                    ? isDark ? "bg-white/20 text-white" : "bg-sky-200 text-sky-900"
+                    : isDark ? "bg-white/5 text-slate-400" : "bg-slate-100 text-slate-600"
+                    }`}>
                     {tab.badgeText}
                   </span>
                 )}
@@ -760,11 +755,10 @@ export default function CoordinatorDashboardClient({
           </div>
           <Link
             href="/"
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-mono transition ${
-              isDark
-                ? "text-slate-400 hover:text-slate-200 hover:bg-white/5"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-            }`}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-mono transition ${isDark
+              ? "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+              : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
           >
             <span>🌐</span>
             <span>View Public Site</span>
@@ -772,11 +766,10 @@ export default function CoordinatorDashboardClient({
           {currentUser.role === "admin" && (
             <Link
               href="/admin"
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-mono font-bold transition ${
-                isDark
-                  ? "text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10"
-                  : "text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50"
-              }`}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-mono font-bold transition ${isDark
+                ? "text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10"
+                : "text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50"
+                }`}
             >
               <span>⚡</span>
               <span>Switch to Admin Panel</span>
@@ -796,11 +789,10 @@ export default function CoordinatorDashboardClient({
             <p className={`text-[10px] font-mono truncate ${subText}`}>@{currentUser.username}</p>
           </div>
           <span
-            className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-mono font-bold border ${
-              isDark
-                ? "bg-sky-500/15 text-sky-300 border-sky-500/30"
-                : "bg-sky-100 text-sky-950 border-sky-300"
-            }`}
+            className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-mono font-bold border ${isDark
+              ? "bg-sky-500/15 text-sky-300 border-sky-500/30"
+              : "bg-sky-100 text-sky-950 border-sky-300"
+              }`}
           >
             {currentUser.role === "admin" ? "Admin" : "Coordinator"}
           </span>
@@ -810,11 +802,10 @@ export default function CoordinatorDashboardClient({
           <button
             type="button"
             onClick={toggleTheme}
-            className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border font-mono text-[11px] font-bold transition ${
-              isDark
-                ? "border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
-                : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
-            }`}
+            className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border font-mono text-[11px] font-bold transition ${isDark
+              ? "border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
+              : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+              }`}
           >
             <span>{isDark ? "☀️ Light" : "🌙 Dark"}</span>
           </button>
@@ -831,19 +822,16 @@ export default function CoordinatorDashboardClient({
       {/* Subtle Background Glows matching Admin Panel */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div
-          className={`absolute top-[-10%] left-[15%] w-[600px] h-[600px] rounded-full blur-[140px] transition-opacity duration-500 ${
-            isDark ? "bg-sky-500/10 opacity-70" : "bg-sky-400/15 opacity-50"
-          }`}
+          className={`absolute top-[-10%] left-[15%] w-[600px] h-[600px] rounded-full blur-[140px] transition-opacity duration-500 ${isDark ? "bg-sky-500/10 opacity-70" : "bg-sky-400/15 opacity-50"
+            }`}
         />
         <div
-          className={`absolute top-[35%] right-[-5%] w-[500px] h-[500px] rounded-full blur-[140px] transition-opacity duration-500 ${
-            isDark ? "bg-indigo-500/10 opacity-60" : "bg-indigo-400/15 opacity-40"
-          }`}
+          className={`absolute top-[35%] right-[-5%] w-[500px] h-[500px] rounded-full blur-[140px] transition-opacity duration-500 ${isDark ? "bg-indigo-500/10 opacity-60" : "bg-indigo-400/15 opacity-40"
+            }`}
         />
         <div
-          className={`absolute bottom-[-10%] left-[25%] w-[600px] h-[600px] rounded-full blur-[150px] transition-opacity duration-500 ${
-            isDark ? "bg-cyan-500/10 opacity-50" : "bg-cyan-300/15 opacity-40"
-          }`}
+          className={`absolute bottom-[-10%] left-[25%] w-[600px] h-[600px] rounded-full blur-[150px] transition-opacity duration-500 ${isDark ? "bg-cyan-500/10 opacity-50" : "bg-cyan-300/15 opacity-40"
+            }`}
         />
         <div
           className="absolute inset-0 opacity-[0.035]"
@@ -866,21 +854,19 @@ export default function CoordinatorDashboardClient({
 
       {/* Mobile Top Bar Navigation */}
       <div
-        className={`lg:hidden sticky top-0 z-40 border-b px-4 py-3 flex items-center justify-between backdrop-blur-xl ${
-          isDark
-            ? "bg-[#0b101b]/90 border-white/10 text-white"
-            : "bg-white/95 border-slate-200 text-slate-900"
-        }`}
+        className={`lg:hidden sticky top-0 z-40 border-b px-4 py-3 flex items-center justify-between backdrop-blur-xl ${isDark
+          ? "bg-[#0b101b]/90 border-white/10 text-white"
+          : "bg-white/95 border-slate-200 text-slate-900"
+          }`}
       >
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setIsMobileNavOpen(true)}
-            className={`p-2 rounded-xl border ${
-              isDark
-                ? "border-white/10 text-slate-300 hover:bg-white/5"
-                : "border-slate-200 text-slate-700 hover:bg-slate-100"
-            }`}
+            className={`p-2 rounded-xl border ${isDark
+              ? "border-white/10 text-slate-300 hover:bg-white/5"
+              : "border-slate-200 text-slate-700 hover:bg-slate-100"
+              }`}
             aria-label="Open navigation sidebar"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -898,11 +884,10 @@ export default function CoordinatorDashboardClient({
           <button
             type="button"
             onClick={toggleTheme}
-            className={`p-2 rounded-xl border text-xs ${
-              isDark
-                ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
-                : "border-slate-200 bg-slate-50 text-slate-700"
-            }`}
+            className={`p-2 rounded-xl border text-xs ${isDark
+              ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
+              : "border-slate-200 bg-slate-50 text-slate-700"
+              }`}
             aria-label="Toggle Theme"
           >
             {isDark ? "☀️" : "🌙"}
@@ -918,9 +903,8 @@ export default function CoordinatorDashboardClient({
             onClick={() => setIsMobileNavOpen(false)}
           />
           <aside
-            className={`fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] border-r ${
-              isDark ? "bg-[#0b101b] border-white/10" : "bg-white border-slate-200"
-            } z-50 flex flex-col shadow-2xl transition-transform`}
+            className={`fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] border-r ${isDark ? "bg-[#0b101b] border-white/10" : "bg-white border-slate-200"
+              } z-50 flex flex-col shadow-2xl transition-transform`}
           >
             {renderSidebarContent(true)}
           </aside>
@@ -931,11 +915,10 @@ export default function CoordinatorDashboardClient({
       <div className="relative z-10 min-h-screen">
         {/* Desktop Fixed Left Sidebar */}
         <aside
-          className={`w-64 border-r transition-colors duration-300 ${
-            isDark
-              ? "bg-[#0b101b]/95 border-white/10"
-              : "bg-white/95 border-slate-200/80 shadow-xs"
-          } backdrop-blur-xl hidden lg:flex lg:flex-col fixed top-0 bottom-0 left-0 h-screen z-30`}
+          className={`w-64 border-r transition-colors duration-300 ${isDark
+            ? "bg-[#0b101b]/95 border-white/10"
+            : "bg-white/95 border-slate-200/80 shadow-xs"
+            } backdrop-blur-xl hidden lg:flex lg:flex-col fixed top-0 bottom-0 left-0 h-screen z-30`}
         >
           {renderSidebarContent(false)}
         </aside>
@@ -953,11 +936,10 @@ export default function CoordinatorDashboardClient({
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2.5">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase border shadow-xs ${
-                          isDark
-                            ? "bg-sky-500/15 text-sky-300 border-sky-400/30"
-                            : "bg-sky-100 text-sky-950 border-sky-300"
-                        }`}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase border shadow-xs ${isDark
+                          ? "bg-sky-500/15 text-sky-300 border-sky-400/30"
+                          : "bg-sky-100 text-sky-950 border-sky-300"
+                          }`}
                       >
                         <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-ping" />
                         COORDINATOR OPERATIONS DESK
@@ -992,11 +974,10 @@ export default function CoordinatorDashboardClient({
                       type="button"
                       onClick={toggleTheme}
                       aria-label="Toggle Theme"
-                      className={`group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm ${
-                        isDark
-                          ? "border-amber-400/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:border-amber-400"
-                          : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                      }`}
+                      className={`group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm ${isDark
+                        ? "border-amber-400/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:border-amber-400"
+                        : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
                     >
                       {isDark ? (
                         <>
@@ -1015,11 +996,10 @@ export default function CoordinatorDashboardClient({
                     {currentUser.role === "admin" && (
                       <Link
                         href="/admin"
-                        className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-mono text-xs font-semibold shadow-sm transition-all duration-200 ${
-                          isDark
-                            ? "border-indigo-400/40 bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25 hover:border-indigo-400"
-                            : "border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white"
-                        }`}
+                        className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-mono text-xs font-semibold shadow-sm transition-all duration-200 ${isDark
+                          ? "border-indigo-400/40 bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25 hover:border-indigo-400"
+                          : "border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white"
+                          }`}
                       >
                         <span>⚡</span>
                         Admin Panel
@@ -1034,76 +1014,69 @@ export default function CoordinatorDashboardClient({
                 <div className={`mt-6 pt-5 border-t ${borderCol} flex flex-wrap gap-2.5 text-xs font-mono`}>
                   <a
                     href="#live-seats-table"
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 hover:border-cyan-400"
-                        : "bg-cyan-50 text-cyan-950 border-cyan-300 hover:bg-cyan-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 hover:border-cyan-400"
+                      : "bg-cyan-50 text-cyan-950 border-cyan-300 hover:bg-cyan-100"
+                      }`}
                   >
                     📊 Live Seats Table
                   </a>
                   <a
                     href="#visual-analytics"
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 hover:border-emerald-400"
-                        : "bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 hover:border-emerald-400"
+                      : "bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
+                      }`}
                   >
                     📈 Seat Analytics
                   </a>
                   <button
                     type="button"
                     onClick={() => handleNavTabClick("events")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-amber-500/15 text-amber-300 border-amber-400/30 hover:border-amber-400"
-                        : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-amber-500/15 text-amber-300 border-amber-400/30 hover:border-amber-400"
+                      : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
+                      }`}
                   >
                     📅 Event Cards ({events.length})
                   </button>
                   <button
                     type="button"
                     onClick={() => handleNavTabClick("schedules")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 hover:border-indigo-400"
-                        : "bg-indigo-50 text-indigo-950 border-indigo-300 hover:bg-indigo-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 hover:border-indigo-400"
+                      : "bg-indigo-50 text-indigo-950 border-indigo-300 hover:bg-indigo-100"
+                      }`}
                   >
                     ⏱️ Master Schedules
                   </button>
                   <button
                     type="button"
                     onClick={() => handleNavTabClick("directory")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-teal-500/15 text-teal-300 border-teal-400/30 hover:border-teal-400"
-                        : "bg-teal-50 text-teal-950 border-teal-300 hover:bg-teal-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-teal-500/15 text-teal-300 border-teal-400/30 hover:border-teal-400"
+                      : "bg-teal-50 text-teal-950 border-teal-300 hover:bg-teal-100"
+                      }`}
                   >
                     👥 Team Directory ({users.length})
                   </button>
                   <button
                     type="button"
                     onClick={() => handleNavTabClick("announcements")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-rose-500/15 text-rose-300 border-rose-400/30 hover:border-rose-400"
-                        : "bg-rose-50 text-rose-950 border-rose-300 hover:bg-rose-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-rose-500/15 text-rose-300 border-rose-400/30 hover:border-rose-400"
+                      : "bg-rose-50 text-rose-950 border-rose-300 hover:bg-rose-100"
+                      }`}
                   >
                     📢 Announcements ({announcements.length})
                   </button>
                   <button
                     type="button"
                     onClick={() => handleNavTabClick("checklist")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                      isDark
-                        ? "bg-sky-500/15 text-sky-300 border-sky-400/30 hover:border-sky-400"
-                        : "bg-sky-50 text-sky-950 border-sky-300 hover:bg-sky-100"
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                      ? "bg-sky-500/15 text-sky-300 border-sky-400/30 hover:border-sky-400"
+                      : "bg-sky-50 text-sky-950 border-sky-300 hover:bg-sky-100"
+                      }`}
                   >
                     ✅ Day Checklist ({checklistCompletionPct}%)
                   </button>
@@ -1168,28 +1141,25 @@ export default function CoordinatorDashboardClient({
                       <span className={`font-mono text-xs ${subText}`}>Events Listed</span>
                     </div>
                     <div className="mt-3 flex items-center gap-1.5 font-mono text-[11px]">
-                      <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${
-                        isDark
-                          ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                          : "bg-emerald-100 border-emerald-300 text-emerald-950"
-                      }`}>
+                      <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${isDark
+                        ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                        : "bg-emerald-100 border-emerald-300 text-emerald-950"
+                        }`}>
                         ● {statusStats.openCount} Open
                       </span>
                       {statusStats.fillingCount > 0 && (
-                        <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${
-                          isDark
-                            ? "bg-amber-500/15 border-amber-500/30 text-amber-300"
-                            : "bg-amber-100 border-amber-300 text-amber-950"
-                        }`}>
+                        <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${isDark
+                          ? "bg-amber-500/15 border-amber-500/30 text-amber-300"
+                          : "bg-amber-100 border-amber-300 text-amber-950"
+                          }`}>
                           ● {statusStats.fillingCount} Filling
                         </span>
                       )}
                       {statusStats.fullCount > 0 && (
-                        <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${
-                          isDark
-                            ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
-                            : "bg-rose-100 border-rose-300 text-rose-950"
-                        }`}>
+                        <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${isDark
+                          ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
+                          : "bg-rose-100 border-rose-300 text-rose-950"
+                          }`}>
                           ● {statusStats.fullCount} Full
                         </span>
                       )}
@@ -1235,11 +1205,10 @@ export default function CoordinatorDashboardClient({
                       Google Sheets Sync
                     </span>
                     <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-xl border ${
-                        liveIsLive
-                          ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-500"
-                          : "bg-amber-500/15 border-amber-400/30 text-amber-500"
-                      }`}
+                      className={`flex h-8 w-8 items-center justify-center rounded-xl border ${liveIsLive
+                        ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-500"
+                        : "bg-amber-500/15 border-amber-400/30 text-amber-500"
+                        }`}
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
@@ -1249,9 +1218,8 @@ export default function CoordinatorDashboardClient({
                   <div className="mt-3">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`inline-block h-2.5 w-2.5 rounded-full ${
-                          liveIsLive ? "bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/60" : "bg-amber-500"
-                        }`}
+                        className={`inline-block h-2.5 w-2.5 rounded-full ${liveIsLive ? "bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/60" : "bg-amber-500"
+                          }`}
                       />
                       <span className={`font-display text-lg font-bold ${headerText} tracking-tight`}>
                         {liveIsLive ? "Live Sync Active" : "Preview Mode"}
@@ -1303,7 +1271,7 @@ export default function CoordinatorDashboardClient({
                     <p className={`font-mono text-xs uppercase tracking-wider font-bold ${subText} mb-3`}>
                       Overall Seat Occupancy
                     </p>
-                    
+
                     {/* SVG Radial Gauge */}
                     <div className="relative w-44 h-44 flex items-center justify-center">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -1383,13 +1351,12 @@ export default function CoordinatorDashboardClient({
                                 <span className={`font-bold ${isFull ? "text-rose-500" : isFilling ? "text-amber-500" : "text-sky-500"}`}>
                                   {reg} / {cap}
                                 </span>
-                                <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
-                                  isFull
-                                    ? "bg-rose-500/15 text-rose-500"
-                                    : isFilling
+                                <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${isFull
+                                  ? "bg-rose-500/15 text-rose-500"
+                                  : isFilling
                                     ? "bg-amber-500/15 text-amber-500"
                                     : "bg-sky-500/15 text-sky-500"
-                                }`}>
+                                  }`}>
                                   {pct}%
                                 </span>
                               </div>
@@ -1398,13 +1365,12 @@ export default function CoordinatorDashboardClient({
                             {/* Bar Track */}
                             <div className={`h-2.5 w-full rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200/80"}`}>
                               <div
-                                className={`h-full rounded-full transition-all duration-700 ease-out ${
-                                  isFull
-                                    ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-xs shadow-rose-500/50"
-                                    : isFilling
+                                className={`h-full rounded-full transition-all duration-700 ease-out ${isFull
+                                  ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-xs shadow-rose-500/50"
+                                  : isFilling
                                     ? "bg-gradient-to-r from-amber-400 to-orange-500 shadow-xs shadow-amber-400/50"
                                     : "bg-gradient-to-r from-sky-400 via-indigo-400 to-sky-500 shadow-xs shadow-sky-400/50"
-                                }`}
+                                  }`}
                                 style={{ width: `${Math.max(pct, 3)}%` }}
                               />
                             </div>
@@ -1429,9 +1395,8 @@ export default function CoordinatorDashboardClient({
                         Event Seats &amp; Live Registration Status
                       </h2>
                       <span
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          liveIsLive ? "bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/60" : "bg-amber-500"
-                        }`}
+                        className={`h-2.5 w-2.5 rounded-full ${liveIsLive ? "bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/60" : "bg-amber-500"
+                          }`}
                       />
                       <span className={`font-mono text-xs font-semibold ${subText}`}>
                         {liveIsLive ? "Connected to Google Sheet" : "Preview Mode"}
@@ -1449,15 +1414,14 @@ export default function CoordinatorDashboardClient({
                     <button
                       onClick={handleRefreshCounts}
                       disabled={isRefreshing}
-                      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${
-                        isRefreshing
-                          ? isDark
-                            ? "bg-white/5 border-white/10 text-slate-500 cursor-not-allowed"
-                            : "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed"
-                          : isDark
+                      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${isRefreshing
+                        ? isDark
+                          ? "bg-white/5 border-white/10 text-slate-500 cursor-not-allowed"
+                          : "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed"
+                        : isDark
                           ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-400"
                           : "bg-emerald-50 border-emerald-300 text-emerald-950 hover:bg-emerald-100 hover:border-emerald-400"
-                      }`}
+                        }`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1478,11 +1442,10 @@ export default function CoordinatorDashboardClient({
 
                     <button
                       onClick={handleExportEventsCSV}
-                      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${
-                        isDark
-                          ? "bg-sky-500/15 border-sky-400/40 text-sky-300 hover:bg-sky-500/25 hover:border-sky-400"
-                          : "bg-sky-50 border-sky-300 text-sky-950 hover:bg-sky-100 hover:border-sky-400"
-                      }`}
+                      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${isDark
+                        ? "bg-sky-500/15 border-sky-400/40 text-sky-300 hover:bg-sky-500/25 hover:border-sky-400"
+                        : "bg-sky-50 border-sky-300 text-sky-950 hover:bg-sky-100 hover:border-sky-400"
+                        }`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1540,13 +1503,12 @@ export default function CoordinatorDashboardClient({
                     <button
                       type="button"
                       onClick={() => setOnlyMyEvents(!onlyMyEvents)}
-                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border font-mono text-xs font-bold transition ${
-                        onlyMyEvents
-                          ? "bg-sky-500 text-white border-sky-400 shadow-md shadow-sky-500/30"
-                          : isDark
+                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border font-mono text-xs font-bold transition ${onlyMyEvents
+                        ? "bg-sky-500 text-white border-sky-400 shadow-md shadow-sky-500/30"
+                        : isDark
                           ? "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
                           : "bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
-                      }`}
+                        }`}
                     >
                       <span>👤</span>
                       <span>My Events Only</span>
@@ -1611,9 +1573,8 @@ export default function CoordinatorDashboardClient({
                             <span className="font-bold text-sky-500 text-sm">{e.registered}</span>
                             <div className={`mt-1 h-1.5 w-16 rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
                               <div
-                                className={`h-full rounded-full ${
-                                  e.status === "full" ? "bg-rose-500" : e.status === "filling" ? "bg-amber-500" : "bg-sky-500"
-                                }`}
+                                className={`h-full rounded-full ${e.status === "full" ? "bg-rose-500" : e.status === "filling" ? "bg-amber-500" : "bg-sky-500"
+                                  }`}
                                 style={{ width: `${e.occupancyPct}%` }}
                               />
                             </div>
@@ -1623,19 +1584,18 @@ export default function CoordinatorDashboardClient({
                           </td>
                           <td className="px-4 py-3.5">
                             <span
-                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                e.status === "full"
-                                  ? isDark
-                                    ? "bg-rose-500/15 text-rose-300 border border-rose-500/30"
-                                    : "bg-rose-100 text-rose-800 border border-rose-200"
-                                  : e.status === "filling"
+                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${e.status === "full"
+                                ? isDark
+                                  ? "bg-rose-500/15 text-rose-300 border border-rose-500/30"
+                                  : "bg-rose-100 text-rose-800 border border-rose-200"
+                                : e.status === "filling"
                                   ? isDark
                                     ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
                                     : "bg-amber-100 text-amber-800 border border-amber-200"
                                   : isDark
-                                  ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                                  : "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                              }`}
+                                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                                    : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                }`}
                             >
                               {e.status === "full" ? "Full" : e.status === "filling" ? "Filling Fast" : "Open"}
                             </span>
@@ -1643,11 +1603,10 @@ export default function CoordinatorDashboardClient({
                           <td className="px-4 py-3.5">
                             <span
                               onClick={() => copyToClipboard(e.sheetEventLabel, "Sheet Label")}
-                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] cursor-pointer hover:scale-105 transition font-mono border ${
-                                isDark
-                                  ? "bg-white/5 border-white/10 text-slate-300 hover:border-sky-400"
-                                  : "bg-slate-100 border-slate-200 text-slate-700 hover:border-sky-500"
-                              }`}
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] cursor-pointer hover:scale-105 transition font-mono border ${isDark
+                                ? "bg-white/5 border-white/10 text-slate-300 hover:border-sky-400"
+                                : "bg-slate-100 border-slate-200 text-slate-700 hover:border-sky-500"
+                                }`}
                               title="Click to copy exact Google Form Label"
                             >
                               <span>🏷️</span>
@@ -1690,11 +1649,10 @@ export default function CoordinatorDashboardClient({
 
                   <button
                     onClick={handleExportEventsCSV}
-                    className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider transition ${
-                      isDark
-                        ? "bg-amber-500/15 border-amber-400/30 text-amber-300 hover:bg-amber-500/25"
-                        : "bg-amber-50 border-amber-300 text-amber-950 hover:bg-amber-100"
-                    }`}
+                    className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider transition ${isDark
+                      ? "bg-amber-500/15 border-amber-400/30 text-amber-300 hover:bg-amber-500/25"
+                      : "bg-amber-50 border-amber-300 text-amber-950 hover:bg-amber-100"
+                      }`}
                   >
                     📥 Export All Event Data
                   </button>
@@ -1740,19 +1698,17 @@ export default function CoordinatorDashboardClient({
                       {/* Top Bar with Venue & Status */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border ${
-                            isDark ? "bg-sky-500/10 border-sky-400/30 text-sky-300" : "bg-sky-50 border-sky-200 text-sky-800"
-                          }`}>
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border ${isDark ? "bg-sky-500/10 border-sky-400/30 text-sky-300" : "bg-sky-50 border-sky-200 text-sky-800"
+                            }`}>
                             📍 {e.venue}
                           </span>
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
-                              isFull
-                                ? "bg-rose-500/15 text-rose-400 border border-rose-400/30"
-                                : isFilling
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${isFull
+                              ? "bg-rose-500/15 text-rose-400 border border-rose-400/30"
+                              : isFilling
                                 ? "bg-amber-500/15 text-amber-400 border border-amber-400/30"
                                 : "bg-emerald-500/15 text-emerald-400 border border-emerald-400/30"
-                            }`}
+                              }`}
                           >
                             {isFull ? "● Sold Out" : isFilling ? "● Filling Fast" : "● Available"}
                           </span>
@@ -1781,9 +1737,8 @@ export default function CoordinatorDashboardClient({
                         </div>
                         <div className={`h-2.5 w-full rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
                           <div
-                            className={`h-full rounded-full transition-all duration-500 ${
-                              isFull ? "bg-rose-500" : isFilling ? "bg-amber-500" : "bg-gradient-to-r from-sky-400 to-indigo-500"
-                            }`}
+                            className={`h-full rounded-full transition-all duration-500 ${isFull ? "bg-rose-500" : isFilling ? "bg-amber-500" : "bg-gradient-to-r from-sky-400 to-indigo-500"
+                              }`}
                             style={{ width: `${Math.max(e.occupancyPct, 3)}%` }}
                           />
                         </div>
@@ -1799,9 +1754,8 @@ export default function CoordinatorDashboardClient({
                           <span className={subText}>Form Sheet Label:</span>
                           <button
                             onClick={() => copyToClipboard(e.sheetEventLabel, "Sheet Label")}
-                            className={`px-2 py-0.5 rounded border ${
-                              isDark ? "bg-white/5 border-white/10 text-slate-300" : "bg-slate-100 border-slate-200 text-slate-700"
-                            } hover:border-sky-400 transition flex items-center gap-1`}
+                            className={`px-2 py-0.5 rounded border ${isDark ? "bg-white/5 border-white/10 text-slate-300" : "bg-slate-100 border-slate-200 text-slate-700"
+                              } hover:border-sky-400 transition flex items-center gap-1`}
                           >
                             <span>🏷️ {e.sheetEventLabel}</span>
                             <span className="text-[10px] text-sky-400">copy</span>
@@ -1818,11 +1772,10 @@ export default function CoordinatorDashboardClient({
                               e.coordinators.map((c, idx) => (
                                 <div
                                   key={idx}
-                                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] border ${
-                                    isDark
-                                      ? "bg-white/5 border-white/10 text-slate-300"
-                                      : "bg-slate-100 border-slate-200 text-slate-800"
-                                  }`}
+                                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] border ${isDark
+                                    ? "bg-white/5 border-white/10 text-slate-300"
+                                    : "bg-slate-100 border-slate-200 text-slate-800"
+                                    }`}
                                 >
                                   <span>👤</span>
                                   <span className="font-semibold">{c.name}</span>
@@ -1865,9 +1818,8 @@ export default function CoordinatorDashboardClient({
                               const summary = `${e.name}\nVenue: ${e.venue}\nDate & Time: ${e.date} · ${e.time}\nSpots: ${e.registered}/${e.capacity} (${e.available} available)\nSheet Label: ${e.sheetEventLabel}`;
                               copyToClipboard(summary, "Event Summary");
                             }}
-                            className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold ${
-                              isDark ? "border-white/10 hover:bg-white/10 text-slate-300" : "border-slate-200 hover:bg-slate-100 text-slate-700"
-                            } transition`}
+                            className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold ${isDark ? "border-white/10 hover:bg-white/10 text-slate-300" : "border-slate-200 hover:bg-slate-100 text-slate-700"
+                              } transition`}
                           >
                             📋 Copy Info
                           </button>
@@ -1949,9 +1901,8 @@ export default function CoordinatorDashboardClient({
                           📅 {e.date} · ⏱️ {e.time}
                         </p>
                       </div>
-                      <span className={`px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold border shrink-0 ${
-                        isDark ? "bg-sky-500/15 border-sky-400/30 text-sky-300" : "bg-sky-50 border-sky-200 text-sky-800"
-                      }`}>
+                      <span className={`px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold border shrink-0 ${isDark ? "bg-sky-500/15 border-sky-400/30 text-sky-300" : "bg-sky-50 border-sky-200 text-sky-800"
+                        }`}>
                         📍 {e.venue}
                       </span>
                     </div>
@@ -2018,9 +1969,8 @@ export default function CoordinatorDashboardClient({
                     <div className="flex items-center justify-between gap-3 border-b border-slate-200/50 dark:border-white/10 pb-2.5">
                       <div className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-rose-500" />
-                        <span className={`font-mono text-xs font-bold uppercase tracking-wider ${
-                          idx === 0 ? "text-rose-500" : isDark ? "text-slate-300" : "text-slate-700"
-                        }`}>
+                        <span className={`font-mono text-xs font-bold uppercase tracking-wider ${idx === 0 ? "text-rose-500" : isDark ? "text-slate-300" : "text-slate-700"
+                          }`}>
                           {idx === 0 ? "Latest Bulletin" : `Announcement #${announcements.length - idx}`}
                         </span>
                       </div>
@@ -2039,9 +1989,8 @@ export default function CoordinatorDashboardClient({
                       </span>
                       <button
                         onClick={() => copyToClipboard(a.message, "Announcement")}
-                        className={`text-[10px] px-2 py-0.5 rounded border ${
-                          isDark ? "border-white/10 text-slate-400 hover:text-white" : "border-slate-200 text-slate-600 hover:text-slate-900"
-                        } transition`}
+                        className={`text-[10px] px-2 py-0.5 rounded border ${isDark ? "border-white/10 text-slate-400 hover:text-white" : "border-slate-200 text-slate-600 hover:text-slate-900"
+                          } transition`}
                       >
                         📋 Copy Text
                       </button>
@@ -2137,15 +2086,14 @@ export default function CoordinatorDashboardClient({
                             {u.name.slice(0, 2).toUpperCase()}
                           </div>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${
-                              isAdmin
-                                ? isDark
-                                  ? "bg-indigo-500/15 border-indigo-400/30 text-indigo-300"
-                                  : "bg-indigo-100 border-indigo-300 text-indigo-900"
-                                : isDark
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${isAdmin
+                              ? isDark
+                                ? "bg-indigo-500/15 border-indigo-400/30 text-indigo-300"
+                                : "bg-indigo-100 border-indigo-300 text-indigo-900"
+                              : isDark
                                 ? "bg-sky-500/15 border-sky-400/30 text-sky-300"
                                 : "bg-sky-100 border-sky-300 text-sky-900"
-                            }`}
+                              }`}
                           >
                             {isAdmin ? "Admin" : "Coordinator"}
                           </span>
@@ -2199,9 +2147,8 @@ export default function CoordinatorDashboardClient({
                         {u.phone && (
                           <a
                             href={`tel:${u.phone}`}
-                            className={`flex-1 py-1.5 text-center rounded-lg border text-xs font-mono font-bold ${
-                              isDark ? "bg-white/5 border-white/10 text-slate-200 hover:bg-white/10" : "bg-slate-100 border-slate-200 text-slate-800 hover:bg-slate-200"
-                            } transition`}
+                            className={`flex-1 py-1.5 text-center rounded-lg border text-xs font-mono font-bold ${isDark ? "bg-white/5 border-white/10 text-slate-200 hover:bg-white/10" : "bg-slate-100 border-slate-200 text-slate-800 hover:bg-slate-200"
+                              } transition`}
                           >
                             📞 Call
                           </a>
@@ -2209,9 +2156,8 @@ export default function CoordinatorDashboardClient({
                         {u.email && (
                           <a
                             href={`mailto:${u.email}`}
-                            className={`flex-1 py-1.5 text-center rounded-lg border text-xs font-mono font-bold ${
-                              isDark ? "bg-white/5 border-white/10 text-slate-200 hover:bg-white/10" : "bg-slate-100 border-slate-200 text-slate-800 hover:bg-slate-200"
-                            } transition`}
+                            className={`flex-1 py-1.5 text-center rounded-lg border text-xs font-mono font-bold ${isDark ? "bg-white/5 border-white/10 text-slate-200 hover:bg-white/10" : "bg-slate-100 border-slate-200 text-slate-800 hover:bg-slate-200"
+                              } transition`}
                           >
                             ✉️ Email
                           </a>
@@ -2222,9 +2168,8 @@ export default function CoordinatorDashboardClient({
                             const info = `${u.name} (@${u.username})\nPhone: ${u.phone || "N/A"}\nEmail: ${u.email || "N/A"}`;
                             copyToClipboard(info, "Contact Details");
                           }}
-                          className={`p-1.5 rounded-lg border text-xs ${
-                            isDark ? "border-white/10 text-slate-400 hover:text-white" : "border-slate-200 text-slate-600 hover:text-slate-900"
-                          } transition`}
+                          className={`p-1.5 rounded-lg border text-xs ${isDark ? "border-white/10 text-slate-400 hover:text-white" : "border-slate-200 text-slate-600 hover:text-slate-900"
+                            } transition`}
                           title="Copy Contact Details"
                         >
                           📋
@@ -2309,9 +2254,8 @@ export default function CoordinatorDashboardClient({
                         <button
                           type="button"
                           onClick={() => copyToClipboard(r.url, "Resource URL")}
-                          className={`px-3 py-2 rounded-xl border font-mono text-xs font-bold transition ${
-                            isDark ? "border-white/10 hover:bg-white/10 text-slate-300" : "border-slate-200 hover:bg-slate-100 text-slate-700"
-                          }`}
+                          className={`px-3 py-2 rounded-xl border font-mono text-xs font-bold transition ${isDark ? "border-white/10 hover:bg-white/10 text-slate-300" : "border-slate-200 hover:bg-slate-100 text-slate-700"
+                            }`}
                         >
                           📋 Copy Link
                         </button>
@@ -2349,9 +2293,8 @@ export default function CoordinatorDashboardClient({
                   <button
                     type="button"
                     onClick={handleResetChecklist}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-mono text-xs font-bold transition ${
-                      isDark ? "border-white/10 hover:bg-white/10 text-slate-400" : "border-slate-200 hover:bg-slate-100 text-slate-600"
-                    }`}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-mono text-xs font-bold transition ${isDark ? "border-white/10 hover:bg-white/10 text-slate-400" : "border-slate-200 hover:bg-slate-100 text-slate-600"
+                      }`}
                   >
                     <span>↺</span>
                     <span>Reset Defaults</span>
@@ -2423,21 +2366,20 @@ export default function CoordinatorDashboardClient({
                         <div
                           key={item.id}
                           onClick={() => toggleChecklistItem(item.id)}
-                          className={`p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-3 ${
-                            item.completed
-                              ? isDark
-                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-                                : "bg-emerald-50/80 border-emerald-200 text-emerald-900"
-                              : isDark
+                          className={`p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-3 ${item.completed
+                            ? isDark
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
+                              : "bg-emerald-50/80 border-emerald-200 text-emerald-900"
+                            : isDark
                               ? "bg-white/[0.02] border-white/10 hover:bg-white/[0.05]"
                               : "bg-white border-slate-200 hover:bg-slate-50"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center gap-3">
                             <input
                               type="checkbox"
                               checked={item.completed}
-                              onChange={() => {}} // handled by parent div onClick
+                              onChange={() => { }} // handled by parent div onClick
                               className="h-4 w-4 rounded text-sky-600 focus:ring-sky-500 cursor-pointer"
                             />
                             <span className={`font-mono text-xs ${item.completed ? "line-through opacity-75 font-normal" : "font-semibold"}`}>
@@ -2445,9 +2387,8 @@ export default function CoordinatorDashboardClient({
                             </span>
                           </div>
 
-                          <span className={`text-[10px] font-mono uppercase tracking-wider font-bold ${
-                            item.completed ? "text-emerald-500" : "text-slate-400"
-                          }`}>
+                          <span className={`text-[10px] font-mono uppercase tracking-wider font-bold ${item.completed ? "text-emerald-500" : "text-slate-400"
+                            }`}>
                             {item.completed ? "Completed ✓" : "Pending"}
                           </span>
                         </div>

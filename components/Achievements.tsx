@@ -89,35 +89,31 @@ export default function Achievements() {
           >
             {/* Concentric Cyber Emblem Stage */}
             <div
-              className={`relative flex items-center justify-center group cursor-pointer transform transition-all duration-700 ease-out ${
-                isLogoVisible
-                  ? "opacity-100 scale-100 translate-y-0 rotate-0"
-                  : "opacity-0 scale-50 translate-y-8 rotate-[-10deg]"
-              }`}
+              className={`relative flex items-center justify-center group cursor-pointer transform transition-all duration-700 ease-out ${isLogoVisible
+                ? "opacity-100 scale-100 translate-y-0 rotate-0"
+                : "opacity-0 scale-50 translate-y-8 rotate-[-10deg]"
+                }`}
             >
               {/* Ambient cybernetic pulsing reactor glow - centered on emblem */}
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${
-                  isLogoVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
-                }`}
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${isLogoVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                  }`}
               >
                 <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-r from-sky-400/25 via-indigo-500/25 to-purple-500/25 blur-2xl" />
               </div>
 
               {/* Outer rotating cyber ring - perfectly concentric */}
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${
-                  isLogoVisible ? "opacity-60 scale-100" : "opacity-0 scale-50"
-                }`}
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${isLogoVisible ? "opacity-60 scale-100" : "opacity-0 scale-50"
+                  }`}
               >
                 <div className="w-[164px] h-[164px] sm:w-[210px] sm:h-[210px] rounded-full border border-sky-400/35 border-dashed animate-[spin_20s_linear_infinite]" />
               </div>
 
               {/* Inner reverse rotating accent ring - perfectly concentric */}
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${
-                  isLogoVisible ? "opacity-45 scale-100" : "opacity-0 scale-50"
-                }`}
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${isLogoVisible ? "opacity-45 scale-100" : "opacity-0 scale-50"
+                  }`}
               >
                 <div className="w-[138px] h-[138px] sm:w-[176px] sm:h-[176px] rounded-full border border-indigo-400/30 border-dotted animate-[spin_15s_linear_infinite_reverse]" />
               </div>

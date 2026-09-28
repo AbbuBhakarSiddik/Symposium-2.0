@@ -274,7 +274,7 @@ export default function AdminDashboardClient({
   // Running Announcement local state & templates
   const [runningAnnouncementText, setRunningAnnouncementText] = useState(
     settings?.runningAnnouncement ||
-      "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!"
+    "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!"
   );
   const [isRunningAnnouncementActive, setIsRunningAnnouncementActive] = useState(
     settings?.runningAnnouncementActive !== "false"
@@ -874,11 +874,10 @@ export default function AdminDashboardClient({
                 <h2 className={`font-display font-black text-sm tracking-tight truncate ${headerText} leading-none`}>
                   Admin Panel
                 </h2>
-                <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase tracking-wider border shrink-0 ${
-                  isDark
+                <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase tracking-wider border shrink-0 ${isDark
                     ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
                     : "bg-emerald-100 text-emerald-950 border-emerald-300"
-                }`}>
+                  }`}>
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live
                 </span>
@@ -894,11 +893,10 @@ export default function AdminDashboardClient({
           {isMobile && (
             <button
               onClick={() => setIsMobileNavOpen(false)}
-              className={`p-1.5 rounded-lg border ${
-                isDark
+              className={`p-1.5 rounded-lg border ${isDark
                   ? "border-white/10 text-slate-400 hover:text-white hover:bg-white/5"
                   : "border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-              }`}
+                }`}
               aria-label="Close sidebar"
             >
               ✕
@@ -920,19 +918,17 @@ export default function AdminDashboardClient({
               key={tab.id}
               type="button"
               onClick={() => handleNavTabClick(tab.id)}
-              className={`group w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-semibold ${
-                isActive
+              className={`group w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-semibold ${isActive
                   ? tab.activePill
                   : `${isDark ? "text-slate-300" : "text-slate-700"} ${tab.hoverClass}`
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-200 shrink-0 ${
-                    isActive
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-200 shrink-0 ${isActive
                       ? `${tab.activeIconBadge} scale-105`
                       : `${tab.colorBadge} opacity-90 group-hover:opacity-100 group-hover:scale-105`
-                  }`}
+                    }`}
                 >
                   {tab.icon(isActive)}
                 </div>
@@ -959,11 +955,10 @@ export default function AdminDashboardClient({
             <p className={`text-xs font-semibold truncate ${headerText}`}>{currentUser.name}</p>
             <p className={`text-[10px] font-mono truncate ${subText}`}>@{currentUser.username}</p>
           </div>
-          <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-mono font-bold border ${
-            isDark
+          <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-mono font-bold border ${isDark
               ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
               : "bg-emerald-100 text-emerald-950 border-emerald-300"
-          }`}>
+            }`}>
             Admin
           </span>
         </div>
@@ -972,11 +967,10 @@ export default function AdminDashboardClient({
           <button
             type="button"
             onClick={toggleTheme}
-            className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border font-mono text-[11px] font-bold transition ${
-              isDark
+            className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border font-mono text-[11px] font-bold transition ${isDark
                 ? "border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
                 : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
-            }`}
+              }`}
           >
             <span>{isDark ? "☀️ Light" : "🌙 Dark"}</span>
           </button>
@@ -991,19 +985,16 @@ export default function AdminDashboardClient({
       {/* Subtle Background Glows (adapts to theme) */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div
-          className={`absolute top-[-10%] left-[15%] w-[600px] h-[600px] rounded-full blur-[140px] transition-opacity duration-500 ${
-            isDark ? "bg-sky-500/10 opacity-70" : "bg-sky-400/15 opacity-50"
-          }`}
+          className={`absolute top-[-10%] left-[15%] w-[600px] h-[600px] rounded-full blur-[140px] transition-opacity duration-500 ${isDark ? "bg-sky-500/10 opacity-70" : "bg-sky-400/15 opacity-50"
+            }`}
         />
         <div
-          className={`absolute top-[35%] right-[-5%] w-[500px] h-[500px] rounded-full blur-[140px] transition-opacity duration-500 ${
-            isDark ? "bg-indigo-500/10 opacity-60" : "bg-indigo-400/15 opacity-40"
-          }`}
+          className={`absolute top-[35%] right-[-5%] w-[500px] h-[500px] rounded-full blur-[140px] transition-opacity duration-500 ${isDark ? "bg-indigo-500/10 opacity-60" : "bg-indigo-400/15 opacity-40"
+            }`}
         />
         <div
-          className={`absolute bottom-[-10%] left-[25%] w-[600px] h-[600px] rounded-full blur-[150px] transition-opacity duration-500 ${
-            isDark ? "bg-purple-500/10 opacity-50" : "bg-purple-300/15 opacity-40"
-          }`}
+          className={`absolute bottom-[-10%] left-[25%] w-[600px] h-[600px] rounded-full blur-[150px] transition-opacity duration-500 ${isDark ? "bg-purple-500/10 opacity-50" : "bg-purple-300/15 opacity-40"
+            }`}
         />
         <div
           className="absolute inset-0 opacity-[0.035]"
@@ -1016,21 +1007,19 @@ export default function AdminDashboardClient({
 
       {/* Mobile Top Bar Navigation */}
       <div
-        className={`lg:hidden sticky top-0 z-40 border-b px-4 py-3 flex items-center justify-between backdrop-blur-xl ${
-          isDark
+        className={`lg:hidden sticky top-0 z-40 border-b px-4 py-3 flex items-center justify-between backdrop-blur-xl ${isDark
             ? "bg-[#0b101b]/90 border-white/10 text-white"
             : "bg-white/95 border-slate-200 text-slate-900"
-        }`}
+          }`}
       >
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setIsMobileNavOpen(true)}
-            className={`p-2 rounded-xl border ${
-              isDark
+            className={`p-2 rounded-xl border ${isDark
                 ? "border-white/10 text-slate-300 hover:bg-white/5"
                 : "border-slate-200 text-slate-700 hover:bg-slate-100"
-            }`}
+              }`}
             aria-label="Open navigation sidebar"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1048,11 +1037,10 @@ export default function AdminDashboardClient({
           <button
             type="button"
             onClick={toggleTheme}
-            className={`p-2 rounded-xl border text-xs ${
-              isDark
+            className={`p-2 rounded-xl border text-xs ${isDark
                 ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
                 : "border-slate-200 bg-slate-50 text-slate-700"
-            }`}
+              }`}
             aria-label="Toggle Theme"
           >
             {isDark ? "☀️" : "🌙"}
@@ -1068,9 +1056,8 @@ export default function AdminDashboardClient({
             onClick={() => setIsMobileNavOpen(false)}
           />
           <aside
-            className={`fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] border-r ${
-              isDark ? "bg-[#0b101b] border-white/10" : "bg-white border-slate-200"
-            } z-50 flex flex-col shadow-2xl transition-transform`}
+            className={`fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] border-r ${isDark ? "bg-[#0b101b] border-white/10" : "bg-white border-slate-200"
+              } z-50 flex flex-col shadow-2xl transition-transform`}
           >
             {renderSidebarContent(true)}
           </aside>
@@ -1081,11 +1068,10 @@ export default function AdminDashboardClient({
       <div className="relative z-10 min-h-screen">
         {/* Desktop Static Fixed Left Sidebar (Immune to page scroll) */}
         <aside
-          className={`w-64 border-r transition-colors duration-300 ${
-            isDark
+          className={`w-64 border-r transition-colors duration-300 ${isDark
               ? "bg-[#0b101b]/95 border-white/10"
               : "bg-white/95 border-slate-200/80 shadow-xs"
-          } backdrop-blur-xl hidden lg:flex lg:flex-col fixed top-0 bottom-0 left-0 h-screen z-30`}
+            } backdrop-blur-xl hidden lg:flex lg:flex-col fixed top-0 bottom-0 left-0 h-screen z-30`}
         >
           {renderSidebarContent(false)}
         </aside>
@@ -1101,796 +1087,770 @@ export default function AdminDashboardClient({
               {/* TOP EXECUTIVE COMMAND HEADER WITH THEME TOGGLE                            */}
               {/* ========================================================================= */}
               <header id="section-home" className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 transition-all`}>
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase border shadow-xs ${
-                  isDark
-                    ? "bg-sky-500/15 text-sky-300 border-sky-400/30"
-                    : "bg-sky-100 text-sky-950 border-sky-300"
-                }`}>
-                  <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-ping" />
-                  ADMIN CONTROL CENTER
-                </span>
-                <span className={`${subText} text-xs`}>•</span>
-                <span className={`font-mono text-xs font-medium ${subText} tracking-wide`}>
-                  {settings.symposiumName}
-                </span>
-              </div>
-              
-              <h1 className={`font-display text-3xl sm:text-4xl font-extrabold tracking-tight ${headerText} flex items-center gap-3`}>
-                Master Admin Panel
-              </h1>
-              
-              <div className={`flex items-center gap-2 font-mono text-xs ${subText} pt-0.5`}>
-                <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-                <span>
-                  Logged in as <strong className={`${isDark ? "text-slate-200" : "text-slate-800"} font-semibold`}>{currentUser.name}</strong>
-                </span>
-                <span className={`rounded-md ${isDark ? "bg-white/10 text-sky-300" : "bg-sky-50 text-sky-700 border-sky-200"} px-2 py-0.5 text-[11px] font-medium border border-white/5`}>
-                  @{currentUser.username}
-                </span>
-              </div>
-            </div>
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase border shadow-xs ${isDark
+                          ? "bg-sky-500/15 text-sky-300 border-sky-400/30"
+                          : "bg-sky-100 text-sky-950 border-sky-300"
+                        }`}>
+                        <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-ping" />
+                        ADMIN CONTROL CENTER
+                      </span>
+                      <span className={`${subText} text-xs`}>•</span>
+                      <span className={`font-mono text-xs font-medium ${subText} tracking-wide`}>
+                        {settings.symposiumName}
+                      </span>
+                    </div>
 
-            {/* Quick Actions: Theme Switcher, Portal & Sign Out */}
-            <div className="flex flex-wrap items-center gap-3 self-start lg:self-center">
-              
-              {/* Dark / Light Theme Toggle Switch */}
-              <button
-                type="button"
-                onClick={toggleTheme}
-                aria-label="Toggle Theme"
-                className={`group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm ${
-                  isDark
-                    ? "border-amber-400/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:border-amber-400"
-                    : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                }`}
-              >
-                {isDark ? (
-                  <>
-                    <span className="text-sm">☀️</span>
-                    <span>Light Mode</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-sm">🌙</span>
-                    <span>Dark Mode</span>
-                  </>
-                )}
-              </button>
+                    <h1 className={`font-display text-3xl sm:text-4xl font-extrabold tracking-tight ${headerText} flex items-center gap-3`}>
+                      Master Admin Panel
+                    </h1>
 
-              <Link
-                href="/coordinators"
-                className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold shadow-sm transition-all duration-200 ${
-                  isDark
-                    ? "border-white/10 bg-white/[0.06] text-slate-200 hover:border-sky-400/50 hover:bg-sky-500/15 hover:text-white hover:shadow-glow-cyan"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-sky-500 hover:text-sky-600 hover:shadow-md"
-                }`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-sky-500 transition-transform group-hover:scale-110"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                Coordinator Portal
-              </Link>
-              
-              <SignOutButton />
-            </div>
-          </div>
+                    <div className={`flex items-center gap-2 font-mono text-xs ${subText} pt-0.5`}>
+                      <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+                      <span>
+                        Logged in as <strong className={`${isDark ? "text-slate-200" : "text-slate-800"} font-semibold`}>{currentUser.name}</strong>
+                      </span>
+                      <span className={`rounded-md ${isDark ? "bg-white/10 text-sky-300" : "bg-sky-50 text-sky-700 border-sky-200"} px-2 py-0.5 text-[11px] font-medium border border-white/5`}>
+                        @{currentUser.username}
+                      </span>
+                    </div>
+                  </div>
 
-          {/* ========================================================================= */}
-          {/* COLORFUL QUICK SECTION NAVIGATION TABS                                   */}
-          {/* ========================================================================= */}
-          <div className={`mt-6 pt-5 border-t ${borderCol} flex flex-wrap gap-2.5 text-xs font-mono`}>
-            <a
-              href="#section-seats"
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 hover:border-cyan-400"
-                  : "bg-cyan-50 text-cyan-950 border-cyan-300 hover:bg-cyan-100"
-              }`}
-            >
-              📊 Live Seats &amp; Status
-            </a>
-            <a
-              href="#section-analytics"
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 hover:border-emerald-400"
-                  : "bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
-              }`}
-            >
-              📈 Visual Analytics &amp; Charts
-            </a>
-            <button
-              type="button"
-              onClick={() => handleNavTabClick("add-event")}
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-amber-500/15 text-amber-300 border-amber-400/30 hover:border-amber-400"
-                  : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
-              }`}
-            >
-              ⚡ Add Event
-            </button>
-            <button
-              type="button"
-              onClick={() => handleNavTabClick("coordinator")}
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 hover:border-indigo-400"
-                  : "bg-indigo-50 text-indigo-950 border-indigo-300 hover:bg-indigo-100"
-              }`}
-            >
-              👥 Admins &amp; Coordinators
-            </button>
-            <button
-              type="button"
-              onClick={() => handleNavTabClick("announcements")}
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-rose-500/15 text-rose-300 border-rose-400/30 hover:border-rose-400"
-                  : "bg-rose-50 text-rose-950 border-rose-300 hover:bg-rose-100"
-              }`}
-            >
-              📢 Announcements &amp; Links
-            </button>
-            <button
-              type="button"
-              onClick={() => handleNavTabClick("announcements")}
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-blue-500/15 text-blue-300 border-blue-400/30 hover:border-blue-400"
-                  : "bg-blue-50 text-blue-950 border-blue-300 hover:bg-blue-100"
-              }`}
-            >
-              ⚙️ Site Settings
-            </button>
-            <button
-              type="button"
-              onClick={() => handleNavTabClick("gallery")}
-              className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${
-                isDark
-                  ? "bg-purple-500/15 text-purple-300 border-purple-400/30 hover:border-purple-400"
-                  : "bg-purple-50 text-purple-950 border-purple-300 hover:bg-purple-100"
-              }`}
-            >
-              🖼️ Gallery Media
-            </button>
-          </div>
-        </header>
+                  {/* Quick Actions: Theme Switcher, Portal & Sign Out */}
+                  <div className="flex flex-wrap items-center gap-3 self-start lg:self-center">
 
-        {/* ========================================================================= */}
-        {/* EXECUTIVE KPI SUMMARY CARDS                                               */}
-        {/* ========================================================================= */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          {/* Card 1: Total Live Registrations */}
-          <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
-            <div className="flex items-center justify-between">
-              <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
-                Registrations
-              </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-500">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="flex items-baseline gap-2">
-                <span className={`font-display text-3xl font-extrabold ${headerText} tracking-tight`}>
-                  {totalRegistered}
-                </span>
-                <span className={`font-mono text-xs ${subText}`}>
-                  / {totalCapacity} spots
-                </span>
-              </div>
-              <div className="mt-3 space-y-1">
-                <div className={`h-2 w-full overflow-hidden rounded-full ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-500"
-                    style={{ width: `${overallOccupancy}%` }}
-                  />
+                    {/* Dark / Light Theme Toggle Switch */}
+                    <button
+                      type="button"
+                      onClick={toggleTheme}
+                      aria-label="Toggle Theme"
+                      className={`group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm ${isDark
+                          ? "border-amber-400/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:border-amber-400"
+                          : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                    >
+                      {isDark ? (
+                        <>
+                          <span className="text-sm">☀️</span>
+                          <span>Light Mode</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-sm">🌙</span>
+                          <span>Dark Mode</span>
+                        </>
+                      )}
+                    </button>
+
+                    <Link
+                      href="/coordinators"
+                      className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold shadow-sm transition-all duration-200 ${isDark
+                          ? "border-white/10 bg-white/[0.06] text-slate-200 hover:border-sky-400/50 hover:bg-sky-500/15 hover:text-white hover:shadow-glow-cyan"
+                          : "border-slate-200 bg-white text-slate-700 hover:border-sky-500 hover:text-sky-600 hover:shadow-md"
+                        }`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-sky-500 transition-transform group-hover:scale-110"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      Coordinator Portal
+                    </Link>
+
+                    <SignOutButton />
+                  </div>
                 </div>
-                <div className={`flex justify-between text-[10px] font-mono ${subText}`}>
-                  <span>Occupancy</span>
-                  <span className="font-bold text-sky-500">{overallOccupancy}% Filled</span>
+
+                {/* ========================================================================= */}
+                {/* COLORFUL QUICK SECTION NAVIGATION TABS                                   */}
+                {/* ========================================================================= */}
+                <div className={`mt-6 pt-5 border-t ${borderCol} flex flex-wrap gap-2.5 text-xs font-mono`}>
+                  <a
+                    href="#section-seats"
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 hover:border-cyan-400"
+                        : "bg-cyan-50 text-cyan-950 border-cyan-300 hover:bg-cyan-100"
+                      }`}
+                  >
+                    📊 Live Seats &amp; Status
+                  </a>
+                  <a
+                    href="#section-analytics"
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 hover:border-emerald-400"
+                        : "bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
+                      }`}
+                  >
+                    📈 Visual Analytics &amp; Charts
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleNavTabClick("add-event")}
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-amber-500/15 text-amber-300 border-amber-400/30 hover:border-amber-400"
+                        : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
+                      }`}
+                  >
+                    ⚡ Add Event
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleNavTabClick("coordinator")}
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 hover:border-indigo-400"
+                        : "bg-indigo-50 text-indigo-950 border-indigo-300 hover:bg-indigo-100"
+                      }`}
+                  >
+                    👥 Admins &amp; Coordinators
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleNavTabClick("announcements")}
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-rose-500/15 text-rose-300 border-rose-400/30 hover:border-rose-400"
+                        : "bg-rose-50 text-rose-950 border-rose-300 hover:bg-rose-100"
+                      }`}
+                  >
+                    📢 Announcements &amp; Links
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleNavTabClick("announcements")}
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-blue-500/15 text-blue-300 border-blue-400/30 hover:border-blue-400"
+                        : "bg-blue-50 text-blue-950 border-blue-300 hover:bg-blue-100"
+                      }`}
+                  >
+                    ⚙️ Site Settings
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleNavTabClick("gallery")}
+                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
+                        ? "bg-purple-500/15 text-purple-300 border-purple-400/30 hover:border-purple-400"
+                        : "bg-purple-50 text-purple-950 border-purple-300 hover:bg-purple-100"
+                      }`}
+                  >
+                    🖼️ Gallery Media
+                  </button>
                 </div>
-              </div>
-            </div>
-          </div>
+              </header>
 
-          {/* Card 2: Active Events & Status */}
-          <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
-            <div className="flex items-center justify-between">
-              <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
-                Active Events
-              </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-500">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="flex items-baseline gap-2">
-                <span className={`font-display text-3xl font-extrabold ${headerText} tracking-tight`}>
-                  {events.length}
-                </span>
-                <span className={`font-mono text-xs ${subText}`}>Configured</span>
-              </div>
-              <div className="mt-3 flex items-center gap-1.5 font-mono text-[11px]">
-                <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${
-                  isDark
-                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                    : "bg-emerald-100 border-emerald-300 text-emerald-950"
-                }`}>
-                  ● {statusStats.openCount} Open
-                </span>
-                {statusStats.fillingCount > 0 && (
-                  <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${
-                    isDark
-                      ? "bg-amber-500/15 border-amber-500/30 text-amber-300"
-                      : "bg-amber-100 border-amber-300 text-amber-950"
-                  }`}>
-                    ● {statusStats.fillingCount}
-                  </span>
-                )}
-                {statusStats.fullCount > 0 && (
-                  <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${
-                    isDark
-                      ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
-                      : "bg-rose-100 border-rose-300 text-rose-950"
-                  }`}>
-                    ● {statusStats.fullCount} Full
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
+              {/* ========================================================================= */}
+              {/* EXECUTIVE KPI SUMMARY CARDS                                               */}
+              {/* ========================================================================= */}
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-          {/* Card 3: Committee Accounts */}
-          <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
-            <div className="flex items-center justify-between">
-              <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
-                Committee Team
-              </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-400/30 text-purple-500">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="flex items-baseline gap-2">
-                <span className={`font-display text-3xl font-extrabold ${headerText} tracking-tight`}>
-                  {users.length}
-                </span>
-                <span className={`font-mono text-xs ${subText}`}>Accounts</span>
-              </div>
-              <div className={`mt-3 flex items-center gap-2 font-mono text-[11px] ${subText}`}>
-                <span className={isDark ? "text-indigo-400 font-semibold" : "text-indigo-900 font-bold"}>{adminsCount} Admins</span>
-                <span>•</span>
-                <span className={isDark ? "text-sky-400 font-semibold" : "text-sky-900 font-bold"}>{coordsCount} Coordinators</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4: Google Sheets Live Sync Status */}
-          <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
-            <div className="flex items-center justify-between">
-              <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
-                Google Sheets Sync
-              </span>
-              <div
-                className={`flex h-8 w-8 items-center justify-center rounded-xl border ${
-                  liveIsLive
-                    ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-500"
-                    : "bg-amber-500/15 border-amber-400/30 text-amber-500"
-                }`}
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                </svg>
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`inline-block h-2.5 w-2.5 rounded-full ${
-                    liveIsLive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
-                  }`}
-                />
-                <span className={`font-display text-lg font-bold ${headerText} tracking-tight`}>
-                  {liveIsLive ? "Live Connected" : "Preview Mode"}
-                </span>
-              </div>
-              <p className={`mt-2 font-mono text-[11px] ${subText} flex items-center justify-between`}>
-                <span suppressHydrationWarning>Updated: {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}</span>
-                <button
-                  onClick={handleRefreshCounts}
-                  disabled={isRefreshing}
-                  className="text-sky-500 hover:text-sky-600 dark:hover:text-sky-400 font-bold hover:underline"
-                >
-                  {isRefreshing ? "Syncing…" : "Sync Now"}
-                </button>
-              </p>
-            </div>
-          </div>
-
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION: VISUAL ANALYTICS & CHARTS (GRAPHICAL FAST COMPREHENSION)         */}
-        {/* ========================================================================= */}
-        <section
-          id="section-analytics"
-          className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
-                  Visual Registration &amp; Capacity Analytics
-                </h2>
-              </div>
-              <p className={`font-mono text-xs ${subText} mt-1`}>
-                Instant graphical representation of event capacity fill-rate and seat allocation.
-              </p>
-            </div>
-
-            {/* Overall Stat Chips */}
-            <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span className={`px-3 py-1.5 rounded-xl border ${isDark ? "border-white/10 bg-white/5 text-slate-300" : "border-slate-200 bg-slate-100 text-slate-700"}`}>
-                Available: <strong className="text-emerald-500">{totalAvailable}</strong>
-              </span>
-              <span className={`px-3 py-1.5 rounded-xl border ${isDark ? "border-white/10 bg-white/5 text-slate-300" : "border-slate-200 bg-slate-100 text-slate-700"}`}>
-                Booked: <strong className="text-sky-500">{totalRegistered}</strong>
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            {/* Donut Gauge Chart (Left 4 cols) */}
-            <div className={`lg:col-span-4 rounded-2xl border ${isDark ? "border-white/10 bg-black/20" : "border-slate-200 bg-slate-50/80"} p-5 flex flex-col items-center justify-center text-center`}>
-              <p className={`font-mono text-xs uppercase tracking-wider font-bold ${subText} mb-3`}>
-                Overall Seat Occupancy
-              </p>
-              
-              {/* SVG Radial Gauge */}
-              <div className="relative w-44 h-44 flex items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                  {/* Track Circle */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    strokeWidth="10"
-                    fill="transparent"
-                    className={isDark ? "stroke-white/10" : "stroke-slate-200"}
-                  />
-                  {/* Progress Arc */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    strokeWidth="10"
-                    strokeDasharray={251.2}
-                    strokeDashoffset={251.2 - (251.2 * overallOccupancy) / 100}
-                    strokeLinecap="round"
-                    fill="transparent"
-                    className="stroke-sky-500 transition-all duration-1000 ease-out"
-                  />
-                </svg>
-                {/* Center Value */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className={`font-display text-3xl font-extrabold ${headerText}`}>
-                    {overallOccupancy}%
-                  </span>
-                  <span className={`font-mono text-[10px] uppercase tracking-wider ${subText}`}>
-                    Capacity Filled
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-2 w-full font-mono text-[11px] pt-3 border-t border-slate-200/50 dark:border-white/10">
-                <div>
-                  <span className="block text-emerald-500 font-bold">{statusStats.openCount}</span>
-                  <span className={subText}>Open</span>
-                </div>
-                <div>
-                  <span className="block text-amber-500 font-bold">{statusStats.fillingCount}</span>
-                  <span className={subText}>Filling</span>
-                </div>
-                <div>
-                  <span className="block text-rose-500 font-bold">{statusStats.fullCount}</span>
-                  <span className={subText}>Full</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Event-by-Event Interactive Fill Bar Chart (Right 8 cols) */}
-            <div className={`lg:col-span-8 rounded-2xl border ${isDark ? "border-white/10 bg-black/20" : "border-slate-200 bg-slate-50/80"} p-5 space-y-3.5`}>
-              <div className="flex justify-between items-center font-mono text-xs pb-1 border-b border-slate-200/50 dark:border-white/10">
-                <span className={`uppercase font-bold tracking-wider ${subText}`}>
-                  Event Capacity Fill Breakdown ({events.length})
-                </span>
-                <span className={`text-[11px] ${subText}`}>Registered vs Total Seats</span>
-              </div>
-
-              <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-                {events.map((e) => {
-                  const reg = liveCounts[e.id] ?? 0;
-                  const cap = e.capacity || 1;
-                  const pct = Math.min(Math.round((reg / cap) * 100), 100);
-                  const isFull = reg >= cap;
-                  const isFilling = !isFull && cap - reg <= cap * 0.2;
-
-                  return (
-                    <div key={e.id} className="space-y-1">
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className={`font-bold ${headerText} truncate max-w-[200px] sm:max-w-xs`}>
-                          {e.name}
-                          <span className={`ml-2 text-[10px] font-normal ${subText}`}>
-                            ({e.venue})
-                          </span>
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span className={`font-bold ${isFull ? "text-rose-500" : isFilling ? "text-amber-500" : "text-sky-500"}`}>
-                            {reg} / {cap}
-                          </span>
-                          <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
-                            isFull
-                              ? "bg-rose-500/15 text-rose-500"
-                              : isFilling
-                              ? "bg-amber-500/15 text-amber-500"
-                              : "bg-sky-500/15 text-sky-500"
-                          }`}>
-                            {pct}%
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Bar Track */}
-                      <div className={`h-2.5 w-full rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200/80"}`}>
+                {/* Card 1: Total Live Registrations */}
+                <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
+                      Registrations
+                    </span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-500">
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className={`font-display text-3xl font-extrabold ${headerText} tracking-tight`}>
+                        {totalRegistered}
+                      </span>
+                      <span className={`font-mono text-xs ${subText}`}>
+                        / {totalCapacity} spots
+                      </span>
+                    </div>
+                    <div className="mt-3 space-y-1">
+                      <div className={`h-2 w-full overflow-hidden rounded-full ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
                         <div
-                          className={`h-full rounded-full transition-all duration-700 ease-out ${
-                            isFull
-                              ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-xs shadow-rose-500/50"
-                              : isFilling
-                              ? "bg-gradient-to-r from-amber-400 to-orange-500 shadow-xs shadow-amber-400/50"
-                              : "bg-gradient-to-r from-sky-400 via-indigo-400 to-sky-500 shadow-xs shadow-sky-400/50"
-                          }`}
-                          style={{ width: `${Math.max(pct, 3)}%` }}
+                          className="h-full rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-500"
+                          style={{ width: `${overallOccupancy}%` }}
                         />
                       </div>
+                      <div className={`flex justify-between text-[10px] font-mono ${subText}`}>
+                        <span>Occupancy</span>
+                        <span className="font-bold text-sky-500">{overallOccupancy}% Filled</span>
+                      </div>
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
 
-                {events.length === 0 && (
-                  <p className={`font-mono text-xs ${subText} py-6 text-center`}>No events configured yet.</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
+                {/* Card 2: Active Events & Status */}
+                <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
+                      Active Events
+                    </span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-500">
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className={`font-display text-3xl font-extrabold ${headerText} tracking-tight`}>
+                        {events.length}
+                      </span>
+                      <span className={`font-mono text-xs ${subText}`}>Configured</span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-1.5 font-mono text-[11px]">
+                      <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${isDark
+                          ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                          : "bg-emerald-100 border-emerald-300 text-emerald-950"
+                        }`}>
+                        ● {statusStats.openCount} Open
+                      </span>
+                      {statusStats.fillingCount > 0 && (
+                        <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${isDark
+                            ? "bg-amber-500/15 border-amber-500/30 text-amber-300"
+                            : "bg-amber-100 border-amber-300 text-amber-950"
+                          }`}>
+                          ● {statusStats.fillingCount}
+                        </span>
+                      )}
+                      {statusStats.fullCount > 0 && (
+                        <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 font-bold ${isDark
+                            ? "bg-rose-500/15 border-rose-500/30 text-rose-300"
+                            : "bg-rose-100 border-rose-300 text-rose-950"
+                          }`}>
+                          ● {statusStats.fullCount} Full
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-        {/* ========================================================================= */}
-        {/* SECTION 1: LIVE EVENT SEATS & REGISTRATION STATUS TABLE                   */}
-        {/* ========================================================================= */}
-        <section
-          id="section-seats"
-          className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
-        >
-          {/* Google Sheets Setup Banner (shown when not connected) */}
-          {!liveIsLive && (
-            <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 font-mono text-xs backdrop-blur-md">
-              <div className="flex items-start gap-3">
-                <span className="text-amber-500 text-lg mt-0.5">⚠️</span>
-                <div className="space-y-2 flex-1">
-                  <p className={`font-bold uppercase tracking-wider text-[11px] ${isDark ? "text-amber-300" : "text-amber-950"}`}>
-                    Google Sheets Not Connected — Showing Preview / Mock Data
-                  </p>
-                  <p className={`text-[11px] leading-relaxed ${isDark ? "text-amber-200/90" : "text-amber-900"}`}>
-                    Add the following variables to your <code className={`px-1.5 py-0.5 rounded border border-amber-500/20 ${
-                      isDark ? "bg-amber-950/60 text-amber-200" : "bg-amber-100 text-amber-950"
-                    }`}>.env.local</code> to connect live registration counts:
-                  </p>
-                  <pre className={`rounded-xl p-3 text-[11px] leading-relaxed border border-amber-500/20 overflow-x-auto select-all ${
-                    isDark ? "bg-black/40 text-amber-300" : "bg-white text-amber-950"
-                  }`}>
-{`GOOGLE_SHEETS_CLIENT_EMAIL=your-service@project.iam.gserviceaccount.com
+                {/* Card 3: Committee Accounts */}
+                <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
+                      Committee Team
+                    </span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-400/30 text-purple-500">
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className={`font-display text-3xl font-extrabold ${headerText} tracking-tight`}>
+                        {users.length}
+                      </span>
+                      <span className={`font-mono text-xs ${subText}`}>Accounts</span>
+                    </div>
+                    <div className={`mt-3 flex items-center gap-2 font-mono text-[11px] ${subText}`}>
+                      <span className={isDark ? "text-indigo-400 font-semibold" : "text-indigo-900 font-bold"}>{adminsCount} Admins</span>
+                      <span>•</span>
+                      <span className={isDark ? "text-sky-400 font-semibold" : "text-sky-900 font-bold"}>{coordsCount} Coordinators</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 4: Google Sheets Live Sync Status */}
+                <div className={`relative overflow-hidden rounded-2xl border ${cardBg} p-5 transition hover:scale-[1.01]`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-mono font-bold uppercase tracking-wider ${subText}`}>
+                      Google Sheets Sync
+                    </span>
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-xl border ${liveIsLive
+                          ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-500"
+                          : "bg-amber-500/15 border-amber-400/30 text-amber-500"
+                        }`}
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-block h-2.5 w-2.5 rounded-full ${liveIsLive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                          }`}
+                      />
+                      <span className={`font-display text-lg font-bold ${headerText} tracking-tight`}>
+                        {liveIsLive ? "Live Connected" : "Preview Mode"}
+                      </span>
+                    </div>
+                    <p className={`mt-2 font-mono text-[11px] ${subText} flex items-center justify-between`}>
+                      <span suppressHydrationWarning>Updated: {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}</span>
+                      <button
+                        onClick={handleRefreshCounts}
+                        disabled={isRefreshing}
+                        className="text-sky-500 hover:text-sky-600 dark:hover:text-sky-400 font-bold hover:underline"
+                      >
+                        {isRefreshing ? "Syncing…" : "Sync Now"}
+                      </button>
+                    </p>
+                  </div>
+                </div>
+
+              </section>
+
+              {/* ========================================================================= */}
+              {/* SECTION: VISUAL ANALYTICS & CHARTS (GRAPHICAL FAST COMPREHENSION)         */}
+              {/* ========================================================================= */}
+              <section
+                id="section-analytics"
+                className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                      <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
+                        Visual Registration &amp; Capacity Analytics
+                      </h2>
+                    </div>
+                    <p className={`font-mono text-xs ${subText} mt-1`}>
+                      Instant graphical representation of event capacity fill-rate and seat allocation.
+                    </p>
+                  </div>
+
+                  {/* Overall Stat Chips */}
+                  <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                    <span className={`px-3 py-1.5 rounded-xl border ${isDark ? "border-white/10 bg-white/5 text-slate-300" : "border-slate-200 bg-slate-100 text-slate-700"}`}>
+                      Available: <strong className="text-emerald-500">{totalAvailable}</strong>
+                    </span>
+                    <span className={`px-3 py-1.5 rounded-xl border ${isDark ? "border-white/10 bg-white/5 text-slate-300" : "border-slate-200 bg-slate-100 text-slate-700"}`}>
+                      Booked: <strong className="text-sky-500">{totalRegistered}</strong>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                  {/* Donut Gauge Chart (Left 4 cols) */}
+                  <div className={`lg:col-span-4 rounded-2xl border ${isDark ? "border-white/10 bg-black/20" : "border-slate-200 bg-slate-50/80"} p-5 flex flex-col items-center justify-center text-center`}>
+                    <p className={`font-mono text-xs uppercase tracking-wider font-bold ${subText} mb-3`}>
+                      Overall Seat Occupancy
+                    </p>
+
+                    {/* SVG Radial Gauge */}
+                    <div className="relative w-44 h-44 flex items-center justify-center">
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        {/* Track Circle */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          strokeWidth="10"
+                          fill="transparent"
+                          className={isDark ? "stroke-white/10" : "stroke-slate-200"}
+                        />
+                        {/* Progress Arc */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          strokeWidth="10"
+                          strokeDasharray={251.2}
+                          strokeDashoffset={251.2 - (251.2 * overallOccupancy) / 100}
+                          strokeLinecap="round"
+                          fill="transparent"
+                          className="stroke-sky-500 transition-all duration-1000 ease-out"
+                        />
+                      </svg>
+                      {/* Center Value */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className={`font-display text-3xl font-extrabold ${headerText}`}>
+                          {overallOccupancy}%
+                        </span>
+                        <span className={`font-mono text-[10px] uppercase tracking-wider ${subText}`}>
+                          Capacity Filled
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-2 w-full font-mono text-[11px] pt-3 border-t border-slate-200/50 dark:border-white/10">
+                      <div>
+                        <span className="block text-emerald-500 font-bold">{statusStats.openCount}</span>
+                        <span className={subText}>Open</span>
+                      </div>
+                      <div>
+                        <span className="block text-amber-500 font-bold">{statusStats.fillingCount}</span>
+                        <span className={subText}>Filling</span>
+                      </div>
+                      <div>
+                        <span className="block text-rose-500 font-bold">{statusStats.fullCount}</span>
+                        <span className={subText}>Full</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Event-by-Event Interactive Fill Bar Chart (Right 8 cols) */}
+                  <div className={`lg:col-span-8 rounded-2xl border ${isDark ? "border-white/10 bg-black/20" : "border-slate-200 bg-slate-50/80"} p-5 space-y-3.5`}>
+                    <div className="flex justify-between items-center font-mono text-xs pb-1 border-b border-slate-200/50 dark:border-white/10">
+                      <span className={`uppercase font-bold tracking-wider ${subText}`}>
+                        Event Capacity Fill Breakdown ({events.length})
+                      </span>
+                      <span className={`text-[11px] ${subText}`}>Registered vs Total Seats</span>
+                    </div>
+
+                    <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                      {events.map((e) => {
+                        const reg = liveCounts[e.id] ?? 0;
+                        const cap = e.capacity || 1;
+                        const pct = Math.min(Math.round((reg / cap) * 100), 100);
+                        const isFull = reg >= cap;
+                        const isFilling = !isFull && cap - reg <= cap * 0.2;
+
+                        return (
+                          <div key={e.id} className="space-y-1">
+                            <div className="flex justify-between text-xs font-mono">
+                              <span className={`font-bold ${headerText} truncate max-w-[200px] sm:max-w-xs`}>
+                                {e.name}
+                                <span className={`ml-2 text-[10px] font-normal ${subText}`}>
+                                  ({e.venue})
+                                </span>
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className={`font-bold ${isFull ? "text-rose-500" : isFilling ? "text-amber-500" : "text-sky-500"}`}>
+                                  {reg} / {cap}
+                                </span>
+                                <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${isFull
+                                    ? "bg-rose-500/15 text-rose-500"
+                                    : isFilling
+                                      ? "bg-amber-500/15 text-amber-500"
+                                      : "bg-sky-500/15 text-sky-500"
+                                  }`}>
+                                  {pct}%
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Bar Track */}
+                            <div className={`h-2.5 w-full rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200/80"}`}>
+                              <div
+                                className={`h-full rounded-full transition-all duration-700 ease-out ${isFull
+                                    ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-xs shadow-rose-500/50"
+                                    : isFilling
+                                      ? "bg-gradient-to-r from-amber-400 to-orange-500 shadow-xs shadow-amber-400/50"
+                                      : "bg-gradient-to-r from-sky-400 via-indigo-400 to-sky-500 shadow-xs shadow-sky-400/50"
+                                  }`}
+                                style={{ width: `${Math.max(pct, 3)}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {events.length === 0 && (
+                        <p className={`font-mono text-xs ${subText} py-6 text-center`}>No events configured yet.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* ========================================================================= */}
+              {/* SECTION 1: LIVE EVENT SEATS & REGISTRATION STATUS TABLE                   */}
+              {/* ========================================================================= */}
+              <section
+                id="section-seats"
+                className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
+              >
+                {/* Google Sheets Setup Banner (shown when not connected) */}
+                {!liveIsLive && (
+                  <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 font-mono text-xs backdrop-blur-md">
+                    <div className="flex items-start gap-3">
+                      <span className="text-amber-500 text-lg mt-0.5">⚠️</span>
+                      <div className="space-y-2 flex-1">
+                        <p className={`font-bold uppercase tracking-wider text-[11px] ${isDark ? "text-amber-300" : "text-amber-950"}`}>
+                          Google Sheets Not Connected — Showing Preview / Mock Data
+                        </p>
+                        <p className={`text-[11px] leading-relaxed ${isDark ? "text-amber-200/90" : "text-amber-900"}`}>
+                          Add the following variables to your <code className={`px-1.5 py-0.5 rounded border border-amber-500/20 ${isDark ? "bg-amber-950/60 text-amber-200" : "bg-amber-100 text-amber-950"
+                            }`}>.env.local</code> to connect live registration counts:
+                        </p>
+                        <pre className={`rounded-xl p-3 text-[11px] leading-relaxed border border-amber-500/20 overflow-x-auto select-all ${isDark ? "bg-black/40 text-amber-300" : "bg-white text-amber-950"
+                          }`}>
+                          {`GOOGLE_SHEETS_CLIENT_EMAIL=your-service@project.iam.gserviceaccount.com
 GOOGLE_SHEETS_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\\n..."
 GOOGLE_SHEET_ID=your_spreadsheet_id_from_url
 GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
-                  </pre>
-                  <p className={`text-[11px] ${isDark ? "text-amber-300/80" : "text-amber-900"}`}>
-                    The <strong>Sheet Label</strong> on each event must match the dropdown value in your Google Form exactly.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Section Heading & Refresh / Export Controls */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
-                  Event Seats &amp; Live Registration Status
-                </h2>
-                <span
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    liveIsLive ? "bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/60" : "bg-amber-500"
-                  }`}
-                />
-                <span className={`font-mono text-xs font-semibold ${subText}`}>
-                  {liveIsLive ? "Connected to Google Sheet" : "Preview Mode (Sheet Not Connected)"}
-                </span>
-              </div>
-              <p className={`font-mono text-xs ${subText} mt-1`}>
-                Auto-refreshes every 30s · Last updated:{" "}
-                <span suppressHydrationWarning className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                  {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}
-                </span>
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={handleRefreshCounts}
-                disabled={isRefreshing}
-                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${
-                  isRefreshing
-                    ? isDark
-                      ? "bg-white/5 border-white/10 text-slate-500 cursor-not-allowed"
-                      : "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed"
-                    : isDark
-                    ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-400"
-                    : "bg-emerald-50 border-emerald-300 text-emerald-950 hover:bg-emerald-100 hover:border-emerald-400"
-                }`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                {isRefreshing ? "Refreshing…" : "↻ Refresh Counts"}
-              </button>
-
-              <button
-                onClick={handleExportEventsCSV}
-                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${
-                  isDark
-                    ? "bg-sky-500/15 border-sky-400/40 text-sky-300 hover:bg-sky-500/25 hover:border-sky-400"
-                    : "bg-sky-50 border-sky-300 text-sky-950 hover:bg-sky-100 hover:border-sky-400"
-                }`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                  />
-                </svg>
-                Export CSV
-              </button>
-            </div>
-          </div>
-
-          {/* Search Bar & Filter Controls */}
-          <div className={`grid gap-3 sm:grid-cols-12 rounded-2xl border ${searchBoxBg} p-4`}>
-            <div className="sm:col-span-8 relative">
-              <span className={`absolute left-3.5 top-3 ${subText} font-mono text-xs`}>🔍</span>
-              <input
-                type="text"
-                value={eventSearch}
-                onChange={(e) => setEventSearch(e.target.value)}
-                placeholder="Search events by name, venue, date, or sheet label…"
-                className={`w-full rounded-xl border pl-9 pr-8 py-2.5 font-mono text-xs outline-none transition ${inputBg}`}
-              />
-              {eventSearch && (
-                <button
-                  onClick={() => setEventSearch("")}
-                  className={`absolute right-3 top-2.5 font-mono text-xs ${subText} hover:${headerText}`}
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            <div className="sm:col-span-4">
-              <select
-                value={statusFilter}
-                onChange={(e: any) => setStatusFilter(e.target.value)}
-                className={`w-full rounded-xl border px-3.5 py-2.5 font-mono text-xs outline-none transition ${selectBg}`}
-              >
-                <option value="all">All Availability Statuses</option>
-                <option value="available">Open / Available Spots</option>
-                <option value="filling">Filling Fast (≤20% left)</option>
-                <option value="full">Full / Sold Out</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Event Seats Table */}
-          <div className={`overflow-x-auto rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white"} shadow-xs`}>
-            <table className="w-full text-left font-mono text-xs">
-              <thead className={`${tableHeadBg} text-[11px] uppercase tracking-wider border-b font-bold`}>
-                <tr>
-                  <th
-                    className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                    onClick={() => handleSort("name")}
-                  >
-                    Event Name {eventSortField === "name" && (eventSortAsc ? "↑" : "↓")}
-                  </th>
-                  <th
-                    className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                    onClick={() => handleSort("venue")}
-                  >
-                    Venue {eventSortField === "venue" && (eventSortAsc ? "↑" : "↓")}
-                  </th>
-                  <th
-                    className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                    onClick={() => handleSort("date")}
-                  >
-                    Date &amp; Time {eventSortField === "date" && (eventSortAsc ? "↑" : "↓")}
-                  </th>
-                  <th
-                    className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                    onClick={() => handleSort("capacity")}
-                  >
-                    Capacity {eventSortField === "capacity" && (eventSortAsc ? "↑" : "↓")}
-                  </th>
-                  <th
-                    className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                    onClick={() => handleSort("registered")}
-                  >
-                    Registered {eventSortField === "registered" && (eventSortAsc ? "↑" : "↓")}
-                  </th>
-                  <th
-                    className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                    onClick={() => handleSort("available")}
-                  >
-                    Available {eventSortField === "available" && (eventSortAsc ? "↑" : "↓")}
-                  </th>
-                  <th className="px-4 py-3.5">Status</th>
-                  <th className="px-4 py-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className={`divide-y ${tableDivide}`}>
-                {processedEvents.map((e) => {
-                  const fillPercent = e.capacity > 0 ? Math.min(Math.round((e.registered / e.capacity) * 100), 100) : 0;
-                  return (
-                    <tr key={e.id} className={`transition-colors ${tableRowHover}`}>
-                      <td className={`px-4 py-4 font-bold ${headerText}`}>
-                        <span className="text-sm tracking-tight">{e.name}</span>
-                        <div className={`text-[10px] ${subText} font-normal mt-1 flex items-center gap-1.5`}>
-                          <span>Sheet Label:</span>
-                          <code className={`font-semibold px-1.5 py-0.5 rounded border ${
-                            isDark
-                              ? "text-sky-300 bg-sky-500/15 border-sky-400/30"
-                              : "text-sky-950 bg-sky-100 border-sky-300"
-                          }`}>
-                            {e.sheetEventLabel}
-                          </code>
-                        </div>
-                      </td>
-                      <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{e.venue}</td>
-                      <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
-                        <span>{e.date}</span>
-                        <span className={`block text-[11px] ${subText}`}>{e.time}</span>
-                      </td>
-                      <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"} font-medium`}>{e.capacity}</td>
-                      <td className="px-4 py-4">
-                        <div className="space-y-1">
-                          <span className="font-bold text-sky-500 text-sm">{e.registered}</span>
-                          <div className={`w-16 h-1 rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
-                            <div
-                              className={`h-full rounded-full ${
-                                fillPercent >= 100
-                                  ? "bg-rose-500"
-                                  : fillPercent >= 80
-                                  ? "bg-amber-500"
-                                  : "bg-sky-500"
-                              }`}
-                              style={{ width: `${fillPercent}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className={`px-4 py-4 font-bold text-sm ${isDark ? "text-emerald-400" : "text-emerald-950"}`}>{e.available}</td>
-                      <td className="px-4 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                            e.status === "full"
-                              ? isDark
-                                ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
-                                : "bg-rose-100 text-rose-950 border-rose-300"
-                              : e.status === "filling"
-                              ? isDark
-                                ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-                                : "bg-amber-100 text-amber-950 border-amber-300"
-                              : isDark
-                              ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                              : "bg-emerald-100 text-emerald-950 border-emerald-300"
-                          }`}
-                        >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${
-                              e.status === "full"
-                                ? "bg-rose-500"
-                                : e.status === "filling"
-                                ? "bg-amber-500"
-                                : "bg-emerald-500"
-                            }`}
-                          />
-                          {e.status === "full" ? "Full" : e.status === "filling" ? "Filling Fast" : "Open"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-right space-x-3 whitespace-nowrap">
-                        <button
-                          onClick={() => setEditingEvent(e)}
-                          className={`${isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-800 hover:text-sky-950"} hover:underline font-bold text-[11px] transition`}
-                        >
-                          Edit
-                        </button>
-                        <form action={deleteEventAction} className="inline">
-                          <input type="hidden" name="id" value={e.id} />
-                          <button
-                            type="submit"
-                            onClick={(evt) => {
-                              if (!confirm(`Are you sure you want to delete event "${e.name}"?`)) {
-                                evt.preventDefault();
-                              }
-                            }}
-                            className={`${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-800 hover:text-rose-950"} hover:underline font-bold text-[11px] transition`}
-                          >
-                            Delete
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                  );
-                })}
-
-                {processedEvents.length === 0 && (
-                  <tr>
-                    <td colSpan={8} className={`px-4 py-12 text-center ${subText} font-medium`}>
-                      No matching events found.
-                    </td>
-                  </tr>
+                        </pre>
+                        <p className={`text-[11px] ${isDark ? "text-amber-300/80" : "text-amber-900"}`}>
+                          The <strong>Sheet Label</strong> on each event must match the dropdown value in your Google Form exactly.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </tbody>
-            </table>
-          </div>
-        </section>
+
+                {/* Section Heading & Refresh / Export Controls */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
+                        Event Seats &amp; Live Registration Status
+                      </h2>
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full ${liveIsLive ? "bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/60" : "bg-amber-500"
+                          }`}
+                      />
+                      <span className={`font-mono text-xs font-semibold ${subText}`}>
+                        {liveIsLive ? "Connected to Google Sheet" : "Preview Mode (Sheet Not Connected)"}
+                      </span>
+                    </div>
+                    <p className={`font-mono text-xs ${subText} mt-1`}>
+                      Auto-refreshes every 30s · Last updated:{" "}
+                      <span suppressHydrationWarning className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
+                        {mounted ? lastRefreshed.toLocaleTimeString() : "--:--"}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={handleRefreshCounts}
+                      disabled={isRefreshing}
+                      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${isRefreshing
+                          ? isDark
+                            ? "bg-white/5 border-white/10 text-slate-500 cursor-not-allowed"
+                            : "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed"
+                          : isDark
+                            ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-400"
+                            : "bg-emerald-50 border-emerald-300 text-emerald-950 hover:bg-emerald-100 hover:border-emerald-400"
+                        }`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                      </svg>
+                      {isRefreshing ? "Refreshing…" : "↻ Refresh Counts"}
+                    </button>
+
+                    <button
+                      onClick={handleExportEventsCSV}
+                      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs ${isDark
+                          ? "bg-sky-500/15 border-sky-400/40 text-sky-300 hover:bg-sky-500/25 hover:border-sky-400"
+                          : "bg-sky-50 border-sky-300 text-sky-950 hover:bg-sky-100 hover:border-sky-400"
+                        }`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      Export CSV
+                    </button>
+                  </div>
+                </div>
+
+                {/* Search Bar & Filter Controls */}
+                <div className={`grid gap-3 sm:grid-cols-12 rounded-2xl border ${searchBoxBg} p-4`}>
+                  <div className="sm:col-span-8 relative">
+                    <span className={`absolute left-3.5 top-3 ${subText} font-mono text-xs`}>🔍</span>
+                    <input
+                      type="text"
+                      value={eventSearch}
+                      onChange={(e) => setEventSearch(e.target.value)}
+                      placeholder="Search events by name, venue, date, or sheet label…"
+                      className={`w-full rounded-xl border pl-9 pr-8 py-2.5 font-mono text-xs outline-none transition ${inputBg}`}
+                    />
+                    {eventSearch && (
+                      <button
+                        onClick={() => setEventSearch("")}
+                        className={`absolute right-3 top-2.5 font-mono text-xs ${subText} hover:${headerText}`}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="sm:col-span-4">
+                    <select
+                      value={statusFilter}
+                      onChange={(e: any) => setStatusFilter(e.target.value)}
+                      className={`w-full rounded-xl border px-3.5 py-2.5 font-mono text-xs outline-none transition ${selectBg}`}
+                    >
+                      <option value="all">All Availability Statuses</option>
+                      <option value="available">Open / Available Spots</option>
+                      <option value="filling">Filling Fast (≤20% left)</option>
+                      <option value="full">Full / Sold Out</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Event Seats Table */}
+                <div className={`overflow-x-auto rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white"} shadow-xs`}>
+                  <table className="w-full text-left font-mono text-xs">
+                    <thead className={`${tableHeadBg} text-[11px] uppercase tracking-wider border-b font-bold`}>
+                      <tr>
+                        <th
+                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
+                          onClick={() => handleSort("name")}
+                        >
+                          Event Name {eventSortField === "name" && (eventSortAsc ? "↑" : "↓")}
+                        </th>
+                        <th
+                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
+                          onClick={() => handleSort("venue")}
+                        >
+                          Venue {eventSortField === "venue" && (eventSortAsc ? "↑" : "↓")}
+                        </th>
+                        <th
+                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
+                          onClick={() => handleSort("date")}
+                        >
+                          Date &amp; Time {eventSortField === "date" && (eventSortAsc ? "↑" : "↓")}
+                        </th>
+                        <th
+                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
+                          onClick={() => handleSort("capacity")}
+                        >
+                          Capacity {eventSortField === "capacity" && (eventSortAsc ? "↑" : "↓")}
+                        </th>
+                        <th
+                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
+                          onClick={() => handleSort("registered")}
+                        >
+                          Registered {eventSortField === "registered" && (eventSortAsc ? "↑" : "↓")}
+                        </th>
+                        <th
+                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
+                          onClick={() => handleSort("available")}
+                        >
+                          Available {eventSortField === "available" && (eventSortAsc ? "↑" : "↓")}
+                        </th>
+                        <th className="px-4 py-3.5">Status</th>
+                        <th className="px-4 py-3.5 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className={`divide-y ${tableDivide}`}>
+                      {processedEvents.map((e) => {
+                        const fillPercent = e.capacity > 0 ? Math.min(Math.round((e.registered / e.capacity) * 100), 100) : 0;
+                        return (
+                          <tr key={e.id} className={`transition-colors ${tableRowHover}`}>
+                            <td className={`px-4 py-4 font-bold ${headerText}`}>
+                              <span className="text-sm tracking-tight">{e.name}</span>
+                              <div className={`text-[10px] ${subText} font-normal mt-1 flex items-center gap-1.5`}>
+                                <span>Sheet Label:</span>
+                                <code className={`font-semibold px-1.5 py-0.5 rounded border ${isDark
+                                    ? "text-sky-300 bg-sky-500/15 border-sky-400/30"
+                                    : "text-sky-950 bg-sky-100 border-sky-300"
+                                  }`}>
+                                  {e.sheetEventLabel}
+                                </code>
+                              </div>
+                            </td>
+                            <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{e.venue}</td>
+                            <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                              <span>{e.date}</span>
+                              <span className={`block text-[11px] ${subText}`}>{e.time}</span>
+                            </td>
+                            <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"} font-medium`}>{e.capacity}</td>
+                            <td className="px-4 py-4">
+                              <div className="space-y-1">
+                                <span className="font-bold text-sky-500 text-sm">{e.registered}</span>
+                                <div className={`w-16 h-1 rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
+                                  <div
+                                    className={`h-full rounded-full ${fillPercent >= 100
+                                        ? "bg-rose-500"
+                                        : fillPercent >= 80
+                                          ? "bg-amber-500"
+                                          : "bg-sky-500"
+                                      }`}
+                                    style={{ width: `${fillPercent}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+                            <td className={`px-4 py-4 font-bold text-sm ${isDark ? "text-emerald-400" : "text-emerald-950"}`}>{e.available}</td>
+                            <td className="px-4 py-4">
+                              <span
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${e.status === "full"
+                                    ? isDark
+                                      ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                                      : "bg-rose-100 text-rose-950 border-rose-300"
+                                    : e.status === "filling"
+                                      ? isDark
+                                        ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
+                                        : "bg-amber-100 text-amber-950 border-amber-300"
+                                      : isDark
+                                        ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                                        : "bg-emerald-100 text-emerald-950 border-emerald-300"
+                                  }`}
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${e.status === "full"
+                                      ? "bg-rose-500"
+                                      : e.status === "filling"
+                                        ? "bg-amber-500"
+                                        : "bg-emerald-500"
+                                    }`}
+                                />
+                                {e.status === "full" ? "Full" : e.status === "filling" ? "Filling Fast" : "Open"}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 text-right space-x-3 whitespace-nowrap">
+                              <button
+                                onClick={() => setEditingEvent(e)}
+                                className={`${isDark ? "text-sky-400 hover:text-sky-300" : "text-sky-800 hover:text-sky-950"} hover:underline font-bold text-[11px] transition`}
+                              >
+                                Edit
+                              </button>
+                              <form action={deleteEventAction} className="inline">
+                                <input type="hidden" name="id" value={e.id} />
+                                <button
+                                  type="submit"
+                                  onClick={(evt) => {
+                                    if (!confirm(`Are you sure you want to delete event "${e.name}"?`)) {
+                                      evt.preventDefault();
+                                    }
+                                  }}
+                                  className={`${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-800 hover:text-rose-950"} hover:underline font-bold text-[11px] transition`}
+                                >
+                                  Delete
+                                </button>
+                              </form>
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      {processedEvents.length === 0 && (
+                        <tr>
+                          <td colSpan={8} className={`px-4 py-12 text-center ${subText} font-medium`}>
+                            No matching events found.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             </>
           )}
 
@@ -1912,112 +1872,112 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 </div>
 
                 <form action={createEventAction} className="space-y-4 font-mono text-xs">
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Event Name *
-                </label>
-                <input
-                  name="name"
-                  required
-                  placeholder="e.g. AI Hackathon 2026"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                />
-              </div>
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Event Name *
+                    </label>
+                    <input
+                      name="name"
+                      required
+                      placeholder="e.g. AI Hackathon 2026"
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                    />
+                  </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                    Event Date *
-                  </label>
-                  <input
-                    name="date"
-                    required
-                    placeholder="e.g. 15 Oct 2026"
-                    className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                  />
-                </div>
-                <div>
-                  <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                    Start Time *
-                  </label>
-                  <input
-                    name="time"
-                    required
-                    placeholder="e.g. 09:30 AM"
-                    className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Event Date *
+                      </label>
+                      <input
+                        name="date"
+                        required
+                        placeholder="e.g. 15 Oct 2026"
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Start Time *
+                      </label>
+                      <input
+                        name="time"
+                        required
+                        placeholder="e.g. 09:30 AM"
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                    Venue *
-                  </label>
-                  <input
-                    name="venue"
-                    required
-                    placeholder="e.g. Auditorium B"
-                    className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                  />
-                </div>
-                <div>
-                  <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                    Capacity (Seats) *
-                  </label>
-                  <input
-                    name="capacity"
-                    type="number"
-                    defaultValue={60}
-                    required
-                    className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Venue *
+                      </label>
+                      <input
+                        name="venue"
+                        required
+                        placeholder="e.g. Auditorium B"
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                        Capacity (Seats) *
+                      </label>
+                      <input
+                        name="capacity"
+                        type="number"
+                        defaultValue={60}
+                        required
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Google Form / Sheet Label *
-                </label>
-                <input
-                  name="sheetEventLabel"
-                  required
-                  placeholder="e.g. Hackathon (Must match Google Form dropdown)"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                />
-              </div>
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Google Form / Sheet Label *
+                    </label>
+                    <input
+                      name="sheetEventLabel"
+                      required
+                      placeholder="e.g. Hackathon (Must match Google Form dropdown)"
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                    />
+                  </div>
 
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Tagline
-                </label>
-                <input
-                  name="tagline"
-                  placeholder="e.g. Build. Code. Win."
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                />
-              </div>
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Tagline
+                    </label>
+                    <input
+                      name="tagline"
+                      placeholder="e.g. Build. Code. Win."
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                    />
+                  </div>
 
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  rows={2}
-                  placeholder="Event guidelines and details…"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-                />
-              </div>
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      rows={2}
+                      placeholder="Event guidelines and details…"
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                    />
+                  </div>
 
-              <button
-                type="submit"
-                className="w-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 hover:from-sky-400 hover:via-indigo-400 hover:to-sky-400 shadow-md shadow-sky-500/25 transition-all active:scale-[0.99]"
-              >
-                Create Event
-              </button>
-            </form>
-          </div>
+                  <button
+                    type="submit"
+                    className="w-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 hover:from-sky-400 hover:via-indigo-400 hover:to-sky-400 shadow-md shadow-sky-500/25 transition-all active:scale-[0.99]"
+                  >
+                    Create Event
+                  </button>
+                </form>
+              </div>
             </section>
           )}
 
@@ -2192,13 +2152,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                               coordFileInputRef.current.click();
                             }
                           }}
-                          className={`relative rounded-2xl border-2 border-dashed p-4 transition-all text-center cursor-pointer ${
-                            isDraggingCoordPhoto
+                          className={`relative rounded-2xl border-2 border-dashed p-4 transition-all text-center cursor-pointer ${isDraggingCoordPhoto
                               ? "border-indigo-500 bg-indigo-500/10 scale-[1.01]"
                               : isDark
-                              ? "border-white/15 bg-white/[0.02] hover:border-indigo-400/50 hover:bg-white/[0.04]"
-                              : "border-slate-300 bg-slate-50/80 hover:border-indigo-400 hover:bg-indigo-50/30"
-                          }`}
+                                ? "border-white/15 bg-white/[0.02] hover:border-indigo-400/50 hover:bg-white/[0.04]"
+                                : "border-slate-300 bg-slate-50/80 hover:border-indigo-400 hover:bg-indigo-50/30"
+                            }`}
                         >
                           {coordPhotoPreview || coordPhotoUrl ? (
                             <div className="flex items-center gap-4 text-left">
@@ -2376,29 +2335,27 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                           {coords.map((c, idx) => (
                             <div
                               key={`${c.name}-${idx}`}
-                              className={`relative flex items-center justify-between gap-3 p-3.5 rounded-2xl border transition-all ${
-                                idx === 0
+                              className={`relative flex items-center justify-between gap-3 p-3.5 rounded-2xl border transition-all ${idx === 0
                                   ? isDark
                                     ? "bg-indigo-950/20 border-indigo-500/40 shadow-xs"
                                     : "bg-indigo-50/60 border-indigo-200 shadow-xs"
                                   : isDark
-                                  ? "bg-white/[0.02] border-white/10 hover:border-white/20"
-                                  : "bg-white border-slate-200 hover:border-slate-300"
-                              }`}
+                                    ? "bg-white/[0.02] border-white/10 hover:border-white/20"
+                                    : "bg-white border-slate-200 hover:border-slate-300"
+                                }`}
                             >
                               {/* Left: Rank Badge + Avatar + Info */}
                               <div className="flex items-center gap-3 min-w-0">
                                 {/* Position Rank Badge */}
                                 <div
-                                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold ${
-                                    idx === 0
+                                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold ${idx === 0
                                       ? "bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 shadow-xs"
                                       : idx === 1
-                                      ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xs"
-                                      : isDark
-                                      ? "bg-white/10 text-slate-300"
-                                      : "bg-slate-100 text-slate-700 border border-slate-200"
-                                  }`}
+                                        ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xs"
+                                        : isDark
+                                          ? "bg-white/10 text-slate-300"
+                                          : "bg-slate-100 text-slate-700 border border-slate-200"
+                                    }`}
                                   title={`Position #${idx + 1}`}
                                 >
                                   #{idx + 1}
@@ -2478,13 +2435,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                                   onClick={() => handleMoveCoordinator(selectedOrderEventId, idx, "up")}
                                   disabled={idx === 0 || isUpdatingOrder}
                                   title="Move Up"
-                                  className={`p-1.5 rounded-lg border font-bold text-xs transition ${
-                                    idx === 0 || isUpdatingOrder
+                                  className={`p-1.5 rounded-lg border font-bold text-xs transition ${idx === 0 || isUpdatingOrder
                                       ? "opacity-30 cursor-not-allowed border-transparent"
                                       : isDark
-                                      ? "border-white/10 hover:bg-white/10 text-slate-200"
-                                      : "border-slate-200 hover:bg-slate-100 text-slate-700"
-                                  }`}
+                                        ? "border-white/10 hover:bg-white/10 text-slate-200"
+                                        : "border-slate-200 hover:bg-slate-100 text-slate-700"
+                                    }`}
                                 >
                                   ▲
                                 </button>
@@ -2495,13 +2451,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                                   onClick={() => handleMoveCoordinator(selectedOrderEventId, idx, "down")}
                                   disabled={idx === coords.length - 1 || isUpdatingOrder}
                                   title="Move Down"
-                                  className={`p-1.5 rounded-lg border font-bold text-xs transition ${
-                                    idx === coords.length - 1 || isUpdatingOrder
+                                  className={`p-1.5 rounded-lg border font-bold text-xs transition ${idx === coords.length - 1 || isUpdatingOrder
                                       ? "opacity-30 cursor-not-allowed border-transparent"
                                       : isDark
-                                      ? "border-white/10 hover:bg-white/10 text-slate-200"
-                                      : "border-slate-200 hover:bg-slate-100 text-slate-700"
-                                  }`}
+                                        ? "border-white/10 hover:bg-white/10 text-slate-200"
+                                        : "border-slate-200 hover:bg-slate-100 text-slate-700"
+                                    }`}
                                 >
                                   ▼
                                 </button>
@@ -2533,162 +2488,161 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 </div>
               </div>
 
-        {/* ========================================================================= */}
-        {/* SECTION 3: ADMINS & COORDINATORS MANAGEMENT                               */}
-        {/* ========================================================================= */}
-        <section
-          id="section-users"
-          className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
-                Admins &amp; Coordinators Management ({users.length})
-              </h2>
-              <p className={`font-mono text-xs ${subText} mt-1`}>
-                Add, remove, and filter role permissions for committee accounts.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2.5">
-              <input
-                type="text"
-                value={userSearch}
-                onChange={(e) => setUserSearch(e.target.value)}
-                placeholder="🔍 Search users…"
-                className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none transition ${inputBg}`}
-              />
-              <select
-                value={roleFilter}
-                onChange={(e: any) => setRoleFilter(e.target.value)}
-                className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none transition ${selectBg}`}
+              {/* ========================================================================= */}
+              {/* SECTION 3: ADMINS & COORDINATORS MANAGEMENT                               */}
+              {/* ========================================================================= */}
+              <section
+                id="section-users"
+                className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
               >
-                <option value="all">All Roles</option>
-                <option value="admin">Admins</option>
-                <option value="coordinator">Coordinators</option>
-              </select>
-            </div>
-          </div>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
+                      Admins &amp; Coordinators Management ({users.length})
+                    </h2>
+                    <p className={`font-mono text-xs ${subText} mt-1`}>
+                      Add, remove, and filter role permissions for committee accounts.
+                    </p>
+                  </div>
 
-          {/* Users Table */}
-          <div className={`overflow-x-auto rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white"}`}>
-            <table className="w-full text-left font-mono text-xs">
-              <thead className={`${tableHeadBg} text-[11px] uppercase tracking-wider border-b font-bold`}>
-                <tr>
-                  <th className="px-4 py-3.5">Full Name</th>
-                  <th className="px-4 py-3.5">Username</th>
-                  <th className="px-4 py-3.5">Role</th>
-                  <th className="px-4 py-3.5">Phone</th>
-                  <th className="px-4 py-3.5">Email</th>
-                  <th className="px-4 py-3.5 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className={`divide-y ${tableDivide}`}>
-                {processedUsers.map((u) => (
-                  <tr key={u.id} className={`transition-colors ${tableRowHover}`}>
-                    <td className={`px-4 py-3.5 font-bold ${headerText}`}>{u.name}</td>
-                    <td className={`px-4 py-3.5 ${subText}`}>@{u.username}</td>
-                    <td className="px-4 py-3.5">
-                      <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                          u.role === "admin"
-                            ? isDark
-                              ? "bg-indigo-500/20 text-indigo-300 border-indigo-400/40"
-                              : "bg-indigo-100 text-indigo-950 border-indigo-300"
-                            : isDark
-                            ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
-                            : "bg-sky-100 text-sky-950 border-sky-300"
-                        }`}
-                      >
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className={`px-4 py-3.5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{u.phone || "—"}</td>
-                    <td className={`px-4 py-3.5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{u.email || "—"}</td>
-                    <td className="px-4 py-3.5 text-right">
-                      <form action={deleteUserAction} className="inline">
-                        <input type="hidden" name="id" value={u.id} />
-                        <button
-                          type="submit"
-                          onClick={(evt) => {
-                            if (!confirm(`Are you sure you want to remove ${u.name}?`)) {
-                              evt.preventDefault();
-                            }
-                          }}
-                          className={`${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline font-bold text-[11px] transition`}
-                        >
-                          Remove
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                ))}
+                  <div className="flex flex-wrap gap-2.5">
+                    <input
+                      type="text"
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      placeholder="🔍 Search users…"
+                      className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none transition ${inputBg}`}
+                    />
+                    <select
+                      value={roleFilter}
+                      onChange={(e: any) => setRoleFilter(e.target.value)}
+                      className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none transition ${selectBg}`}
+                    >
+                      <option value="all">All Roles</option>
+                      <option value="admin">Admins</option>
+                      <option value="coordinator">Coordinators</option>
+                    </select>
+                  </div>
+                </div>
 
-                {processedUsers.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className={`px-4 py-8 text-center ${subText} font-medium`}>
-                      No matching users found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                {/* Users Table */}
+                <div className={`overflow-x-auto rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white"}`}>
+                  <table className="w-full text-left font-mono text-xs">
+                    <thead className={`${tableHeadBg} text-[11px] uppercase tracking-wider border-b font-bold`}>
+                      <tr>
+                        <th className="px-4 py-3.5">Full Name</th>
+                        <th className="px-4 py-3.5">Username</th>
+                        <th className="px-4 py-3.5">Role</th>
+                        <th className="px-4 py-3.5">Phone</th>
+                        <th className="px-4 py-3.5">Email</th>
+                        <th className="px-4 py-3.5 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className={`divide-y ${tableDivide}`}>
+                      {processedUsers.map((u) => (
+                        <tr key={u.id} className={`transition-colors ${tableRowHover}`}>
+                          <td className={`px-4 py-3.5 font-bold ${headerText}`}>{u.name}</td>
+                          <td className={`px-4 py-3.5 ${subText}`}>@{u.username}</td>
+                          <td className="px-4 py-3.5">
+                            <span
+                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${u.role === "admin"
+                                  ? isDark
+                                    ? "bg-indigo-500/20 text-indigo-300 border-indigo-400/40"
+                                    : "bg-indigo-100 text-indigo-950 border-indigo-300"
+                                  : isDark
+                                    ? "bg-sky-500/20 text-sky-300 border-sky-400/40"
+                                    : "bg-sky-100 text-sky-950 border-sky-300"
+                                }`}
+                            >
+                              {u.role}
+                            </span>
+                          </td>
+                          <td className={`px-4 py-3.5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{u.phone || "—"}</td>
+                          <td className={`px-4 py-3.5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{u.email || "—"}</td>
+                          <td className="px-4 py-3.5 text-right">
+                            <form action={deleteUserAction} className="inline">
+                              <input type="hidden" name="id" value={u.id} />
+                              <button
+                                type="submit"
+                                onClick={(evt) => {
+                                  if (!confirm(`Are you sure you want to remove ${u.name}?`)) {
+                                    evt.preventDefault();
+                                  }
+                                }}
+                                className={`${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline font-bold text-[11px] transition`}
+                              >
+                                Remove
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                      ))}
 
-          {/* Add User Form */}
-          <form
-            action={createUserAction}
-            className={`grid gap-3.5 rounded-2xl border ${searchBoxBg} p-5 font-mono text-xs sm:grid-cols-2 lg:grid-cols-3`}
-          >
-            <p className={`col-span-full font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-sky-400" : "text-sky-900"}`}>
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-              Add New User Account (Admin or Coordinator)
-            </p>
-            <input
-              name="name"
-              required
-              placeholder="Full Name"
-              className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-            />
-            <input
-              name="username"
-              required
-              placeholder="Username"
-              className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-            />
-            <input
-              name="password"
-              type="password"
-              required
-              placeholder="Password"
-              className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-            />
-            <select
-              name="role"
-              required
-              className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
-            >
-              <option value="coordinator">Coordinator</option>
-              <option value="admin">Admin</option>
-            </select>
-            <input
-              name="phone"
-              placeholder="Phone (optional)"
-              className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-            />
-            <input
-              name="email"
-              placeholder="Email (optional)"
-              className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
-            />
-            <button
-              type="submit"
-              className="col-span-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 hover:from-sky-400 hover:via-indigo-400 hover:to-sky-400 shadow-md shadow-sky-500/20 transition-all active:scale-[0.99]"
-            >
-              Create Account
-            </button>
-          </form>
-        </section>
+                      {processedUsers.length === 0 && (
+                        <tr>
+                          <td colSpan={6} className={`px-4 py-8 text-center ${subText} font-medium`}>
+                            No matching users found.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Add User Form */}
+                <form
+                  action={createUserAction}
+                  className={`grid gap-3.5 rounded-2xl border ${searchBoxBg} p-5 font-mono text-xs sm:grid-cols-2 lg:grid-cols-3`}
+                >
+                  <p className={`col-span-full font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-sky-400" : "text-sky-900"}`}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                    Add New User Account (Admin or Coordinator)
+                  </p>
+                  <input
+                    name="name"
+                    required
+                    placeholder="Full Name"
+                    className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                  />
+                  <input
+                    name="username"
+                    required
+                    placeholder="Username"
+                    className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                  />
+                  <input
+                    name="password"
+                    type="password"
+                    required
+                    placeholder="Password"
+                    className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                  />
+                  <select
+                    name="role"
+                    required
+                    className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${selectBg}`}
+                  >
+                    <option value="coordinator">Coordinator</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <input
+                    name="phone"
+                    placeholder="Phone (optional)"
+                    className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                  />
+                  <input
+                    name="email"
+                    placeholder="Email (optional)"
+                    className={`rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                  />
+                  <button
+                    type="submit"
+                    className="col-span-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 hover:from-sky-400 hover:via-indigo-400 hover:to-sky-400 shadow-md shadow-sky-500/20 transition-all active:scale-[0.99]"
+                  >
+                    Create Account
+                  </button>
+                </form>
+              </section>
             </div>
           )}
 
@@ -2702,13 +2656,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 <button
                   type="button"
                   onClick={() => setAnnouncementsSubTab("ticker")}
-                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
-                    announcementsSubTab === "ticker"
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "ticker"
                       ? "bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md shadow-amber-500/25 scale-[1.01]"
                       : isDark
-                      ? "text-slate-400 hover:text-white hover:bg-white/5"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
-                  }`}
+                        ? "text-slate-400 hover:text-white hover:bg-white/5"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                    }`}
                 >
                   <span className="text-sm">⚡</span>
                   <span>Running Announcement (Ticker)</span>
@@ -2720,13 +2673,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 <button
                   type="button"
                   onClick={() => setAnnouncementsSubTab("bulletins")}
-                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
-                    announcementsSubTab === "bulletins"
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "bulletins"
                       ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md shadow-rose-500/25 scale-[1.01]"
                       : isDark
-                      ? "text-slate-400 hover:text-white hover:bg-white/5"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
-                  }`}
+                        ? "text-slate-400 hover:text-white hover:bg-white/5"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                    }`}
                 >
                   <span className="text-sm">📢</span>
                   <span>Broadcast Bulletins</span>
@@ -2738,13 +2690,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 <button
                   type="button"
                   onClick={() => setAnnouncementsSubTab("resources")}
-                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
-                    announcementsSubTab === "resources"
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "resources"
                       ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/25 scale-[1.01]"
                       : isDark
-                      ? "text-slate-400 hover:text-white hover:bg-white/5"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
-                  }`}
+                        ? "text-slate-400 hover:text-white hover:bg-white/5"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                    }`}
                 >
                   <span className="text-sm">📄</span>
                   <span>Resources &amp; Links</span>
@@ -2756,13 +2707,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 <button
                   type="button"
                   onClick={() => setAnnouncementsSubTab("settings")}
-                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${
-                    announcementsSubTab === "settings"
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "settings"
                       ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25 scale-[1.01]"
                       : isDark
-                      ? "text-slate-400 hover:text-white hover:bg-white/5"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
-                  }`}
+                        ? "text-slate-400 hover:text-white hover:bg-white/5"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                    }`}
                 >
                   <span className="text-sm">⚙️</span>
                   <span>Site Settings</span>
@@ -2792,16 +2742,14 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
 
                       <div className="flex items-center gap-3">
                         <span
-                          className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-xs font-bold border transition-colors ${
-                            isRunningAnnouncementActive
+                          className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-xs font-bold border transition-colors ${isRunningAnnouncementActive
                               ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
                               : "bg-slate-500/15 text-slate-400 border-slate-500/30"
-                          }`}
+                            }`}
                         >
                           <span
-                            className={`h-2 w-2 rounded-full ${
-                              isRunningAnnouncementActive ? "bg-emerald-400 animate-pulse" : "bg-slate-400"
-                            }`}
+                            className={`h-2 w-2 rounded-full ${isRunningAnnouncementActive ? "bg-emerald-400 animate-pulse" : "bg-slate-400"
+                              }`}
                           />
                           {isRunningAnnouncementActive ? "Active on Front Page" : "Hidden / Inactive"}
                         </span>
@@ -2910,16 +2858,14 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                         <button
                           type="button"
                           onClick={() => setIsRunningAnnouncementActive(!isRunningAnnouncementActive)}
-                          className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                            isRunningAnnouncementActive ? "bg-amber-500" : isDark ? "bg-slate-700" : "bg-slate-300"
-                          }`}
+                          className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isRunningAnnouncementActive ? "bg-amber-500" : isDark ? "bg-slate-700" : "bg-slate-300"
+                            }`}
                           role="switch"
                           aria-checked={isRunningAnnouncementActive}
                         >
                           <span
-                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                              isRunningAnnouncementActive ? "translate-x-6" : "translate-x-0"
-                            }`}
+                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${isRunningAnnouncementActive ? "translate-x-6" : "translate-x-0"
+                              }`}
                           />
                         </button>
                       </div>
@@ -2968,11 +2914,10 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                               key={idx}
                               type="button"
                               onClick={() => setRunningAnnouncementText(t.text)}
-                              className={`px-3 py-1.5 rounded-xl font-mono text-[11px] font-semibold border transition-all ${
-                                isDark
+                              className={`px-3 py-1.5 rounded-xl font-mono text-[11px] font-semibold border transition-all ${isDark
                                   ? "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-amber-500/10 hover:border-amber-400/40 hover:text-amber-300"
                                   : "border-slate-200 bg-white text-slate-700 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-900 shadow-xs"
-                              }`}
+                                }`}
                             >
                               {t.label}
                             </button>
@@ -3025,11 +2970,10 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                         <Link
                           href="/"
                           target="_blank"
-                          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border py-3.5 px-6 font-mono text-xs font-bold uppercase tracking-wider transition ${
-                            isDark
+                          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border py-3.5 px-6 font-mono text-xs font-bold uppercase tracking-wider transition ${isDark
                               ? "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
                               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-xs"
-                          }`}
+                            }`}
                         >
                           <span>Open Front Page</span>
                           <span>↗</span>
@@ -3290,407 +3234,401 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
               id="section-gallery"
               className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}
             >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
-                  Gallery Management (Photos &amp; Videos)
-                </h2>
-                <span className={`font-mono text-xs px-2.5 py-0.5 rounded-full font-bold border ${
-                  isDark
-                    ? "bg-purple-500/20 text-purple-300 border-purple-400/30"
-                    : "bg-purple-100 text-purple-950 border-purple-300"
-                }`}>
-                  {galleryItems.length} Total Items
-                </span>
-              </div>
-              <p className={`font-mono text-xs ${subText} mt-1`}>
-                Add, manage, and remove photos and recap videos shown in the website gallery.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2.5">
-              <input
-                type="text"
-                value={gallerySearch}
-                onChange={(e) => setGallerySearch(e.target.value)}
-                placeholder="🔍 Search photos &amp; videos…"
-                className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none ${inputBg}`}
-              />
-              <select
-                value={galleryTypeFilter}
-                onChange={(e: any) => setGalleryTypeFilter(e.target.value)}
-                className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none font-bold ${selectBg}`}
-              >
-                <option value="all">All Media</option>
-                <option value="photo">📷 Photos Only</option>
-                <option value="video">🎬 Videos Only</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Form to Add New Gallery Media with Drag & Drop / File Picker */}
-          <form
-            onSubmit={handleUploadGalleryMedia}
-            className={`space-y-4 rounded-3xl border ${searchBoxBg} p-5 sm:p-6 font-mono text-xs`}
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
-              <p className={`font-bold uppercase tracking-wider flex items-center gap-2 ${
-                isDark ? "text-purple-400" : "text-purple-900"
-              }`}>
-                <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
-                Upload New Photo or Video to Gallery
-              </p>
-
-              {/* Mode Switcher: Choose File (Drag & Drop) vs Web URL */}
-              <div className={`inline-flex rounded-xl p-1 border ${isDark ? "border-white/10 bg-slate-900/60" : "border-slate-200 bg-slate-100"}`}>
-                <button
-                  type="button"
-                  onClick={() => setGalleryUploadMode("file")}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
-                    galleryUploadMode === "file"
-                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs"
-                      : isDark
-                      ? "text-slate-400 hover:text-white"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <span>📁 Choose / Drag &amp; Drop File</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setGalleryUploadMode("url")}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
-                    galleryUploadMode === "url"
-                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs"
-                      : isDark
-                      ? "text-slate-400 hover:text-white"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <span>🔗 Web Link / YouTube</span>
-                </button>
-              </div>
-            </div>
-
-            {/* ERROR NOTIFICATION */}
-            {galleryUploadError && (
-              <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-rose-400 text-xs flex items-center justify-between">
-                <span>⚠️ {galleryUploadError}</span>
-                <button
-                  type="button"
-                  onClick={() => setGalleryUploadError(null)}
-                  className="font-bold hover:underline"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-
-            {/* SUCCESS NOTIFICATION */}
-            {galleryUploadSuccess && (
-              <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-emerald-400 text-xs flex items-center gap-2 animate-fade-up">
-                <span>✓</span>
-                <span className="font-bold">Media successfully uploaded and added to the gallery!</span>
-              </div>
-            )}
-
-            {/* MODE 1: FILE DRAG & DROP / CHOOSER */}
-            {galleryUploadMode === "file" && (
-              <div className="space-y-4">
-                {/* Hidden File Input */}
-                <input
-                  type="file"
-                  ref={galleryFileInputRef}
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleGalleryFileSelect(e.target.files[0]);
-                    }
-                  }}
-                  accept="image/*,video/*"
-                  className="hidden"
-                />
-
-                {/* Dropzone Container */}
-                {!galleryFile ? (
-                  <div
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={() => galleryFileInputRef.current?.click()}
-                    className={`relative cursor-pointer rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center transition-all ${
-                      isDraggingGallery
-                        ? "border-purple-500 bg-purple-500/15 scale-[1.01] shadow-lg shadow-purple-500/20"
-                        : isDark
-                        ? "border-white/15 bg-white/[0.02] hover:border-purple-400/50 hover:bg-white/[0.04]"
-                        : "border-purple-200 bg-purple-50/40 hover:border-purple-400 hover:bg-purple-50/80"
-                    }`}
-                  >
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/30 mb-3 group-hover:scale-105 transition-transform">
-                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                    </div>
-
-                    <h4 className={`font-display text-base sm:text-lg font-bold ${headerText}`}>
-                      Choose a photo or video, or drag &amp; drop it here
-                    </h4>
-                    <p className={`font-mono text-xs ${subText} mt-1 max-w-md mx-auto`}>
-                      Supports JPG, PNG, WEBP, GIF for photos and MP4, WEBM, MOV for videos (up to 50MB).
-                    </p>
-
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider shadow-sm transition">
-                      <span>📂</span>
-                      <span>Browse from Computer</span>
-                    </div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h2 className={`font-display text-xl sm:text-2xl font-bold ${headerText} tracking-tight`}>
+                      Gallery Management (Photos &amp; Videos)
+                    </h2>
+                    <span className={`font-mono text-xs px-2.5 py-0.5 rounded-full font-bold border ${isDark
+                        ? "bg-purple-500/20 text-purple-300 border-purple-400/30"
+                        : "bg-purple-100 text-purple-950 border-purple-300"
+                      }`}>
+                      {galleryItems.length} Total Items
+                    </span>
                   </div>
-                ) : (
-                  /* File Selected with Live Media Preview */
-                  <div className={`rounded-2xl border p-4 sm:p-5 ${isDark ? "border-purple-500/30 bg-purple-500/5" : "border-purple-200 bg-purple-50/50"} space-y-4`}>
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-2">
-                        <span>✨</span> Selected Media File Preview
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleClearSelectedFile}
-                        className="text-xs text-rose-400 hover:text-rose-300 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
-                      >
-                        ✕ Remove / Change File
-                      </button>
-                    </div>
+                  <p className={`font-mono text-xs ${subText} mt-1`}>
+                    Add, manage, and remove photos and recap videos shown in the website gallery.
+                  </p>
+                </div>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-5">
-                      {/* Media Thumbnail / Player */}
-                      <div className="relative w-full sm:w-60 h-40 rounded-xl overflow-hidden bg-black/90 flex items-center justify-center border border-white/10 shrink-0">
-                        {galleryMediaType === "photo" && galleryPreviewUrl ? (
-                          <img
-                            src={galleryPreviewUrl}
-                            alt="Upload preview"
-                            className="w-full h-full object-contain"
-                          />
-                        ) : galleryMediaType === "video" && galleryPreviewUrl ? (
-                          <video
-                            src={galleryPreviewUrl}
-                            controls
-                            className="w-full h-full object-contain"
-                          />
-                        ) : null}
+                <div className="flex flex-wrap gap-2.5">
+                  <input
+                    type="text"
+                    value={gallerySearch}
+                    onChange={(e) => setGallerySearch(e.target.value)}
+                    placeholder="🔍 Search photos &amp; videos…"
+                    className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none ${inputBg}`}
+                  />
+                  <select
+                    value={galleryTypeFilter}
+                    onChange={(e: any) => setGalleryTypeFilter(e.target.value)}
+                    className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none font-bold ${selectBg}`}
+                  >
+                    <option value="all">All Media</option>
+                    <option value="photo">📷 Photos Only</option>
+                    <option value="video">🎬 Videos Only</option>
+                  </select>
+                </div>
+              </div>
 
-                        <span className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-black/80 text-white border border-white/20">
-                          {galleryMediaType === "photo" ? "📸 Photo" : "🎬 Video"}
-                        </span>
-                      </div>
+              {/* Form to Add New Gallery Media with Drag & Drop / File Picker */}
+              <form
+                onSubmit={handleUploadGalleryMedia}
+                className={`space-y-4 rounded-3xl border ${searchBoxBg} p-5 sm:p-6 font-mono text-xs`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                  <p className={`font-bold uppercase tracking-wider flex items-center gap-2 ${isDark ? "text-purple-400" : "text-purple-900"
+                    }`}>
+                    <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
+                    Upload New Photo or Video to Gallery
+                  </p>
 
-                      {/* File Metadata */}
-                      <div className="flex-1 space-y-2 text-left w-full">
-                        <div>
-                          <p className={`font-mono text-xs font-bold ${isDark ? "text-white" : "text-slate-900"} truncate`}>
-                            {galleryFile.name}
-                          </p>
-                          <p className={`font-mono text-[11px] ${subText} mt-0.5`}>
-                            {(galleryFile.size / (1024 * 1024)).toFixed(2)} MB · {galleryFile.type || "Media File"}
-                          </p>
-                        </div>
+                  {/* Mode Switcher: Choose File (Drag & Drop) vs Web URL */}
+                  <div className={`inline-flex rounded-xl p-1 border ${isDark ? "border-white/10 bg-slate-900/60" : "border-slate-200 bg-slate-100"}`}>
+                    <button
+                      type="button"
+                      onClick={() => setGalleryUploadMode("file")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${galleryUploadMode === "file"
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs"
+                          : isDark
+                            ? "text-slate-400 hover:text-white"
+                            : "text-slate-600 hover:text-slate-900"
+                        }`}
+                    >
+                      <span>📁 Choose / Drag &amp; Drop File</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGalleryUploadMode("url")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${galleryUploadMode === "url"
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs"
+                          : isDark
+                            ? "text-slate-400 hover:text-white"
+                            : "text-slate-600 hover:text-slate-900"
+                        }`}
+                    >
+                      <span>🔗 Web Link / YouTube</span>
+                    </button>
+                  </div>
+                </div>
 
-                        <div className="flex flex-wrap gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => galleryFileInputRef.current?.click()}
-                            className={`px-3 py-1.5 rounded-lg border font-mono text-[11px] font-bold transition cursor-pointer ${
-                              isDark
-                                ? "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
-                                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                            }`}
-                          >
-                            Replace File…
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                {/* ERROR NOTIFICATION */}
+                {galleryUploadError && (
+                  <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-rose-400 text-xs flex items-center justify-between">
+                    <span>⚠️ {galleryUploadError}</span>
+                    <button
+                      type="button"
+                      onClick={() => setGalleryUploadError(null)}
+                      className="font-bold hover:underline"
+                    >
+                      ✕
+                    </button>
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* MODE 2: WEB URL */}
-            {galleryUploadMode === "url" && (
-              <div className="space-y-2">
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
-                  Media URL / Image Link / YouTube Link *
-                </label>
-                <input
-                  type="url"
-                  value={galleryExternalUrl}
-                  onChange={(e) => setGalleryExternalUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/... or https://www.youtube.com/watch?v=..."
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-                />
-              </div>
-            )}
+                {/* SUCCESS NOTIFICATION */}
+                {galleryUploadSuccess && (
+                  <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-emerald-400 text-xs flex items-center gap-2 animate-fade-up">
+                    <span>✓</span>
+                    <span className="font-bold">Media successfully uploaded and added to the gallery!</span>
+                  </div>
+                )}
 
-            {/* Common Metadata Fields: Title, Media Type, Caption */}
-            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 pt-2">
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Media Title *
-                </label>
-                <input
-                  value={galleryTitle}
-                  onChange={(e) => setGalleryTitle(e.target.value)}
-                  required
-                  placeholder="e.g. Hackathon Final Presentation"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-                />
-              </div>
+                {/* MODE 1: FILE DRAG & DROP / CHOOSER */}
+                {galleryUploadMode === "file" && (
+                  <div className="space-y-4">
+                    {/* Hidden File Input */}
+                    <input
+                      type="file"
+                      ref={galleryFileInputRef}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleGalleryFileSelect(e.target.files[0]);
+                        }
+                      }}
+                      accept="image/*,video/*"
+                      className="hidden"
+                    />
 
-              <div>
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Media Type *
-                </label>
-                <select
-                  value={galleryMediaType}
-                  onChange={(e: any) => setGalleryMediaType(e.target.value)}
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none font-bold ${selectBg}`}
-                >
-                  <option value="photo">📸 Photo</option>
-                  <option value="video">🎬 Video (MP4 / YouTube)</option>
-                </select>
-              </div>
-
-              <div className="sm:col-span-2 lg:col-span-1">
-                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
-                  Caption / Description
-                </label>
-                <input
-                  value={galleryCaption}
-                  onChange={(e) => setGalleryCaption(e.target.value)}
-                  placeholder="Brief tagline or description…"
-                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isUploadingGallery || (galleryUploadMode === "file" && !galleryFile)}
-              className="w-full rounded-xl py-3.5 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:via-indigo-500 hover:to-purple-500 shadow-md shadow-purple-600/25 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
-            >
-              {isUploadingGallery ? (
-                <>
-                  <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  <span>Uploading to Gallery… Please wait</span>
-                </>
-              ) : (
-                <>
-                  <span>🚀</span>
-                  <span>Upload &amp; Save to Gallery</span>
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* List / Grid of Existing Gallery Items */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredGalleryItems.map((item) => (
-              <div
-                key={item.id}
-                className={`group relative rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:border-purple-500/40 hover:bg-white/[0.05]" : "border-slate-200 bg-white hover:border-purple-400 hover:shadow-md"} overflow-hidden shadow-xs transition flex flex-col justify-between`}
-              >
-                <div>
-                  {/* Thumbnail / Media Preview */}
-                  <div className="relative aspect-video bg-black/70 overflow-hidden flex items-center justify-center">
-                    {item.type === "photo" && item.url ? (
-                      <img
-                        src={item.url}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = "none";
-                        }}
-                      />
-                    ) : item.type === "video" && item.url ? (
-                      item.url.includes("youtube.com") || item.url.includes("youtu.be") ? (
-                        <img
-                          src={`https://img.youtube.com/vi/${(item.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/) || [])[1] || ""}/hqdefault.jpg`}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <video
-                          src={item.url}
-                          preload="metadata"
-                          muted
-                          playsInline
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )
-                    ) : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
-
-                    <span className="absolute top-2.5 left-2.5 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold font-mono uppercase tracking-wider bg-black/70 backdrop-blur-md text-white border border-white/20">
-                      {item.type === "photo" ? "📸 Photo" : "🎬 Video"}
-                    </span>
-
-                    {item.type === "video" && (
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg">
-                          <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
+                    {/* Dropzone Container */}
+                    {!galleryFile ? (
+                      <div
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => galleryFileInputRef.current?.click()}
+                        className={`relative cursor-pointer rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center transition-all ${isDraggingGallery
+                            ? "border-purple-500 bg-purple-500/15 scale-[1.01] shadow-lg shadow-purple-500/20"
+                            : isDark
+                              ? "border-white/15 bg-white/[0.02] hover:border-purple-400/50 hover:bg-white/[0.04]"
+                              : "border-purple-200 bg-purple-50/40 hover:border-purple-400 hover:bg-purple-50/80"
+                          }`}
+                      >
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/30 mb-3 group-hover:scale-105 transition-transform">
+                          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                           </svg>
+                        </div>
+
+                        <h4 className={`font-display text-base sm:text-lg font-bold ${headerText}`}>
+                          Choose a photo or video, or drag &amp; drop it here
+                        </h4>
+                        <p className={`font-mono text-xs ${subText} mt-1 max-w-md mx-auto`}>
+                          Supports JPG, PNG, WEBP, GIF for photos and MP4, WEBM, MOV for videos (up to 50MB).
+                        </p>
+
+                        <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider shadow-sm transition">
+                          <span>📂</span>
+                          <span>Browse from Computer</span>
+                        </div>
+                      </div>
+                    ) : (
+                      /* File Selected with Live Media Preview */
+                      <div className={`rounded-2xl border p-4 sm:p-5 ${isDark ? "border-purple-500/30 bg-purple-500/5" : "border-purple-200 bg-purple-50/50"} space-y-4`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-2">
+                            <span>✨</span> Selected Media File Preview
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleClearSelectedFile}
+                            className="text-xs text-rose-400 hover:text-rose-300 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
+                          >
+                            ✕ Remove / Change File
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center gap-5">
+                          {/* Media Thumbnail / Player */}
+                          <div className="relative w-full sm:w-60 h-40 rounded-xl overflow-hidden bg-black/90 flex items-center justify-center border border-white/10 shrink-0">
+                            {galleryMediaType === "photo" && galleryPreviewUrl ? (
+                              <img
+                                src={galleryPreviewUrl}
+                                alt="Upload preview"
+                                className="w-full h-full object-contain"
+                              />
+                            ) : galleryMediaType === "video" && galleryPreviewUrl ? (
+                              <video
+                                src={galleryPreviewUrl}
+                                controls
+                                className="w-full h-full object-contain"
+                              />
+                            ) : null}
+
+                            <span className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-black/80 text-white border border-white/20">
+                              {galleryMediaType === "photo" ? "📸 Photo" : "🎬 Video"}
+                            </span>
+                          </div>
+
+                          {/* File Metadata */}
+                          <div className="flex-1 space-y-2 text-left w-full">
+                            <div>
+                              <p className={`font-mono text-xs font-bold ${isDark ? "text-white" : "text-slate-900"} truncate`}>
+                                {galleryFile.name}
+                              </p>
+                              <p className={`font-mono text-[11px] ${subText} mt-0.5`}>
+                                {(galleryFile.size / (1024 * 1024)).toFixed(2)} MB · {galleryFile.type || "Media File"}
+                              </p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 pt-1">
+                              <button
+                                type="button"
+                                onClick={() => galleryFileInputRef.current?.click()}
+                                className={`px-3 py-1.5 rounded-lg border font-mono text-[11px] font-bold transition cursor-pointer ${isDark
+                                    ? "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
+                                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                                  }`}
+                              >
+                                Replace File…
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
                   </div>
+                )}
 
-                  {/* Text Details */}
-                  <div className="p-4 space-y-1 font-mono text-xs">
-                    <h4 className={`font-bold ${headerText} text-sm line-clamp-1`}>{item.title || "Untitled"}</h4>
-                    {item.caption && <p className={`${subText} text-[11px] line-clamp-2`}>{item.caption}</p>}
-                    <p className={`text-[10px] ${subText} truncate pt-1`}>{item.url}</p>
+                {/* MODE 2: WEB URL */}
+                {galleryUploadMode === "url" && (
+                  <div className="space-y-2">
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
+                      Media URL / Image Link / YouTube Link *
+                    </label>
+                    <input
+                      type="url"
+                      value={galleryExternalUrl}
+                      onChange={(e) => setGalleryExternalUrl(e.target.value)}
+                      placeholder="https://images.unsplash.com/... or https://www.youtube.com/watch?v=..."
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                    />
+                  </div>
+                )}
+
+                {/* Common Metadata Fields: Title, Media Type, Caption */}
+                <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 pt-2">
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Media Title *
+                    </label>
+                    <input
+                      value={galleryTitle}
+                      onChange={(e) => setGalleryTitle(e.target.value)}
+                      required
+                      placeholder="e.g. Hackathon Final Presentation"
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Media Type *
+                    </label>
+                    <select
+                      value={galleryMediaType}
+                      onChange={(e: any) => setGalleryMediaType(e.target.value)}
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none font-bold ${selectBg}`}
+                    >
+                      <option value="photo">📸 Photo</option>
+                      <option value="video">🎬 Video (MP4 / YouTube)</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Caption / Description
+                    </label>
+                    <input
+                      value={galleryCaption}
+                      onChange={(e) => setGalleryCaption(e.target.value)}
+                      placeholder="Brief tagline or description…"
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                    />
                   </div>
                 </div>
 
-                {/* Delete Button */}
-                <div className={`p-4 pt-0 border-t ${isDark ? "border-white/5" : "border-slate-100"} mt-2 flex items-center justify-between`}>
-                  <span className={`font-mono text-[10px] ${subText}`}>
-                    ID: {item.id.slice(0, 8)}
-                  </span>
-                  <form action={async (formData) => {
-                    setLocalGalleryItems((prev) => prev.filter((i) => i.id !== item.id));
-                    await deleteGalleryItemAction(formData);
-                  }}>
-                    <input type="hidden" name="id" value={item.id} />
-                    <button
-                      type="submit"
-                      onClick={(evt) => {
-                        if (!confirm(`Are you sure you want to remove "${item.title || "this item"}" from gallery?`)) {
-                          evt.preventDefault();
-                        }
-                      }}
-                      className={`font-mono text-xs font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-800 hover:text-rose-950"} hover:underline inline-flex items-center gap-1 transition cursor-pointer`}
-                    >
-                      🗑️ Delete
-                    </button>
-                  </form>
-                </div>
-              </div>
-            ))}
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isUploadingGallery || (galleryUploadMode === "file" && !galleryFile)}
+                  className="w-full rounded-xl py-3.5 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:via-indigo-500 hover:to-purple-500 shadow-md shadow-purple-600/25 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
+                >
+                  {isUploadingGallery ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                      <span>Uploading to Gallery… Please wait</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🚀</span>
+                      <span>Upload &amp; Save to Gallery</span>
+                    </>
+                  )}
+                </button>
+              </form>
 
-            {filteredGalleryItems.length === 0 && (
-              <div className={`col-span-full py-12 text-center font-mono text-xs ${subText} ${isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200"} rounded-2xl border`}>
-                No matching gallery items found.
+              {/* List / Grid of Existing Gallery Items */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredGalleryItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`group relative rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:border-purple-500/40 hover:bg-white/[0.05]" : "border-slate-200 bg-white hover:border-purple-400 hover:shadow-md"} overflow-hidden shadow-xs transition flex flex-col justify-between`}
+                  >
+                    <div>
+                      {/* Thumbnail / Media Preview */}
+                      <div className="relative aspect-video bg-black/70 overflow-hidden flex items-center justify-center">
+                        {item.type === "photo" && item.url ? (
+                          <img
+                            src={item.url}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                        ) : item.type === "video" && item.url ? (
+                          item.url.includes("youtube.com") || item.url.includes("youtu.be") ? (
+                            <img
+                              src={`https://img.youtube.com/vi/${(item.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/) || [])[1] || ""}/hqdefault.jpg`}
+                              alt={item.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <video
+                              src={item.url}
+                              preload="metadata"
+                              muted
+                              playsInline
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          )
+                        ) : null}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
+
+                        <span className="absolute top-2.5 left-2.5 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold font-mono uppercase tracking-wider bg-black/70 backdrop-blur-md text-white border border-white/20">
+                          {item.type === "photo" ? "📸 Photo" : "🎬 Video"}
+                        </span>
+
+                        {item.type === "video" && (
+                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg">
+                              <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Text Details */}
+                      <div className="p-4 space-y-1 font-mono text-xs">
+                        <h4 className={`font-bold ${headerText} text-sm line-clamp-1`}>{item.title || "Untitled"}</h4>
+                        {item.caption && <p className={`${subText} text-[11px] line-clamp-2`}>{item.caption}</p>}
+                        <p className={`text-[10px] ${subText} truncate pt-1`}>{item.url}</p>
+                      </div>
+                    </div>
+
+                    {/* Delete Button */}
+                    <div className={`p-4 pt-0 border-t ${isDark ? "border-white/5" : "border-slate-100"} mt-2 flex items-center justify-between`}>
+                      <span className={`font-mono text-[10px] ${subText}`}>
+                        ID: {item.id.slice(0, 8)}
+                      </span>
+                      <form action={async (formData) => {
+                        setLocalGalleryItems((prev) => prev.filter((i) => i.id !== item.id));
+                        await deleteGalleryItemAction(formData);
+                      }}>
+                        <input type="hidden" name="id" value={item.id} />
+                        <button
+                          type="submit"
+                          onClick={(evt) => {
+                            if (!confirm(`Are you sure you want to remove "${item.title || "this item"}" from gallery?`)) {
+                              evt.preventDefault();
+                            }
+                          }}
+                          className={`font-mono text-xs font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-800 hover:text-rose-950"} hover:underline inline-flex items-center gap-1 transition cursor-pointer`}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                ))}
+
+                {filteredGalleryItems.length === 0 && (
+                  <div className={`col-span-full py-12 text-center font-mono text-xs ${subText} ${isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200"} rounded-2xl border`}>
+                    No matching gallery items found.
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </section>
+            </section>
           )}
 
         </div>
@@ -3701,9 +3639,8 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
       {/* ========================================================================= */}
       {editingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md">
-          <div className={`w-full max-w-lg rounded-3xl p-6 sm:p-8 space-y-4 font-mono text-xs border shadow-2xl ${
-            isDark ? "bg-[#111827] text-white border-white/20" : "bg-white text-slate-900 border-slate-200"
-          }`}>
+          <div className={`w-full max-w-lg rounded-3xl p-6 sm:p-8 space-y-4 font-mono text-xs border shadow-2xl ${isDark ? "bg-[#111827] text-white border-white/20" : "bg-white text-slate-900 border-slate-200"
+            }`}>
             <div className={`flex items-center justify-between border-b ${isDark ? "border-white/10" : "border-slate-100"} pb-3.5`}>
               <h3 className={`font-display text-lg font-bold ${headerText}`}>
                 Edit Event: {editingEvent.name}
@@ -3827,9 +3764,8 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                 <button
                   type="button"
                   onClick={() => setEditingEvent(null)}
-                  className={`w-1/2 rounded-xl border py-2.5 text-center font-bold transition ${
-                    isDark ? "border-white/15 text-slate-300 hover:bg-white/5" : "border-slate-200 text-slate-700 hover:bg-slate-100"
-                  }`}
+                  className={`w-1/2 rounded-xl border py-2.5 text-center font-bold transition ${isDark ? "border-white/15 text-slate-300 hover:bg-white/5" : "border-slate-200 text-slate-700 hover:bg-slate-100"
+                    }`}
                 >
                   Cancel
                 </button>
