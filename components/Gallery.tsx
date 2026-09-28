@@ -81,7 +81,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
             Previous Symposium Highlights
           </h2>
           <p className="mx-auto max-w-2xl text-base text-slate-600 font-sans leading-relaxed">
-            Photos and recap videos from past symposiums — a glimpse of the energy, innovation, and memories we build every year.
+            Photos from past symposiums — a glimpse of the energy, innovation, and memories we build every year.
           </p>
         </div>
 
@@ -93,7 +93,6 @@ export default function Gallery({ items = [] }: GalleryProps) {
                 <span>📸 Photo Gallery</span>
               </h3>
               <p className="text-sm text-slate-600 font-sans mt-1">
-                Photos from our previous symposium
               </p>
             </div>
             <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
@@ -102,12 +101,12 @@ export default function Gallery({ items = [] }: GalleryProps) {
           </div>
 
           <div className="relative overflow-hidden rounded-3xl border border-sky-200/90 shadow-[0_20px_50px_rgba(14,165,233,0.1)] bg-white/80 backdrop-blur-xl">
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#F0F7FF] to-transparent z-20 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#F0F7FF] to-transparent z-20 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-16 sm:w-24 bg-gradient-to-r from-white/90 to-transparent z-20 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 sm:w-24 bg-gradient-to-l from-white/90 to-transparent z-20 pointer-events-none" />
 
-            <div className="overflow-hidden py-8">
+            <div className="overflow-hidden py-2.5 sm:py-3">
               <div
-                className="flex gap-6 w-max animate-marquee-reverse hover:animate-pause"
+                className="flex gap-4 sm:gap-6 w-max animate-marquee-reverse hover:animate-pause"
                 style={{ animationDuration: `${Math.max(25, displayPhotos.length * 5)}s` }}
               >
                 {duplicatedPhotos.map((photo, index) => (
@@ -214,7 +213,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
         )}
 
         {/* Action Trigger Area: View Full Event Album & Socials */}
-        <div className="mt-8 flex flex-col items-center justify-center gap-4 text-center">
+        <div className="mt-12 flex flex-col items-center justify-center gap-4 text-center">
           <a
             href="https://www.instagram.com/creative_codex_club"
             target="_blank"
