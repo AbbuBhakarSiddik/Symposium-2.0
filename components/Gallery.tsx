@@ -237,16 +237,18 @@ export default function Gallery({ items = [] }: GalleryProps) {
       {/* ===== PHOTO LIGHTBOX MODAL ===== */}
       {activePhoto && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-4 sm:p-8 backdrop-blur-2xl animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-3 sm:p-6 backdrop-blur-md animate-fade-in"
           onClick={() => setActivePhoto(null)}
         >
           <div
-            className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center justify-center bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-2xl p-4 sm:p-6 text-slate-900"
+            className="relative inline-block max-w-full max-h-[92vh] bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/40 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close Button floating over top-right corner */}
             <button
               onClick={() => setActivePhoto(null)}
-              className="absolute top-4 right-4 z-20 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full w-10 h-10 flex items-center justify-center font-mono text-lg transition border border-slate-300 font-bold"
+              aria-label="Close photo preview"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 text-slate-700 hover:text-slate-950 bg-white/85 hover:bg-white backdrop-blur-md rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-mono text-lg transition border border-slate-200/80 shadow-lg cursor-pointer"
             >
               ✕
             </button>
@@ -254,17 +256,12 @@ export default function Gallery({ items = [] }: GalleryProps) {
             {activePhoto.url ? (
               <img
                 src={activePhoto.url}
-                alt={activePhoto.title}
-                className="max-h-[70vh] w-auto max-w-full object-contain rounded-2xl shadow-xl"
+                alt="Symposium highlight"
+                className="max-h-[84vh] sm:max-h-[88vh] w-auto max-w-[94vw] sm:max-w-5xl object-contain rounded-xl sm:rounded-2xl block"
               />
             ) : (
-              <div className="h-64 w-full flex items-center justify-center text-6xl">📸</div>
+              <div className="h-64 w-64 flex items-center justify-center text-6xl">📸</div>
             )}
-
-            <div className="mt-4 text-center space-y-1">
-              <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-900">{activePhoto.title}</h3>
-              {activePhoto.caption && <p className="text-sm text-slate-600 max-w-xl font-sans">{activePhoto.caption}</p>}
-            </div>
           </div>
         </div>
       )}
