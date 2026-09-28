@@ -93,7 +93,7 @@ export default function Hero() {
         {/* ── 4. INFO CHIPS ─────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium mb-7 sm:mb-8 max-w-3xl px-2">
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
-            <span>📅</span> October 28th, 2026
+            <span></span> October 28th, 2026
           </span>
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
             <span>📍</span> Shridevi Institute of Engineering and Technology, Tumkur
@@ -135,7 +135,7 @@ export default function Hero() {
             href="#events"
             className="inline-flex items-center justify-center gap-2.5 rounded-full border border-slate-400/35 bg-[#091b38]/65 hover:bg-[#091b38]/90 backdrop-blur-md px-7 py-3.5 font-sans text-sm sm:text-base font-medium text-white shadow-md hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto"
           >
-            <span aria-hidden="true">📅</span>
+            <span aria-hidden="true"></span>
             View Events
             <svg
               xmlns="http://www.w3.org/2000/svg"
