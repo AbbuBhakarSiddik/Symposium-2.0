@@ -40,11 +40,11 @@ export default function Gallery({ items = [] }: GalleryProps) {
   const activeItems = items.length > 0 ? items : DEFAULT_GALLERY_ITEMS;
 
   const photos = activeItems.filter((i) => i.type === "photo");
-  const videos = activeItems.filter((i) => i.type === "video");
+  // Only show real uploaded videos — no fallback to dummy/default videos
+  const uploadedVideos = items.filter((i) => i.type === "video");
 
-  // Fallback defaults if photos or videos are empty
+  // Fallback defaults if photos are empty
   const displayPhotos = photos.length > 0 ? photos : DEFAULT_GALLERY_ITEMS.filter((i) => i.type === "photo");
-  const displayVideos = videos.length > 0 ? videos : DEFAULT_GALLERY_ITEMS.filter((i) => i.type === "video");
 
   // Duplicate photos for smooth infinite marquee continuous scrolling
   const duplicatedPhotos = [...displayPhotos, ...displayPhotos];
@@ -53,7 +53,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
   const [activePhoto, setActivePhoto] = useState<GalleryItem | null>(null);
   const [activeVideo, setActiveVideo] = useState<GalleryItem | null>(null);
 
-  const visibleVideos = displayVideos;
+  const visibleVideos = uploadedVideos;
 
   return (
     <section id="gallery" className="scroll-mt-24 border-t border-sky-200/60 bg-gradient-to-br from-[#F0F7FF] via-[#F8FAFC] to-[#F1F5F9] pt-10 pb-12 sm:pt-14 sm:pb-16 relative overflow-hidden text-slate-900 shadow-sm">
@@ -81,7 +81,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
             Previous Symposium Highlights
           </h2>
           <p className="mx-auto max-w-2xl text-base text-slate-600 font-sans leading-relaxed">
-            Photos and recap videos from past symposiums — a glimpse of the energy, innovation, and memories we build every year.
+            Photos from past symposiums — a glimpse of the energy, innovation, and memories we build every year.
           </p>
         </div>
 
@@ -93,7 +93,6 @@ export default function Gallery({ items = [] }: GalleryProps) {
                 <span>📸 Photo Gallery</span>
               </h3>
               <p className="text-sm text-slate-600 font-sans mt-1">
-                Photos from our previous symposium
               </p>
             </div>
             <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
@@ -102,12 +101,12 @@ export default function Gallery({ items = [] }: GalleryProps) {
           </div>
 
           <div className="relative overflow-hidden rounded-3xl border border-sky-200/90 shadow-[0_20px_50px_rgba(14,165,233,0.1)] bg-white/80 backdrop-blur-xl">
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#F0F7FF] to-transparent z-20 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#F0F7FF] to-transparent z-20 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-16 sm:w-24 bg-gradient-to-r from-white/90 to-transparent z-20 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 sm:w-24 bg-gradient-to-l from-white/90 to-transparent z-20 pointer-events-none" />
 
-            <div className="overflow-hidden py-8">
+            <div className="overflow-hidden py-2.5 sm:py-3">
               <div
-                className="flex gap-6 w-max animate-marquee-reverse hover:animate-pause"
+                className="flex gap-4 sm:gap-6 w-max animate-marquee-reverse hover:animate-pause"
                 style={{ animationDuration: `${Math.max(25, displayPhotos.length * 5)}s` }}
               >
                 {duplicatedPhotos.map((photo, index) => (
@@ -144,109 +143,113 @@ export default function Gallery({ items = [] }: GalleryProps) {
           </div>
         </div>
 
-        {/* ===== VIDEO SECTION – Highlighted Cards & Interactive Player ===== */}
-        <div id="video-album-section">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8">
-            <div>
-              <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
-                <span>🎬 Event Highlights</span>
-              </h3>
-              <p className="text-sm text-slate-600 font-sans mt-1">
-                Videos capturing the key moments and activities from the event
-              </p>
+        {/* ===== VIDEO SECTION – Highlighted Cards & Interactive Player (only shown when uploaded) ===== */}
+        {visibleVideos.length > 0 && (
+          <div id="video-album-section" className="mb-14 sm:mb-16">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8">
+              <div>
+                <h3 className="font-display text-2xl font-bold text-slate-900 flex items-center gap-3">
+                  <span>🎬 Event Highlights</span>
+                </h3>
+                <p className="text-sm text-slate-600 font-sans mt-1">
+                  Videos capturing the key moments and activities from the event
+                </p>
+              </div>
+              <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
+                Click video to play
+              </span>
             </div>
-            <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
-              Click video to play
-            </span>
-          </div>
 
-          {/* Videos Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {visibleVideos.map((video, index) => {
-              return (
-                <div
-                  key={`video-${video.id}-${index}`}
-                  onClick={() => setActiveVideo(video)}
-                  className={`
-                    group relative aspect-video overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xl
-                    bg-gradient-to-br ${gradientStyles[(index + 3) % gradientStyles.length]}
-                    transition-all duration-300 hover:scale-[1.03] hover:border-pink-500 hover:shadow-[0_25px_50px_rgba(236,72,153,0.25)]
-                    flex items-center justify-center cursor-pointer
-                  `}
-                >
-                  {/* Thumbnail Image or Video Poster */}
-                  {getVideoThumbnail(video.url) ? (
-                    <img
-                      src={getVideoThumbnail(video.url)!}
-                      alt={video.title || `Highlight Video ${index + 1}`}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = "none";
-                      }}
-                    />
-                  ) : video.url ? (
-                    <video
-                      src={video.url}
-                      preload="metadata"
-                      muted
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                    />
-                  ) : null}
+            {/* Videos Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+              {visibleVideos.map((video, index) => {
+                return (
+                  <div
+                    key={`video-${video.id}-${index}`}
+                    onClick={() => setActiveVideo(video)}
+                    className={`
+                      group relative aspect-video overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xl
+                      bg-gradient-to-br ${gradientStyles[(index + 3) % gradientStyles.length]}
+                      transition-all duration-300 hover:scale-[1.03] hover:border-pink-500 hover:shadow-[0_25px_50px_rgba(236,72,153,0.25)]
+                      flex items-center justify-center cursor-pointer
+                    `}
+                  >
+                    {/* Thumbnail Image or Video Poster */}
+                    {getVideoThumbnail(video.url) ? (
+                      <img
+                        src={getVideoThumbnail(video.url)!}
+                        alt={video.title || `Highlight Video ${index + 1}`}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                    ) : video.url ? (
+                      <video
+                        src={video.url}
+                        preload="metadata"
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                      />
+                    ) : null}
 
-                  {/* Subtle dark tint so play button pops */}
-                  <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/10 transition-colors" />
+                    {/* Subtle dark tint so play button pops */}
+                    <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/10 transition-colors" />
 
-                  {/* Play Button Overlay */}
-                  <div className="relative z-10 flex items-center justify-center">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white bg-slate-900/60 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-600 group-hover:border-pink-300 group-hover:scale-110 transition-all shadow-2xl">
-                      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1 transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+                    {/* Play Button Overlay */}
+                    <div className="relative z-10 flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white bg-slate-900/60 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-600 group-hover:border-pink-300 group-hover:scale-110 transition-all shadow-2xl">
+                        <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+        )}
 
-          {/* Action Trigger Area: View Full Event Album & Socials */}
-          <div className="mt-12 flex flex-col items-center justify-center gap-4 text-center">
-            <a
-              href="https://www.instagram.com/creative_codex_club"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+        {/* Action Trigger Area: View Full Event Album & Socials */}
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 text-center">
+          <a
+            href="https://www.instagram.com/creative_codex_club"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+          >
+            <span>View Full Event Album</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 transition-transform group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
             >
-              <span>View Full Event Album &amp; Socials</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
       </div>
 
       {/* ===== PHOTO LIGHTBOX MODAL ===== */}
       {activePhoto && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-4 sm:p-8 backdrop-blur-2xl animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-3 sm:p-6 backdrop-blur-md animate-fade-in"
           onClick={() => setActivePhoto(null)}
         >
           <div
-            className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center justify-center bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-2xl p-4 sm:p-6 text-slate-900"
+            className="relative inline-block max-w-full max-h-[92vh] bg-white p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/40 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close Button floating over top-right corner */}
             <button
               onClick={() => setActivePhoto(null)}
-              className="absolute top-4 right-4 z-20 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full w-10 h-10 flex items-center justify-center font-mono text-lg transition border border-slate-300 font-bold"
+              aria-label="Close photo preview"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 text-slate-700 hover:text-slate-950 bg-white/85 hover:bg-white backdrop-blur-md rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-mono text-lg transition border border-slate-200/80 shadow-lg cursor-pointer"
             >
               ✕
             </button>
@@ -254,17 +257,12 @@ export default function Gallery({ items = [] }: GalleryProps) {
             {activePhoto.url ? (
               <img
                 src={activePhoto.url}
-                alt={activePhoto.title}
-                className="max-h-[70vh] w-auto max-w-full object-contain rounded-2xl shadow-xl"
+                alt="Symposium highlight"
+                className="max-h-[84vh] sm:max-h-[88vh] w-auto max-w-[94vw] sm:max-w-5xl object-contain rounded-xl sm:rounded-2xl block"
               />
             ) : (
-              <div className="h-64 w-full flex items-center justify-center text-6xl">📸</div>
+              <div className="h-64 w-64 flex items-center justify-center text-6xl">📸</div>
             )}
-
-            <div className="mt-4 text-center space-y-1">
-              <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-900">{activePhoto.title}</h3>
-              {activePhoto.caption && <p className="text-sm text-slate-600 max-w-xl font-sans">{activePhoto.caption}</p>}
-            </div>
           </div>
         </div>
       )}
@@ -327,4 +325,4 @@ export default function Gallery({ items = [] }: GalleryProps) {
       )}
     </section>
   );
-}
+}
