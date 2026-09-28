@@ -228,17 +228,17 @@ function EventCard({
     (eventNameKey.includes("hackathon")
       ? EVENT_CUSTOM_CONFIG["mini hackathon"]
       : eventNameKey.includes("agentic")
-      ? EVENT_CUSTOM_CONFIG["agentic ai"]
-      : eventNameKey.includes("modal") || eventNameKey.includes("presentation")
-      ? EVENT_CUSTOM_CONFIG["modal presentation"]
-      : null);
+        ? EVENT_CUSTOM_CONFIG["agentic ai"]
+        : eventNameKey.includes("modal") || eventNameKey.includes("presentation")
+          ? EVENT_CUSTOM_CONFIG["modal presentation"]
+          : null);
 
   const customItems =
     event.domains && event.domains.length > 0
       ? event.domains
       : customConfig
-      ? customConfig.items
-      : null;
+        ? customConfig.items
+        : null;
 
   const sectionTitle = customConfig?.sectionTitle || "DOMAIN";
   const hasCustomItems = Boolean(customItems && customItems.length > 0);
@@ -256,10 +256,10 @@ function EventCard({
     seat === undefined
       ? "loading"
       : isClosed
-      ? "full"
-      : available <= capacity * 0.2
-      ? "filling"
-      : "open";
+        ? "full"
+        : available <= capacity * 0.2
+          ? "filling"
+          : "open";
 
   const formHref = registerFormUrl && registerFormUrl !== "#" ? registerFormUrl : "#contact";
   const formTarget = registerFormUrl && registerFormUrl !== "#" ? "_blank" : "_self";
@@ -408,26 +408,24 @@ function EventCard({
             {/* Progress bar track */}
             <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80">
               <div
-                className={`h-full rounded-full transition-all duration-700 ease-out ${
-                  isClosed
-                    ? "bg-red-500"
-                    : percentageFilled >= 80
+                className={`h-full rounded-full transition-all duration-700 ease-out ${isClosed
+                  ? "bg-red-500"
+                  : percentageFilled >= 80
                     ? "bg-gradient-to-r from-amber-400 to-red-500"
                     : `bg-gradient-to-r ${theme.gradientBar}`
-                }`}
+                  }`}
                 style={{ width: `${percentageFilled}%` }}
               />
             </div>
 
             <div className="flex justify-between items-center text-[11px] font-mono">
               <span
-                className={`font-semibold px-2 py-0.5 rounded ${
-                  isClosed
-                    ? "text-red-700 bg-red-100/70"
-                    : available <= capacity * 0.2
+                className={`font-semibold px-2 py-0.5 rounded ${isClosed
+                  ? "text-red-700 bg-red-100/70"
+                  : available <= capacity * 0.2
                     ? "text-amber-800 bg-amber-100/70"
                     : "text-blue-700 bg-blue-100/60"
-                }`}
+                  }`}
               >
                 {isClosed ? "0 spots remaining" : `${available} spots left`}
               </span>
@@ -513,98 +511,98 @@ function EventCard({
               ${isOpen ? "max-h-[800px] opacity-100 mt-5 pt-4 border-t border-slate-200/80" : "max-h-0 opacity-0"}
             `}
           >
-          <div className="space-y-4">
-            {/* Description */}
-            <div>
-              <p className="eyebrow text-[10px] text-slate-500 mb-1">About This Event</p>
-              <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                {event.description || "Join this flagship symposium arena to test your skills, innovate alongside peers, and earn prestigious accolades."}
-              </p>
-            </div>
-
-            {/* Schedule Timeline */}
-            {event.schedule && event.schedule.length > 0 && (
+            <div className="space-y-4">
+              {/* Description */}
               <div>
-                <p className="eyebrow text-[10px] text-slate-500 mb-2.5">Event Flow &amp; Schedule</p>
-                <div className="relative pl-5 space-y-2.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-sky-400 before:to-indigo-300">
-                  {event.schedule.map((s, i) => (
-                    <div key={i} className="relative flex items-start gap-2.5 text-xs">
-                      <span className="absolute -left-5 mt-1 h-2 w-2 rounded-full border-2 border-white bg-sky-500 shadow-sm" />
-                      <span className="font-mono font-bold text-sky-700 shrink-0 w-20">{s.time}</span>
-                      <span className="text-slate-700 font-medium">{s.item}</span>
-                    </div>
-                  ))}
-                </div>
+                <p className="eyebrow text-[10px] text-slate-500 mb-1">About This Event</p>
+                <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                  {event.description || "Join this flagship symposium arena to test your skills, innovate alongside peers, and earn prestigious accolades."}
+                </p>
               </div>
-            )}
 
-            {/* Coordinators Contact Section */}
-            <div>
-              <p className="eyebrow text-[10px] text-slate-500 mb-2">Event Coordinators</p>
-              {event.coordinators && event.coordinators.length > 0 ? (
-                <div className="grid grid-cols-1 gap-2 max-h-52 overflow-y-auto overscroll-contain pr-1">
-                  {event.coordinators.map((c, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/60"
-                    >
-                      <div className="min-w-0 pr-2 flex items-center gap-2">
-                        {event.coordinators.length > 1 && (
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80 shrink-0">
-                            #{i + 1}
-                          </span>
-                        )}
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold text-slate-900 truncate">{c.name}</p>
-                          <p className="text-[10px] font-mono text-slate-500 truncate">{c.role}</p>
+              {/* Schedule Timeline */}
+              {event.schedule && event.schedule.length > 0 && (
+                <div>
+                  <p className="eyebrow text-[10px] text-slate-500 mb-2.5">Event Flow &amp; Schedule</p>
+                  <div className="relative pl-5 space-y-2.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-sky-400 before:to-indigo-300">
+                    {event.schedule.map((s, i) => (
+                      <div key={i} className="relative flex items-start gap-2.5 text-xs">
+                        <span className="absolute -left-5 mt-1 h-2 w-2 rounded-full border-2 border-white bg-sky-500 shadow-sm" />
+                        <span className="font-mono font-bold text-sky-700 shrink-0 w-20">{s.time}</span>
+                        <span className="text-slate-700 font-medium">{s.item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Coordinators Contact Section */}
+              <div>
+                <p className="eyebrow text-[10px] text-slate-500 mb-2">Event Coordinators</p>
+                {event.coordinators && event.coordinators.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-2 max-h-52 overflow-y-auto overscroll-contain pr-1">
+                    {event.coordinators.map((c, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/60"
+                      >
+                        <div className="min-w-0 pr-2 flex items-center gap-2">
+                          {event.coordinators.length > 1 && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80 shrink-0">
+                              #{i + 1}
+                            </span>
+                          )}
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-slate-900 truncate">{c.name}</p>
+                            <p className="text-[10px] font-mono text-slate-500 truncate">{c.role}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {c.phone && (
+                            <a
+                              href={`tel:${c.phone}`}
+                              title={`Call ${c.name} (${c.phone})`}
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-mono text-[10px] font-bold transition-colors"
+                            >
+                              <span>📞</span>
+                              <span className="hidden sm:inline">Call</span>
+                            </a>
+                          )}
+                          {c.email && (
+                            <a
+                              href={`mailto:${c.email}`}
+                              title={`Email ${c.name}`}
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 font-mono text-[10px] font-bold transition-colors"
+                            >
+                              <span>✉️</span>
+                              <span className="hidden sm:inline">Email</span>
+                            </a>
+                          )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {c.phone && (
-                          <a
-                            href={`tel:${c.phone}`}
-                            title={`Call ${c.name} (${c.phone})`}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-mono text-[10px] font-bold transition-colors"
-                          >
-                            <span>📞</span>
-                            <span className="hidden sm:inline">Call</span>
-                          </a>
-                        )}
-                        {c.email && (
-                          <a
-                            href={`mailto:${c.email}`}
-                            title={`Email ${c.name}`}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 font-mono text-[10px] font-bold transition-colors"
-                          >
-                            <span>✉️</span>
-                            <span className="hidden sm:inline">Email</span>
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[11px] text-slate-500 italic bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
-                  Student and faculty coordinators will be on ground at the venue help desk.
-                </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-slate-500 italic bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+                    Student and faculty coordinators will be on ground at the venue help desk.
+                  </p>
+                )}
+              </div>
+
+              {/* Rulebook / Guidelines Button if available */}
+              {event.rulebookUrl && (
+                <a
+                  href={event.rulebookUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl border border-blue-200 bg-blue-50/70 font-mono text-xs font-bold text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-colors shadow-sm"
+                >
+                  <span>📘</span>
+                  <span>Official Rulebook &amp; Guidelines ↗</span>
+                </a>
               )}
             </div>
-
-            {/* Rulebook / Guidelines Button if available */}
-            {event.rulebookUrl && (
-              <a
-                href={event.rulebookUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl border border-blue-200 bg-blue-50/70 font-mono text-xs font-bold text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-colors shadow-sm"
-              >
-                <span>📘</span>
-                <span>Official Rulebook &amp; Guidelines ↗</span>
-              </a>
-            )}
           </div>
-        </div>
         )}
       </div>
     </div>
