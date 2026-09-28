@@ -17,7 +17,6 @@ const POLL_MS = 15000;
 export default function EventBoard() {
   const [eventsList, setEventsList] = useState<EventConfig[]>(EVENTS);
   const [seats, setSeats] = useState<Record<string, SeatData>>({});
-  const [isLive, setIsLive] = useState(false);
   const [registerFormUrl, setRegisterFormUrl] = useState<string>(REGISTER_FORM_URL);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -29,7 +28,6 @@ export default function EventBoard() {
         const res = await fetch("/api/sheets", { cache: "no-store" });
         const json: ApiResponse = await res.json();
         if (cancelled) return;
-        setIsLive(json.isLive);
         setSeats(Object.fromEntries(json.data.map((d) => [d.id, d])));
         if (json.events && json.events.length > 0) {
           setEventsList(json.events);
@@ -67,50 +65,34 @@ export default function EventBoard() {
   );
 
   return (
-    <section id="events" className="scroll-mt-24 mx-auto max-w-7xl px-5 pt-20 pb-10 sm:px-8 sm:pt-24 sm:pb-12">
+    <section id="events" className="scroll-mt-24 mx-auto max-w-7xl px-5 pt-8 pb-8 sm:pt-14 sm:pb-12">
       {/* Section Header */}
-      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200/80">
+      <div className="mb-6 sm:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 pb-4 sm:pb-6 border-b border-slate-200/80">
         <div>
           <div className="flex items-center gap-2.5 mb-2">
             <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
             <p className="eyebrow tracking-widest text-sky-600 font-bold">Registration Arenas</p>
           </div>
-          <h2 className="section-heading text-slate-900 tracking-tight">Events &amp; Seat Status</h2>
+          <h2 className="section-heading text-slate-900 tracking-tight">Events</h2>
           <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
             Choose your competition, explore event timelines and team requirements, and claim your spot before seats fill up.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Live Sync Badge */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white shadow-sm font-mono text-xs text-slate-600">
-            <span
-              className={`h-2.5 w-2.5 rounded-full ${
-                isLive
-                  ? "bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"
-                  : "bg-amber-400"
-              }`}
-            />
-            <span className="font-semibold text-slate-700">
-              {isLive ? "Live Sheet Sync" : "Preview Mode"}
+        {/* Aggregate Count Badge (Desktop/Tablet) */}
+        {totalCapacity > 0 && (
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 bg-sky-50/70 font-mono text-xs text-sky-800 font-semibold shadow-sm shrink-0">
+            <span>{visibleEvents.length} Active Events</span>
+            <span className="text-sky-300">•</span>
+            <span>
+              {totalRegistered} / {totalCapacity} Filled
             </span>
           </div>
-
-          {/* Aggregate Count Badge */}
-          {totalCapacity > 0 && (
-            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 bg-sky-50/70 font-mono text-xs text-sky-800 font-semibold shadow-sm">
-              <span>{visibleEvents.length} Active Events</span>
-              <span className="text-sky-300">•</span>
-              <span>
-                {totalRegistered} / {totalCapacity} Filled
-              </span>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
       {/* 3-Column Responsive Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 items-stretch">
         {visibleEvents.map((event, index) => (
           <EventCard
             key={event.id}
@@ -259,7 +241,6 @@ function EventCard({
       : null;
 
   const sectionTitle = customConfig?.sectionTitle || "DOMAIN";
-  const badgePrefix = customConfig?.badgePrefix || "Track";
   const hasCustomItems = Boolean(customItems && customItems.length > 0);
 
   const registered = seat?.registered ?? 0;
@@ -286,19 +267,19 @@ function EventCard({
   return (
     <div
       className={`
-        relative flex flex-col justify-between rounded-3xl transition-all duration-300 border
-        bg-white/95 backdrop-blur-xl p-6 sm:p-7
+        relative flex flex-col justify-between rounded-2xl sm:rounded-3xl transition-all duration-300 border
+        bg-white/95 backdrop-blur-xl p-4 sm:p-6 lg:p-7
         ${isOpen && !hasCustomItems ? "border-blue-400 shadow-[0_20px_45px_-12px_rgba(59,130,246,0.25)] ring-1 ring-blue-300" : "border-slate-200/90 shadow-sm"}
         ${theme.hoverBorder} hover:-translate-y-1.5
       `}
     >
       {/* Top decorative accent bar */}
-      <div className={`absolute top-0 left-8 right-8 h-1 rounded-b-full ${theme.topAccent}`} />
+      <div className={`absolute top-0 left-6 right-6 sm:left-8 sm:right-8 h-1 rounded-b-full ${theme.topAccent}`} />
 
       {/* Top Card Section */}
       <div>
         {/* Category Badge & Status Pill */}
-        <div className={`flex items-center ${hasCustomItems ? "justify-end" : "justify-between"} gap-2 pt-1 mb-4`}>
+        <div className={`flex items-center ${hasCustomItems ? "justify-end" : "justify-between"} gap-2 pt-0.5 sm:pt-1 mb-2.5 sm:mb-4`}>
           {!hasCustomItems && (
             <div className="flex items-center gap-2">
               <span className={`inline-block px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold uppercase tracking-wider border ${theme.badgeBg}`}>
@@ -310,19 +291,19 @@ function EventCard({
 
           {/* Status Badge */}
           {status === "open" && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm">
+              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-emerald-500 animate-pulse" />
               Open
             </span>
           )}
           {status === "filling" && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-300 shadow-sm font-semibold">
-              <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-300 shadow-sm font-semibold">
+              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-amber-500 animate-ping" />
               Filling Fast
             </span>
           )}
           {status === "full" && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-300 shadow-sm">
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-300 shadow-sm">
               Closed / Full
             </span>
           )}
@@ -334,30 +315,30 @@ function EventCard({
         </div>
 
         {/* Event Title & Tagline */}
-        <h3 className="font-display text-2xl font-bold text-slate-900 tracking-tight leading-snug">
+        <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-snug">
           {event.name}
         </h3>
-        <p className="mt-1.5 text-xs text-slate-500 font-medium line-clamp-2 leading-relaxed">
+        <p className="mt-1 text-xs text-slate-500 font-medium line-clamp-2 leading-relaxed">
           {event.tagline || event.description || "Compete, collaborate, and display your technical brilliance."}
         </p>
 
         {/* Date and Time / Meta Grid */}
-        <div className="mt-5 grid grid-cols-2 gap-2.5">
+        <div className="mt-3.5 sm:mt-5 grid grid-cols-2 gap-2 sm:gap-2.5">
           {/* Date */}
-          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
-            <span className="text-base select-none">📅</span>
+          <div className="flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span className="text-sm sm:text-base select-none">📅</span>
             <div className="min-w-0">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Date</p>
-              <p className="text-xs font-bold text-slate-800 truncate">{event.date || "30 Oct 2026"}</p>
+              <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Date</p>
+              <p className="text-[11px] sm:text-xs font-bold text-slate-800 truncate">{event.date || "30 Oct 2026"}</p>
             </div>
           </div>
 
           {/* Time */}
-          <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
-            <span className="text-base select-none">⏰</span>
+          <div className="flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <span className="text-sm sm:text-base select-none">⏰</span>
             <div className="min-w-0">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Time</p>
-              <p className="text-xs font-bold text-slate-800 truncate">{event.time || "09:00 AM"}</p>
+              <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Time</p>
+              <p className="text-[11px] sm:text-xs font-bold text-slate-800 truncate">{event.time || "09:00 AM"}</p>
             </div>
           </div>
 
@@ -386,30 +367,25 @@ function EventCard({
 
         {/* DOMAIN / KEY ROUNDS Section (under by under) */}
         {hasCustomItems && customItems && customItems.length > 0 ? (
-          <div className="mt-4 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
-            <div className="flex items-center gap-2 mb-2.5">
-              <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
-              <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-slate-700">
+          <div className="mt-3 sm:mt-4 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-2.5">
+              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-blue-600 animate-pulse" />
+              <p className="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-700">
                 {sectionTitle}
               </p>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
               {customItems.map((rawItem, i) => {
                 const parsed = parseTrackItem(rawItem);
                 return (
                   <div
                     key={i}
-                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-sky-300 transition-colors"
+                    className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-sky-300 transition-colors"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-base select-none">{parsed.icon}</span>
-                      <span className="font-sans text-xs sm:text-sm font-bold text-slate-800">
-                        {parsed.name}
-                      </span>
-                    </div>
-                    <span className="font-mono text-[10px] font-bold text-blue-600 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100">
-                      {badgePrefix} 0{i + 1}
+                    <span className="text-sm sm:text-base select-none shrink-0">{parsed.icon}</span>
+                    <span className="font-sans text-xs sm:text-sm font-bold text-slate-800 truncate">
+                      {parsed.name}
                     </span>
                   </div>
                 );
@@ -462,11 +438,11 @@ function EventCard({
       </div>
 
       {/* Bottom Section: Action Buttons */}
-      <div className="mt-6 pt-5 border-t border-slate-100">
+      <div className="mt-4 sm:mt-6 pt-3.5 sm:pt-5 border-t border-slate-100">
         {hasCustomItems ? (
           /* For Custom Track Events: Keep ONLY the Register Now button */
           isClosed ? (
-            <span className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
+            <span className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 sm:py-3 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
               </svg>
@@ -477,7 +453,7 @@ function EventCard({
               href={formHref}
               target={formTarget}
               rel="noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 sm:px-5 sm:py-3 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
             >
               <span>Register Now</span>
               <span className="text-sky-200">↗</span>

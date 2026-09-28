@@ -6,7 +6,7 @@ import { CLUB_NAME, COLLEGE_NAME } from "@/lib/eventsConfig";
 
 const ACHIEVEMENTS = [
   {
-    stat: "5+",
+    stat: "2+",
     label: "Years Running Symposium",
     icon: "🏆",
     color: "from-blue-500/10 via-sky-500/10 to-transparent",
@@ -85,38 +85,45 @@ export default function Achievements() {
           {/* ── Scroll-Triggered Animated Club Logo ───────────────────── */}
           <div
             ref={logoRef}
-            className="my-7 flex flex-col items-center justify-center relative select-none"
+            className="my-7 flex flex-col items-center justify-center select-none"
           >
-            {/* Ambient cybernetic pulsing reactor glow */}
+            {/* Concentric Cyber Emblem Stage */}
             <div
-              className={`absolute -inset-4 sm:-inset-8 rounded-full bg-gradient-to-r from-sky-400/25 via-indigo-500/25 to-purple-500/25 blur-3xl transition-all duration-1000 pointer-events-none ${
-                isLogoVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
-              }`}
-            />
-
-            {/* Outer rotating cyber ring */}
-            <div
-              className={`absolute w-44 h-44 sm:w-56 sm:h-56 rounded-full border border-sky-400/30 border-dashed pointer-events-none transition-all duration-1000 ${
-                isLogoVisible ? "opacity-60 scale-100 animate-[spin_20s_linear_infinite]" : "opacity-0 scale-50"
-              }`}
-            />
-
-            {/* Inner reverse rotating accent ring */}
-            <div
-              className={`absolute w-36 h-36 sm:w-48 sm:h-48 rounded-full border border-indigo-400/25 pointer-events-none transition-all duration-1000 ${
-                isLogoVisible ? "opacity-40 scale-100 animate-[spin_15s_linear_infinite_reverse]" : "opacity-0 scale-50"
-              }`}
-            />
-
-            {/* The Animated Club Logo Container */}
-            <div
-              className={`relative z-10 transform transition-all duration-700 ease-out group cursor-pointer ${
+              className={`relative flex items-center justify-center group cursor-pointer transform transition-all duration-700 ease-out ${
                 isLogoVisible
                   ? "opacity-100 scale-100 translate-y-0 rotate-0"
                   : "opacity-0 scale-50 translate-y-8 rotate-[-10deg]"
               }`}
             >
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full p-2 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
+              {/* Ambient cybernetic pulsing reactor glow - centered on emblem */}
+              <div
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${
+                  isLogoVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                }`}
+              >
+                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-r from-sky-400/25 via-indigo-500/25 to-purple-500/25 blur-2xl" />
+              </div>
+
+              {/* Outer rotating cyber ring - perfectly concentric */}
+              <div
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${
+                  isLogoVisible ? "opacity-60 scale-100" : "opacity-0 scale-50"
+                }`}
+              >
+                <div className="w-[164px] h-[164px] sm:w-[210px] sm:h-[210px] rounded-full border border-sky-400/35 border-dashed animate-[spin_20s_linear_infinite]" />
+              </div>
+
+              {/* Inner reverse rotating accent ring - perfectly concentric */}
+              <div
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-1000 ${
+                  isLogoVisible ? "opacity-45 scale-100" : "opacity-0 scale-50"
+                }`}
+              >
+                <div className="w-[138px] h-[138px] sm:w-[176px] sm:h-[176px] rounded-full border border-indigo-400/30 border-dotted animate-[spin_15s_linear_infinite_reverse]" />
+              </div>
+
+              {/* The Emblem Image (centered in stage) */}
+              <div className="relative z-10 w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full p-1.5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
                 <Image
                   src="/logos/cclogo1.png"
                   alt={`${CLUB_NAME} Official Emblem`}
@@ -126,24 +133,24 @@ export default function Achievements() {
                   priority
                 />
               </div>
+            </div>
 
-              {/* Interactive glowing badge on hover */}
-              <div className="text-center mt-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-white/90 text-indigo-700 border border-indigo-200/80 shadow-xs backdrop-blur-md group-hover:border-indigo-400 group-hover:text-indigo-900 transition-colors">
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
-                  Creative Codex Emblem
-                </span>
-              </div>
+            {/* Emblem Badge: cleanly placed underneath with proper margin */}
+            <div className="text-center mt-7 sm:mt-9 z-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-white/95 text-indigo-700 border border-indigo-200/90 shadow-xs backdrop-blur-md transition-colors hover:border-indigo-400 hover:text-indigo-900">
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
+                Creative Codex Emblem
+              </span>
             </div>
           </div>
 
           {/* Club Story Card */}
           <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-md p-6 sm:p-8 shadow-sm text-center space-y-3">
             <p className="text-base sm:text-lg text-slate-800 leading-relaxed font-body font-medium">
-              <strong className="text-indigo-600">{CLUB_NAME}</strong> is the premier student-led technical community driving technological exploration and experiential learning across our campus.
+              <strong className="text-indigo-600">{CLUB_NAME}</strong> is the student technical club of the Department of Computer Science & Engineering, dedicated to fostering technical skills, creativity, collaboration, and innovation among students.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed font-body">
-              Year-round, our club organizes hands-on hackathons, competitive coding tournaments, robotics challenges, and technical masterclasses — culminating in our flagship national event, the Innovation Ignite Symposium.
+              The club organizes technical activities, coding competitions, Department activities, project showcases and symposiums that provide students with opportunities to learn and demonstrate their skills.
             </p>
           </div>
         </div>

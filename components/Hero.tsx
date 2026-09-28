@@ -15,7 +15,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="scroll-mt-24 relative overflow-hidden min-h-[92vh] flex flex-col justify-between z-10 bg-[#020b18] text-white pt-10 pb-20 sm:pt-14 sm:pb-28"
+      className="scroll-mt-24 relative overflow-hidden min-h-[90vh] flex flex-col justify-between z-10 bg-[#020b18] text-white pt-10 pb-10 sm:pt-14 sm:pb-20 w-full max-w-full"
       aria-label="Hero section"
     >
       {/* ── CINEMATIC ARTWORK BACKGROUND ─────────────────────────── */}

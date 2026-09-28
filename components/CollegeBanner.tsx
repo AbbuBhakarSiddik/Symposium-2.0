@@ -3,7 +3,7 @@ import { COLLEGE_NAME } from "@/lib/eventsConfig";
 
 export default function CollegeBanner() {
   return (
-    <div className="w-full bg-white border-b border-slate-200/90 shadow-2xs">
+    <div className="w-full max-w-full overflow-hidden bg-white border-b border-slate-200/90 shadow-2xs">
       <div className="mx-auto w-full max-w-[1400px] px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-center">
         <Image
           src="/logos/college-banner.jpg"

@@ -18,7 +18,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main>
+    <main className="w-full max-w-full overflow-x-hidden">
       <CollegeBanner />
       <Header
         runningAnnouncement={settings?.runningAnnouncement}

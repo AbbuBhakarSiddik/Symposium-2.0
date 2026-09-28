@@ -125,7 +125,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
                       <img
                         src={photo.url}
                         alt={photo.title || `Photo ${index + 1}`}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => {
                           (e.target as HTMLElement).style.display = "none";
                         }}
@@ -137,23 +137,6 @@ export default function Gallery({ items = [] }: GalleryProps) {
                         </span>
                       </div>
                     )}
-
-                    {/* Gradient Overlay & Captions */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-85 group-hover:opacity-95 transition-opacity" />
-
-                    <div className="absolute bottom-0 inset-x-0 p-6 font-mono text-left z-10">
-                      <span className="inline-block text-[10px] uppercase tracking-widest text-sky-300 bg-sky-950/80 border border-sky-400/40 px-3 py-1 rounded-full mb-2 font-bold shadow-md">
-                        Photo {(index % displayPhotos.length) + 1}
-                      </span>
-                      <h4 className="text-xl font-bold text-white font-display line-clamp-1 group-hover:text-sky-300 transition-colors">
-                        {photo.title || `Gallery Photo ${(index % displayPhotos.length) + 1}`}
-                      </h4>
-                      {photo.caption && (
-                        <p className="text-xs text-slate-200 line-clamp-1 mt-1 font-sans">
-                          {photo.caption}
-                        </p>
-                      )}
-                    </div>
                   </div>
                 ))}
               </div>
@@ -177,10 +160,9 @@ export default function Gallery({ items = [] }: GalleryProps) {
             </span>
           </div>
 
-          {/* Videos Grid – Shows 2 videos initially, expands to all videos upon click */}
+          {/* Videos Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {visibleVideos.map((video, index) => {
-              const thumb = getVideoThumbnail(video.url) || video.url;
               return (
                 <div
                   key={`video-${video.id}-${index}`}
@@ -189,15 +171,15 @@ export default function Gallery({ items = [] }: GalleryProps) {
                     group relative aspect-video overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xl
                     bg-gradient-to-br ${gradientStyles[(index + 3) % gradientStyles.length]}
                     transition-all duration-300 hover:scale-[1.03] hover:border-pink-500 hover:shadow-[0_25px_50px_rgba(236,72,153,0.25)]
-                    flex flex-col justify-end p-6 sm:p-8 cursor-pointer
+                    flex items-center justify-center cursor-pointer
                   `}
                 >
                   {/* Thumbnail Image or Video Poster */}
                   {getVideoThumbnail(video.url) ? (
                     <img
                       src={getVideoThumbnail(video.url)!}
-                      alt={video.title}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-95"
+                      alt={video.title || `Highlight Video ${index + 1}`}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
                       }}
@@ -208,34 +190,20 @@ export default function Gallery({ items = [] }: GalleryProps) {
                       preload="metadata"
                       muted
                       playsInline
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-95"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                     />
                   ) : null}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                  {/* Subtle dark tint so play button pops */}
+                  <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/10 transition-colors" />
 
                   {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-full border-2 border-white bg-slate-900/60 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-600 group-hover:border-pink-300 group-hover:scale-110 transition-all shadow-2xl">
+                  <div className="relative z-10 flex items-center justify-center">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white bg-slate-900/60 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-600 group-hover:border-pink-300 group-hover:scale-110 transition-all shadow-2xl">
                       <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1 transition-colors" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                       </svg>
                     </div>
-                  </div>
-
-                  {/* Video Details */}
-                  <div className="relative z-10">
-                    <span className="inline-block text-[11px] uppercase tracking-widest text-pink-300 bg-pink-950/80 border border-pink-400/40 px-3 py-1 rounded-full font-mono font-bold mb-2 shadow-md">
-                      Recap Video #{index + 1}
-                    </span>
-                    <h4 className="font-display text-xl sm:text-3xl font-bold text-white group-hover:text-pink-300 transition-colors line-clamp-1">
-                      {video.title || `Recap Video ${index + 1}`}
-                    </h4>
-                    {video.caption && (
-                      <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 mt-1 font-sans">
-                        {video.caption}
-                      </p>
-                    )}
                   </div>
                 </div>
               );
@@ -245,7 +213,9 @@ export default function Gallery({ items = [] }: GalleryProps) {
           {/* Action Trigger Area: View Full Event Album & Socials */}
           <div className="mt-12 flex flex-col items-center justify-center gap-4 text-center">
             <a
-              href="#contact"
+              href="https://www.instagram.com/creative_codex_club"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
             >
               <span>View Full Event Album &amp; Socials</span>

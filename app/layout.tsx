@@ -29,26 +29,29 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <body className="cyber-bg text-paper font-body antialiased selection:bg-cyber-cyan selection:text-ink">
-        {/* Noise texture */}
-        <div className="noise" aria-hidden="true" />
+      <body className="cyber-bg text-paper font-body antialiased selection:bg-cyber-cyan selection:text-ink w-full max-w-full overflow-x-hidden">
+        {/* Background Decorative Layers (Strictly clipped within viewport) */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10" aria-hidden="true">
+          {/* Noise texture */}
+          <div className="noise" />
 
-        {/* Grid dots at intersections */}
-        <div className="grid-dots" aria-hidden="true" />
+          {/* Grid dots at intersections */}
+          <div className="grid-dots" />
 
-        {/* Floating particles (10 dots) */}
-        <div className="particles" aria-hidden="true">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span key={i} />
-          ))}
+          {/* Floating particles (10 dots) */}
+          <div className="particles">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span key={i} />
+            ))}
+          </div>
+
+          {/* Gradient orbs – slow floating motion */}
+          <div className="cyber-orb top-1/4 left-1/4 w-96 h-96" style={{ background: 'rgba(138, 180, 248, 0.25)' }} />
+          <div
+            className="cyber-orb bottom-1/4 right-1/4 w-96 h-96"
+            style={{ background: 'rgba(197, 138, 249, 0.2)', animationDelay: "-3s" }}
+          />
         </div>
-
-        {/* Gradient orbs – slow floating motion */}
-        <div className="cyber-orb top-1/4 left-1/4 w-96 h-96" style={{ background: 'rgba(138, 180, 248, 0.25)' }} />
-        <div
-          className="cyber-orb bottom-1/4 right-1/4 w-96 h-96"
-          style={{ background: 'rgba(197, 138, 249, 0.2)', animationDelay: "-3s" }}
-        />
 
         {children}
       </body>

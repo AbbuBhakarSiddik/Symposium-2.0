@@ -123,22 +123,40 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                   {/* Coordinators Section Container */}
                   <div className="relative flex-1 flex flex-col">
                     {/* Middle Area: Fits up to 3 coordinators and scrolls internally */}
-                    <div className="relative max-h-[300px] overflow-hidden flex flex-col">
+                    <div className="relative flex flex-col">
                       {event.coordinators.length > 0 ? (
                         <>
                           <div
+                            onTouchStart={(e) => {
+                              e.currentTarget.dataset.touchY = String(e.touches[0].clientY);
+                            }}
+                            onTouchMove={(e) => {
+                              const startY = parseFloat(e.currentTarget.dataset.touchY || "0");
+                              const currentY = e.touches[0].clientY;
+                              const deltaY = startY - currentY;
+                              e.currentTarget.dataset.touchY = String(currentY);
+
+                              const el = e.currentTarget;
+                              const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= 2;
+                              const isAtTop = el.scrollTop <= 2;
+
+                              if ((deltaY > 0 && isAtBottom) || (deltaY < 0 && isAtTop)) {
+                                window.scrollBy({ top: deltaY, behavior: "auto" });
+                              }
+                            }}
                             onWheel={(e) => {
                               const el = e.currentTarget;
-                              const isAtBottom = el.scrollHeight - Math.ceil(el.scrollTop) <= el.clientHeight + 2;
-                              const isAtTop = el.scrollTop <= 0;
+                              const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= 2;
+                              const isAtTop = el.scrollTop <= 2;
 
                               if ((e.deltaY > 0 && isAtBottom) || (e.deltaY < 0 && isAtTop)) {
                                 window.scrollBy({ top: e.deltaY, behavior: "auto" });
                               }
                             }}
-                            className="max-h-[300px] space-y-2.5 overflow-y-auto overflow-x-hidden overscroll-contain select-text pr-1 scrollbar-thin"
+                            className="max-h-[365px] space-y-2.5 overflow-y-auto overflow-x-hidden overscroll-auto select-text pr-1 scrollbar-thin"
                             style={{
                               scrollbarWidth: "thin",
+                              touchAction: "pan-y",
                             }}
                           >
                             {event.coordinators.map((c, idx) => (

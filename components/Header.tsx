@@ -288,7 +288,7 @@ export default function Header({
   return (
     <>
       <header
-        className="relative z-30 w-full px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 border-b border-slate-200/80"
+        className="relative z-30 w-full max-w-full overflow-hidden px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 border-b border-slate-200/80"
         style={{
           background: 'linear-gradient(135deg, rgba(238,244,255,0.96) 0%, rgba(245,238,255,0.94) 33%, rgba(255,240,246,0.92) 66%, rgba(237,252,251,0.94) 100%)',
           backdropFilter: 'blur(20px)',
@@ -409,7 +409,7 @@ export default function Header({
 
           {/* Running Announcement Marquee Ticker */}
           {runningAnnouncementActive && !!runningAnnouncement?.trim() && (
-            <div className="mt-2 sm:mt-2.5 relative overflow-hidden rounded-xl border border-amber-300/80 bg-white/95 shadow-sm backdrop-blur-md flex items-center">
+            <div className="mt-2 sm:mt-2.5 relative overflow-hidden rounded-xl border border-amber-300/80 bg-white/95 shadow-sm backdrop-blur-md flex items-center w-full max-w-full">
               {/* Left Live Badge */}
               <Link
                 href="/announcements"
@@ -427,7 +427,7 @@ export default function Header({
               {/* Marquee Track */}
               <Link
                 href="/announcements"
-                className="relative flex-1 overflow-hidden py-2.5 sm:py-3 group select-none block"
+                className="relative flex-1 min-w-0 overflow-hidden py-2.5 sm:py-3 group select-none block"
                 title="Click to view all announcements"
               >
                 {/* Left/Right soft fade gradients */}
