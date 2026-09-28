@@ -220,7 +220,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
             rel="noopener noreferrer"
             className="btn-cyber inline-flex items-center gap-3 px-8 py-4 text-sm font-bold shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
           >
-            <span>View Full Event Album &amp; Socials</span>
+            <span>View Full Event Album</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 transition-transform group-hover:translate-x-1"
