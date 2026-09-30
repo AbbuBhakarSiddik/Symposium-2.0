@@ -99,7 +99,7 @@ export default function Hero() {
             <span>📍</span> Shridevi Institute of Engineering and Technology, Tumkur
           </span>
           <span className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-sky-400/25 bg-[#091b38]/80 backdrop-blur-md px-3 sm:px-4 py-1.5 text-slate-200 shadow-sm text-center">
-            <span>👥</span> Open for All Students
+            <span>👥</span> Open for All Engineering Students
           </span>
         </div>
 
