@@ -7,7 +7,7 @@ export default function LogoCards() {
   return (
     <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-2 sm:px-0">
       {/* ── UNIFIED STRUCTURED LOGO BADGE CONTAINER ────────────────── */}
-      <div className="relative rounded-3xl p-5 sm:p-7 md:p-8 bg-[#040e24]/90 backdrop-blur-xl border border-sky-500/35 shadow-[0_0_35px_rgba(0,110,255,0.22),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300">
+      <div className="relative rounded-3xl p-5 sm:p-7 md:p-8 bg-[#040e24]/95 sm:bg-[#040e24]/90 backdrop-blur-none sm:backdrop-blur-xl border border-sky-500/35 shadow-lg sm:shadow-[0_0_35px_rgba(0,110,255,0.22),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300">
         {/* Subtle top inner accent highlight */}
         <div className="absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent pointer-events-none" />
 

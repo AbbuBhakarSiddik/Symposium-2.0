@@ -265,7 +265,7 @@ function EventCard({
     <div
       className={`
         relative flex flex-col justify-between rounded-2xl sm:rounded-3xl transition-all duration-300 border
-        bg-white/95 backdrop-blur-xl p-4 sm:p-6 lg:p-7
+        bg-white sm:bg-white/95 backdrop-blur-none sm:backdrop-blur-xl p-4 sm:p-6 lg:p-7
         ${isOpen && !hasCustomItems ? "border-blue-400 shadow-[0_20px_45px_-12px_rgba(59,130,246,0.25)] ring-1 ring-blue-300" : "border-slate-200/90 shadow-sm"}
         ${theme.hoverBorder} hover:-translate-y-1.5
       `}

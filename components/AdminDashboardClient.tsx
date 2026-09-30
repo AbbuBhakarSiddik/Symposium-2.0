@@ -47,34 +47,17 @@ export default function AdminDashboardClient({
   galleryItems = [],
   currentUser,
 }: AdminDashboardClientProps) {
-  // ── Theme State (Dark / Light) ──
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  // ── Fixed Light Theme ──
+  const isDark = false;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem("admin-dashboard-theme");
-    const initial = saved === "light" || saved === "dark" ? saved : "dark";
-    setTheme(initial);
-    if (initial === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.remove("dark");
+    try {
+      localStorage.removeItem("admin-dashboard-theme");
+    } catch {}
   }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
-    localStorage.setItem("admin-dashboard-theme", nextTheme);
-    if (nextTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  const isDark = theme === "dark";
 
   // ── Left Sidebar Navigation State (Home, Add event, coordinator, announcements, gallery) ──
   const [activeNavTab, setActiveNavTab] = useState<string>("home");
@@ -940,17 +923,7 @@ export default function AdminDashboardClient({
           </span>
         </div>
 
-        <div className="flex items-center gap-2 pt-1">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border font-mono text-[11px] font-bold transition ${isDark
-                ? "border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
-                : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
-              }`}
-          >
-            <span>{isDark ? "☀️ Light" : "🌙 Dark"}</span>
-          </button>
+        <div className="pt-1">
           <SignOutButton />
         </div>
       </div>
@@ -1009,19 +982,6 @@ export default function AdminDashboardClient({
             </div>
             <span className="font-display font-bold text-sm tracking-tight">Admin Dashboard</span>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={`p-2 rounded-xl border text-xs ${isDark
-                ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
-                : "border-slate-200 bg-slate-50 text-slate-700"
-              }`}
-            aria-label="Toggle Theme"
-          >
-            {isDark ? "☀️" : "🌙"}
-          </button>
         </div>
       </div>
 
@@ -1095,32 +1055,8 @@ export default function AdminDashboardClient({
                     </div>
                   </div>
 
-                  {/* Quick Actions: Theme Switcher, Portal & Sign Out */}
+                  {/* Quick Actions: Portal & Sign Out */}
                   <div className="flex flex-wrap items-center gap-3 self-start lg:self-center">
-
-                    {/* Dark / Light Theme Toggle Switch */}
-                    <button
-                      type="button"
-                      onClick={toggleTheme}
-                      aria-label="Toggle Theme"
-                      className={`group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm ${isDark
-                          ? "border-amber-400/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:border-amber-400"
-                          : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                        }`}
-                    >
-                      {isDark ? (
-                        <>
-                          <span className="text-sm">☀️</span>
-                          <span>Light Mode</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-sm">🌙</span>
-                          <span>Dark Mode</span>
-                        </>
-                      )}
-                    </button>
-
                     <Link
                       href="/coordinators"
                       className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold shadow-sm transition-all duration-200 ${isDark

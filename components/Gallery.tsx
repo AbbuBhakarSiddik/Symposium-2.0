@@ -60,15 +60,15 @@ export default function Gallery({ items = [] }: GalleryProps) {
       {/* Soft Ambient Light Gradient Orbs */}
       <div
         aria-hidden="true"
-        className="absolute top-[-10%] left-[-10%] w-[650px] h-[650px] rounded-full bg-sky-300/25 blur-[150px] pointer-events-none animate-pulse"
+        className="absolute top-[-10%] left-[-10%] w-[280px] h-[280px] sm:w-[650px] sm:h-[650px] rounded-full bg-sky-300/25 blur-[50px] sm:blur-[150px] pointer-events-none sm:animate-pulse"
       />
       <div
         aria-hidden="true"
-        className="absolute top-[40%] right-[-10%] w-[650px] h-[650px] rounded-full bg-purple-300/25 blur-[150px] pointer-events-none"
+        className="absolute top-[40%] right-[-10%] w-[280px] h-[280px] sm:w-[650px] sm:h-[650px] rounded-full bg-purple-300/25 blur-[50px] sm:blur-[150px] pointer-events-none"
       />
       <div
         aria-hidden="true"
-        className="absolute bottom-[-10%] left-[20%] w-[650px] h-[650px] rounded-full bg-cyan-300/25 blur-[150px] pointer-events-none"
+        className="absolute bottom-[-10%] left-[20%] w-[280px] h-[280px] sm:w-[650px] sm:h-[650px] rounded-full bg-cyan-300/25 blur-[50px] sm:blur-[150px] pointer-events-none"
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
@@ -98,15 +98,18 @@ export default function Gallery({ items = [] }: GalleryProps) {
             <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">
               Hover to pause · Click photo to expand
             </span>
+            <span className="text-xs font-mono text-slate-500 sm:hidden">
+              Swipe to browse · Tap photo to expand
+            </span>
           </div>
 
-          <div className="relative overflow-hidden rounded-3xl border border-sky-200/90 shadow-[0_20px_50px_rgba(14,165,233,0.1)] bg-white/80 backdrop-blur-xl">
+          <div className="relative overflow-hidden rounded-3xl border border-sky-200/90 shadow-[0_20px_50px_rgba(14,165,233,0.1)] bg-white sm:bg-white/80 backdrop-blur-none sm:backdrop-blur-xl">
             <div className="absolute inset-y-0 left-0 w-16 sm:w-24 bg-gradient-to-r from-white/90 to-transparent z-20 pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-16 sm:w-24 bg-gradient-to-l from-white/90 to-transparent z-20 pointer-events-none" />
 
-            <div className="overflow-hidden py-2.5 sm:py-3">
+            <div className="overflow-x-auto md:overflow-hidden py-2.5 sm:py-3 no-scrollbar scroll-smooth">
               <div
-                className="flex gap-4 sm:gap-6 w-max animate-marquee-reverse hover:animate-pause"
+                className="flex gap-4 sm:gap-6 w-max md:animate-marquee-reverse hover:animate-pause"
                 style={{ animationDuration: `${Math.max(25, displayPhotos.length * 5)}s` }}
               >
                 {duplicatedPhotos.map((photo, index) => (
@@ -114,16 +117,19 @@ export default function Gallery({ items = [] }: GalleryProps) {
                     key={`photo-${photo.id}-${index}`}
                     onClick={() => setActivePhoto(photo)}
                     className={`
-                      group relative w-80 sm:w-[420px] md:w-[480px] aspect-[16/10] shrink-0 cursor-pointer
+                      group relative w-72 min-[400px]:w-80 sm:w-[420px] md:w-[480px] aspect-[16/10] shrink-0 cursor-pointer
                       overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-md
                       bg-gradient-to-br ${gradientStyles[index % gradientStyles.length]}
                       transition-all duration-300 hover:scale-[1.04] hover:border-sky-500 hover:shadow-[0_20px_40px_rgba(14,165,233,0.25)]
+                      ${index >= displayPhotos.length ? "hidden md:block" : ""}
                     `}
                   >
                     {photo.url ? (
                       <img
                         src={photo.url}
                         alt={photo.title || `Photo ${index + 1}`}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => {
                           (e.target as HTMLElement).style.display = "none";
@@ -179,6 +185,8 @@ export default function Gallery({ items = [] }: GalleryProps) {
                       <img
                         src={getVideoThumbnail(video.url)!}
                         alt={video.title || `Highlight Video ${index + 1}`}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                         onError={(e) => {
                           (e.target as HTMLElement).style.display = "none";
@@ -187,7 +195,7 @@ export default function Gallery({ items = [] }: GalleryProps) {
                     ) : video.url ? (
                       <video
                         src={video.url}
-                        preload="metadata"
+                        preload="none"
                         muted
                         playsInline
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"

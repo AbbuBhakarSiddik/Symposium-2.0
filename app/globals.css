@@ -22,7 +22,7 @@
       #fce4ec 50%,
       #e0f7fa 75%,
       #e8f5e9 100%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     color: #0F172A;
   }
 
@@ -61,7 +61,7 @@
       radial-gradient(ellipse at 100% 100%, rgba(251, 187, 206, 0.35) 0%, transparent 55%),
       radial-gradient(ellipse at 0%   100%, rgba(129, 230, 217, 0.35) 0%, transparent 55%),
       linear-gradient(135deg, #eef4ff 0%, #f5eeff 33%, #fff0f6 66%, #edfcfb 100%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     z-index: 0;
   }
 
@@ -319,6 +319,29 @@
     100% {
       transform: translateX(0);
     }
+  }
+}
+
+/* ===== Mobile Scroll Performance Optimizations (max-width: 768px) ===== */
+@media (max-width: 768px) {
+  /* Replace expensive backdrop-filter blur on mobile glass cards with light crisp background */
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+  }
+
+  /* Prevent background ambient orbs from re-rasterizing large blurs and continuous transforms on mobile */
+  .cyber-orb {
+    filter: blur(40px) !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Disable continuous photo marquee GPU translation during mobile touch scrolling */
+  .animate-marquee-reverse {
+    animation: none !important;
+    transform: none !important;
   }
 }
 

@@ -133,7 +133,7 @@ export default function Achievements() {
 
             {/* Emblem Badge: cleanly placed underneath with proper margin */}
             <div className="text-center mt-7 sm:mt-9 z-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-white/95 text-indigo-700 border border-indigo-200/90 shadow-xs backdrop-blur-md transition-colors hover:border-indigo-400 hover:text-indigo-900">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-white/95 text-indigo-700 border border-indigo-200/90 shadow-xs backdrop-blur-none sm:backdrop-blur-md transition-colors hover:border-indigo-400 hover:text-indigo-900">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
                 Creative Codex Emblem
               </span>
@@ -141,7 +141,7 @@ export default function Achievements() {
           </div>
 
           {/* Club Story Card */}
-          <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-md p-6 sm:p-8 shadow-sm text-center space-y-3">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200/90 bg-white sm:bg-white/90 backdrop-blur-none sm:backdrop-blur-md p-6 sm:p-8 shadow-sm text-center space-y-3">
             <p className="text-base sm:text-lg text-slate-800 leading-relaxed font-body font-medium">
               <strong className="text-indigo-600">{CLUB_NAME}</strong> is the student technical club of the Department of Computer Science & Engineering, dedicated to fostering technical skills, creativity, collaboration, and innovation among students.
             </p>

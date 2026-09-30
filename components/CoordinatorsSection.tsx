@@ -127,23 +127,6 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                       {event.coordinators.length > 0 ? (
                         <>
                           <div
-                            onTouchStart={(e) => {
-                              e.currentTarget.dataset.touchY = String(e.touches[0].clientY);
-                            }}
-                            onTouchMove={(e) => {
-                              const startY = parseFloat(e.currentTarget.dataset.touchY || "0");
-                              const currentY = e.touches[0].clientY;
-                              const deltaY = startY - currentY;
-                              e.currentTarget.dataset.touchY = String(currentY);
-
-                              const el = e.currentTarget;
-                              const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= 2;
-                              const isAtTop = el.scrollTop <= 2;
-
-                              if ((deltaY > 0 && isAtBottom) || (deltaY < 0 && isAtTop)) {
-                                window.scrollBy({ top: deltaY, behavior: "auto" });
-                              }
-                            }}
                             onWheel={(e) => {
                               const el = e.currentTarget;
                               const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= 2;
@@ -174,6 +157,8 @@ export default function CoordinatorsSection({ events }: CoordinatorsSectionProps
                                       <img
                                         src={c.image}
                                         alt={c.name}
+                                        loading="lazy"
+                                        decoding="async"
                                         className="h-full w-full object-cover transition-transform duration-500 group-hover/coord:scale-105"
                                         onError={(e) => {
                                           (e.target as HTMLElement).style.display = "none";

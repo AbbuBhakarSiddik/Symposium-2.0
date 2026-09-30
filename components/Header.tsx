@@ -99,13 +99,23 @@ export default function Header({
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    let rafId: number | null = null;
+    const handleScrollThrottled = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        handleScroll();
+        rafId = null;
+      });
+    };
+
+    window.addEventListener("scroll", handleScrollThrottled, { passive: true });
     window.addEventListener("wheel", handleUserGesture, { passive: true });
     window.addEventListener("touchmove", handleUserGesture, { passive: true });
     handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScrollThrottled);
       window.removeEventListener("wheel", handleUserGesture);
       window.removeEventListener("touchmove", handleUserGesture);
       if (clickUnlockTimeoutRef.current) clearTimeout(clickUnlockTimeoutRef.current);
@@ -303,7 +313,7 @@ export default function Header({
       >
         <div className="mx-auto w-full max-w-[1400px]">
           {/* Card Container with Top Vibrant Gradient Border */}
-          <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-sm backdrop-blur-xl transition-all">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white sm:bg-white/95 shadow-sm backdrop-blur-none sm:backdrop-blur-xl transition-all">
             {/* Top Gradient Stripe */}
             <div className="h-2 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-500" />
 
@@ -409,7 +419,7 @@ export default function Header({
 
           {/* Running Announcement Marquee Ticker */}
           {runningAnnouncementActive && !!runningAnnouncement?.trim() && (
-            <div className="mt-2 sm:mt-2.5 relative overflow-hidden rounded-xl border border-amber-300/80 bg-white/95 shadow-sm backdrop-blur-md flex items-center w-full max-w-full">
+            <div className="mt-2 sm:mt-2.5 relative overflow-hidden rounded-xl border border-amber-300/80 bg-white sm:bg-white/95 shadow-sm backdrop-blur-none sm:backdrop-blur-md flex items-center w-full max-w-full">
               {/* Left Live Badge */}
               <Link
                 href="/announcements"
