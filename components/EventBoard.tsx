@@ -210,7 +210,7 @@ function EventCard({
   event,
   index,
   seat,
-  registerFormUrl,
+  registerFormUrl: _registerFormUrl,
   isOpen,
   onToggle,
 }: {
@@ -260,9 +260,6 @@ function EventCard({
         : available <= capacity * 0.2
           ? "filling"
           : "open";
-
-  const formHref = registerFormUrl && registerFormUrl !== "#" ? registerFormUrl : "#contact";
-  const formTarget = registerFormUrl && registerFormUrl !== "#" ? "_blank" : "_self";
 
   return (
     <div
@@ -435,36 +432,15 @@ function EventCard({
         )}
       </div>
 
-      {/* Bottom Section: Action Buttons */}
-      <div className="mt-4 sm:mt-6 pt-3.5 sm:pt-5 border-t border-slate-100">
-        {hasCustomItems ? (
-          /* For Custom Track Events: Keep ONLY the Register Now button */
-          isClosed ? (
-            <span className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 sm:py-3 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
-              </svg>
-              Closed
-            </span>
-          ) : (
-            <a
-              href={formHref}
-              target={formTarget}
-              rel="noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 sm:px-5 sm:py-3 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
-            >
-              <span>Register Now</span>
-              <span className="text-sky-200">↗</span>
-            </a>
-          )
-        ) : (
-          /* For Regular Events: Keep View Details and Register Now */
+      {/* Bottom Section: Action Buttons (Only for regular events with accordion details) */}
+      {!hasCustomItems && (
+        <div className="mt-4 sm:mt-6 pt-3.5 sm:pt-5 border-t border-slate-100">
           <div className="flex items-center gap-2.5">
             {/* Toggle Details Button */}
             <button
               onClick={onToggle}
               className={`
-                flex-1 inline-flex items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all
+                w-full inline-flex items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all
                 ${isOpen ? "bg-blue-50/80 border-blue-400 text-blue-700 shadow-sm" : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"}
               `}
             >
@@ -480,31 +456,9 @@ function EventCard({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-
-            {/* Register Action CTA */}
-            {isClosed ? (
-              <span className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-red-600 cursor-not-allowed select-none">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m0-6h4m-2 0V9m0 0V7m0 2h2m-2 0H10M5 13a7 7 0 1114 0 7 7 0 01-14 0z" />
-                </svg>
-                Closed
-              </span>
-            ) : (
-              <a
-                href={formHref}
-                target={formTarget}
-                rel="noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 font-mono text-xs uppercase tracking-wider font-bold text-white bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:from-sky-400 hover:to-indigo-500 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center"
-              >
-                <span>Register Now</span>
-                <span className="text-sky-200">↗</span>
-              </a>
-            )}
           </div>
-        )}
 
-        {/* Expandable Details Accordion (Only for regular events with details) */}
-        {!hasCustomItems && (
+          {/* Expandable Details Accordion */}
           <div
             className={`
               overflow-hidden transition-all duration-300 ease-in-out
@@ -603,8 +557,8 @@ function EventCard({
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
