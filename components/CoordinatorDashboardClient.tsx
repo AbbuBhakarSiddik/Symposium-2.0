@@ -17,60 +17,22 @@ type CoordinatorDashboardClientProps = {
   currentUser: { name: string; username: string; role: string };
 };
 
-// Default event operations checklist items for symposium coordinators
-const DEFAULT_CHECKLIST = [
-  { id: "chk-1", text: "Verify venue booking & unlock hall with facility team", category: "Pre-Event", completed: false },
-  { id: "chk-2", text: "Test audio, projector, HDMI connections & wireless clicker", category: "Pre-Event", completed: false },
-  { id: "chk-3", text: "Set up registration desk, participant badges & pen kits", category: "Pre-Event", completed: false },
-  { id: "chk-4", text: "Cross-check registered attendees against Live Google Sheet", category: "Pre-Event", completed: false },
-  { id: "chk-5", text: "Welcome judges/speakers and brief them on scoring criteria", category: "During Event", completed: false },
-  { id: "chk-6", text: "Deliver opening briefing and explain rules to participants", category: "During Event", completed: false },
-  { id: "chk-7", text: "Track round timings and keep strict timekeeper countdowns", category: "During Event", completed: false },
-  { id: "chk-8", text: "Collect evaluation sheets and tally judge scorecards", category: "During Event", completed: false },
-  { id: "chk-9", text: "Submit verified winner results to Core Admin for certificate print", category: "Post-Event", completed: false },
-  { id: "chk-10", text: "Coordinate prize distribution & participation certificates", category: "Post-Event", completed: false },
-  { id: "chk-11", text: "Inspect venue clean-up & return borrowed AV/college equipment", category: "Post-Event", completed: false },
-  { id: "chk-12", text: "File final event turnout report to faculty coordinator desk", category: "Post-Event", completed: false },
-];
-
 export default function CoordinatorDashboardClient({
   counts,
   isLive,
   users,
-  announcements,
-  resources,
   events,
   settings,
   currentUser,
 }: CoordinatorDashboardClientProps) {
-  // ── Theme State (Dark / Light) matching Admin Panel ──
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  // ── Enforced Light Theme ──
   const [mounted, setMounted] = useState(false);
+  const isDark = false;
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem("admin-dashboard-theme");
-    const initial = saved === "light" || saved === "dark" ? saved : "dark";
-    setTheme(initial);
-    if (initial === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.remove("dark");
   }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
-    localStorage.setItem("admin-dashboard-theme", nextTheme);
-    if (nextTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  const isDark = theme === "dark";
 
   // ── Left Sidebar Navigation State ──
   const [activeNavTab, setActiveNavTab] = useState<string>("home");
@@ -162,69 +124,9 @@ export default function CoordinatorDashboardClient({
   const [statusFilter, setStatusFilter] = useState<"all" | "available" | "filling" | "full">("all");
   const [onlyMyEvents, setOnlyMyEvents] = useState(false);
 
-  // ── Search & Filter states for other tabs ──
-  const [scheduleSearch, setScheduleSearch] = useState("");
-  const [scheduleEventFilter, setScheduleEventFilter] = useState("all");
+  // ── Search & Filter states for Directory ──
   const [directorySearch, setDirectorySearch] = useState("");
   const [directoryRoleFilter, setDirectoryRoleFilter] = useState<"all" | "admin" | "coordinator">("all");
-  const [announcementSearch, setAnnouncementSearch] = useState("");
-  const [resourceSearch, setResourceSearch] = useState("");
-
-  // ── Interactive Checklist State (persisted in localStorage) ──
-  const [checklist, setChecklist] = useState(DEFAULT_CHECKLIST);
-  const [newChecklistText, setNewChecklistText] = useState("");
-  const [newChecklistCategory, setNewChecklistCategory] = useState("During Event");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("coordinator-operations-checklist");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setChecklist(parsed);
-        }
-      } catch {
-        // ignore parsing issues
-      }
-    }
-  }, []);
-
-  const toggleChecklistItem = (id: string) => {
-    setChecklist((prev) => {
-      const updated = prev.map((item) => (item.id === id ? { ...item, completed: !item.completed } : item));
-      localStorage.setItem("coordinator-operations-checklist", JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  const handleAddChecklistItem = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newChecklistText.trim()) return;
-    const newItem = {
-      id: `chk-custom-${Date.now()}`,
-      text: newChecklistText.trim(),
-      category: newChecklistCategory,
-      completed: false,
-    };
-    setChecklist((prev) => {
-      const updated = [newItem, ...prev];
-      localStorage.setItem("coordinator-operations-checklist", JSON.stringify(updated));
-      return updated;
-    });
-    setNewChecklistText("");
-    showToast("Added checklist item");
-  };
-
-  const handleResetChecklist = () => {
-    if (confirm("Reset operations checklist to standard defaults?")) {
-      setChecklist(DEFAULT_CHECKLIST);
-      localStorage.setItem("coordinator-operations-checklist", JSON.stringify(DEFAULT_CHECKLIST));
-      showToast("Checklist reset to defaults");
-    }
-  };
-
-  const completedChecklistCount = useMemo(() => checklist.filter((i) => i.completed).length, [checklist]);
-  const checklistCompletionPct = checklist.length > 0 ? Math.round((completedChecklistCount / checklist.length) * 100) : 0;
 
   // ── Computed Users Breakdown ──
   const admins = useMemo(() => users.filter((u) => u.role === "admin"), [users]);
@@ -307,35 +209,6 @@ export default function CoordinatorDashboardClient({
     return { openCount, fillingCount, fullCount };
   }, [events, liveCounts]);
 
-  // ── Filtered Schedules ──
-  const filteredSchedules = useMemo(() => {
-    return events
-      .filter((e) => {
-        if (scheduleEventFilter !== "all" && e.id !== scheduleEventFilter) return false;
-        if (!scheduleSearch.trim()) return true;
-        const q = scheduleSearch.toLowerCase();
-        return (
-          e.name.toLowerCase().includes(q) ||
-          e.venue.toLowerCase().includes(q) ||
-          e.schedule.some((s) => s.item.toLowerCase().includes(q) || s.time.toLowerCase().includes(q))
-        );
-      })
-      .map((e) => {
-        if (!scheduleSearch.trim()) return e;
-        const q = scheduleSearch.toLowerCase();
-        return {
-          ...e,
-          schedule: e.schedule.filter(
-            (s) =>
-              s.item.toLowerCase().includes(q) ||
-              s.time.toLowerCase().includes(q) ||
-              e.name.toLowerCase().includes(q)
-          ),
-        };
-      })
-      .filter((e) => e.schedule.length > 0);
-  }, [events, scheduleSearch, scheduleEventFilter]);
-
   // ── Filtered Directory ──
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
@@ -350,24 +223,6 @@ export default function CoordinatorDashboardClient({
       );
     });
   }, [users, directorySearch, directoryRoleFilter]);
-
-  // ── Filtered Announcements ──
-  const filteredAnnouncements = useMemo(() => {
-    if (!announcementSearch.trim()) return announcements;
-    const q = announcementSearch.toLowerCase();
-    return announcements.filter(
-      (a) => a.message.toLowerCase().includes(q) || a.created_by.toLowerCase().includes(q)
-    );
-  }, [announcements, announcementSearch]);
-
-  // ── Filtered Resources ──
-  const filteredResources = useMemo(() => {
-    if (!resourceSearch.trim()) return resources;
-    const q = resourceSearch.toLowerCase();
-    return resources.filter(
-      (r) => r.title.toLowerCase().includes(q) || r.url.toLowerCase().includes(q)
-    );
-  }, [resources, resourceSearch]);
 
   // ── Export Events CSV for Coordinators ──
   function handleExportEventsCSV() {
@@ -415,7 +270,7 @@ export default function CoordinatorDashboardClient({
     showToast("Downloaded event registrations CSV");
   }
 
-  function handleSort(field: "name" | "capacity" | "registered" | "available" | "venue" | "date") {
+  function handleSort(field: "name" | "capacity" | "registered" | "available" | "venue") {
     if (eventSortField === field) {
       setEventSortAsc(!eventSortAsc);
     } else {
@@ -427,24 +282,6 @@ export default function CoordinatorDashboardClient({
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     showToast(`Copied ${label} to clipboard!`);
-  };
-
-  // Helper to determine resource icon & label
-  const getResourceMeta = (url: string) => {
-    const low = url.toLowerCase();
-    if (low.includes("drive.google.com") || low.includes("docs.google.com/document")) {
-      return { label: "Google Doc", color: "bg-blue-500/15 text-blue-400 border-blue-400/30", icon: "📄" };
-    }
-    if (low.includes("docs.google.com/spreadsheets") || low.includes("sheets")) {
-      return { label: "Spreadsheet", color: "bg-emerald-500/15 text-emerald-400 border-emerald-400/30", icon: "📊" };
-    }
-    if (low.includes("forms.gle") || low.includes("forms")) {
-      return { label: "Google Form", color: "bg-purple-500/15 text-purple-400 border-purple-400/30", icon: "📝" };
-    }
-    if (low.endsWith(".pdf")) {
-      return { label: "PDF Document", color: "bg-rose-500/15 text-rose-400 border-rose-400/30", icon: "📕" };
-    }
-    return { label: "External Link", color: "bg-sky-500/15 text-sky-400 border-sky-400/30", icon: "🔗" };
   };
 
   // ── Theme Design System Tokens (Identical to Admin Panel) ──
@@ -521,56 +358,6 @@ export default function CoordinatorDashboardClient({
       ),
     },
     {
-      id: "schedules",
-      label: "Event Schedules",
-      badgeText: null,
-      colorBadge: isDark
-        ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 group-hover:bg-indigo-500 group-hover:text-white group-hover:shadow-md group-hover:shadow-indigo-500/25"
-        : "bg-indigo-100 text-indigo-950 border-indigo-300 group-hover:bg-indigo-500 group-hover:text-white font-bold group-hover:shadow-md group-hover:shadow-indigo-500/25",
-      activeIconBadge: "bg-gradient-to-tr from-indigo-500 to-purple-600 text-white border-indigo-400 shadow-md shadow-indigo-500/30",
-      activePill: isDark
-        ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/15 text-indigo-300 border border-indigo-400/40 shadow-xs shadow-indigo-500/20 font-bold"
-        : "bg-gradient-to-r from-indigo-100 to-purple-50 text-indigo-900 border border-indigo-300/80 shadow-xs font-bold",
-      activeDot: "bg-indigo-500 shadow-sm shadow-indigo-500/50",
-      hoverClass: isDark ? "hover:bg-indigo-500/10 hover:text-indigo-300" : "hover:bg-indigo-50/80 hover:text-indigo-900",
-      icon: (_isActive: boolean) => (
-        <svg
-          className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-    },
-    {
-      id: "announcements",
-      label: "Announcements",
-      badgeText: String(announcements.length),
-      colorBadge: isDark
-        ? "bg-rose-500/15 text-rose-300 border-rose-400/30 group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-md group-hover:shadow-rose-500/25"
-        : "bg-rose-100 text-rose-950 border-rose-300 group-hover:bg-rose-500 group-hover:text-white font-bold group-hover:shadow-md group-hover:shadow-rose-500/25",
-      activeIconBadge: "bg-gradient-to-tr from-rose-500 to-pink-600 text-white border-rose-400 shadow-md shadow-rose-500/30",
-      activePill: isDark
-        ? "bg-gradient-to-r from-rose-500/20 to-pink-500/15 text-rose-300 border border-rose-400/40 shadow-xs shadow-rose-500/20 font-bold"
-        : "bg-gradient-to-r from-rose-100 to-pink-50 text-rose-900 border border-rose-300/80 shadow-xs font-bold",
-      activeDot: "bg-rose-500 shadow-sm shadow-rose-500/50",
-      hoverClass: isDark ? "hover:bg-rose-500/10 hover:text-rose-300" : "hover:bg-rose-50/80 hover:text-rose-900",
-      icon: (_isActive: boolean) => (
-        <svg
-          className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-        </svg>
-      ),
-    },
-    {
       id: "directory",
       label: "Team Directory",
       badgeText: String(users.length),
@@ -592,56 +379,6 @@ export default function CoordinatorDashboardClient({
           strokeWidth={2}
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-    },
-    {
-      id: "resources",
-      label: "Shared Resources",
-      badgeText: String(resources.length),
-      colorBadge: isDark
-        ? "bg-purple-500/15 text-purple-300 border-purple-400/30 group-hover:bg-purple-500 group-hover:text-white group-hover:shadow-md group-hover:shadow-purple-500/25"
-        : "bg-purple-100 text-purple-950 border-purple-300 group-hover:bg-purple-500 group-hover:text-white font-bold group-hover:shadow-md group-hover:shadow-purple-500/25",
-      activeIconBadge: "bg-gradient-to-tr from-purple-500 to-fuchsia-600 text-white border-purple-400 shadow-md shadow-purple-500/30",
-      activePill: isDark
-        ? "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/15 text-purple-300 border border-purple-400/40 shadow-xs shadow-purple-500/20 font-bold"
-        : "bg-gradient-to-r from-purple-100 to-fuchsia-50 text-purple-900 border border-purple-300/80 shadow-xs font-bold",
-      activeDot: "bg-purple-500 shadow-sm shadow-purple-500/50",
-      hoverClass: isDark ? "hover:bg-purple-500/10 hover:text-purple-300" : "hover:bg-purple-50/80 hover:text-purple-900",
-      icon: (_isActive: boolean) => (
-        <svg
-          className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-        </svg>
-      ),
-    },
-    {
-      id: "checklist",
-      label: "Day Checklist",
-      badgeText: `${completedChecklistCount}/${checklist.length}`,
-      colorBadge: isDark
-        ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 group-hover:bg-cyan-500 group-hover:text-white group-hover:shadow-md group-hover:shadow-cyan-500/25"
-        : "bg-cyan-100 text-cyan-950 border-cyan-300 group-hover:bg-cyan-500 group-hover:text-white font-bold group-hover:shadow-md group-hover:shadow-cyan-500/25",
-      activeIconBadge: "bg-gradient-to-tr from-cyan-500 to-blue-600 text-white border-cyan-400 shadow-md shadow-cyan-500/30",
-      activePill: isDark
-        ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/15 text-cyan-300 border border-cyan-400/40 shadow-xs shadow-cyan-500/20 font-bold"
-        : "bg-gradient-to-r from-cyan-100 to-blue-50 text-cyan-900 border border-cyan-300/80 shadow-xs font-bold",
-      activeDot: "bg-cyan-500 shadow-sm shadow-cyan-500/50",
-      hoverClass: isDark ? "hover:bg-cyan-500/10 hover:text-cyan-300" : "hover:bg-cyan-50/80 hover:text-cyan-900",
-      icon: (_isActive: boolean) => (
-        <svg
-          className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
         </svg>
       ),
     },
@@ -798,17 +535,7 @@ export default function CoordinatorDashboardClient({
           </span>
         </div>
 
-        <div className="flex items-center gap-2 pt-1">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border font-mono text-[11px] font-bold transition ${isDark
-              ? "border-amber-400/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
-              : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
-              }`}
-          >
-            <span>{isDark ? "☀️ Light" : "🌙 Dark"}</span>
-          </button>
+        <div className="pt-1">
           <SignOutButton />
         </div>
       </div>
@@ -881,17 +608,7 @@ export default function CoordinatorDashboardClient({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={`p-2 rounded-xl border text-xs ${isDark
-              ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
-              : "border-slate-200 bg-slate-50 text-slate-700"
-              }`}
-            aria-label="Toggle Theme"
-          >
-            {isDark ? "☀️" : "🌙"}
-          </button>
+          <SignOutButton />
         </div>
       </div>
 
@@ -969,29 +686,6 @@ export default function CoordinatorDashboardClient({
 
                   {/* Header Actions */}
                   <div className="flex flex-wrap items-center gap-3 self-start lg:self-center">
-                    {/* Dark/Light Toggle */}
-                    <button
-                      type="button"
-                      onClick={toggleTheme}
-                      aria-label="Toggle Theme"
-                      className={`group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm ${isDark
-                        ? "border-amber-400/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:border-amber-400"
-                        : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                        }`}
-                    >
-                      {isDark ? (
-                        <>
-                          <span className="text-sm">☀️</span>
-                          <span>Light Mode</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-sm">🌙</span>
-                          <span>Dark Mode</span>
-                        </>
-                      )}
-                    </button>
-
                     {/* Back to Admin if Admin */}
                     {currentUser.role === "admin" && (
                       <Link
@@ -1008,78 +702,6 @@ export default function CoordinatorDashboardClient({
 
                     <SignOutButton />
                   </div>
-                </div>
-
-                {/* Quick Navigation Jump Pills */}
-                <div className={`mt-6 pt-5 border-t ${borderCol} flex flex-wrap gap-2.5 text-xs font-mono`}>
-                  <a
-                    href="#live-seats-table"
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 hover:border-cyan-400"
-                      : "bg-cyan-50 text-cyan-950 border-cyan-300 hover:bg-cyan-100"
-                      }`}
-                  >
-                    📊 Live Seats Table
-                  </a>
-                  <a
-                    href="#visual-analytics"
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 hover:border-emerald-400"
-                      : "bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
-                      }`}
-                  >
-                    📈 Seat Analytics
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("events")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-amber-500/15 text-amber-300 border-amber-400/30 hover:border-amber-400"
-                      : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
-                      }`}
-                  >
-                    📅 Event Cards ({events.length})
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("schedules")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 hover:border-indigo-400"
-                      : "bg-indigo-50 text-indigo-950 border-indigo-300 hover:bg-indigo-100"
-                      }`}
-                  >
-                    ⏱️ Master Schedules
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("directory")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-teal-500/15 text-teal-300 border-teal-400/30 hover:border-teal-400"
-                      : "bg-teal-50 text-teal-950 border-teal-300 hover:bg-teal-100"
-                      }`}
-                  >
-                    👥 Team Directory ({users.length})
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("announcements")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-rose-500/15 text-rose-300 border-rose-400/30 hover:border-rose-400"
-                      : "bg-rose-50 text-rose-950 border-rose-300 hover:bg-rose-100"
-                      }`}
-                  >
-                    📢 Announcements ({announcements.length})
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("checklist")}
-                    className={`px-3.5 py-1.5 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                      ? "bg-sky-500/15 text-sky-300 border-sky-400/30 hover:border-sky-400"
-                      : "bg-sky-50 text-sky-950 border-sky-300 hover:bg-sky-100"
-                      }`}
-                  >
-                    ✅ Day Checklist ({checklistCompletionPct}%)
-                  </button>
                 </div>
               </header>
 
@@ -1527,9 +1149,6 @@ export default function CoordinatorDashboardClient({
                         <th className="px-4 py-3 cursor-pointer hover:text-sky-500 transition" onClick={() => handleSort("venue")}>
                           Venue {eventSortField === "venue" && (eventSortAsc ? "↑" : "↓")}
                         </th>
-                        <th className="px-4 py-3 cursor-pointer hover:text-sky-500 transition" onClick={() => handleSort("date")}>
-                          Date &amp; Time {eventSortField === "date" && (eventSortAsc ? "↑" : "↓")}
-                        </th>
                         <th className="px-4 py-3 cursor-pointer hover:text-sky-500 transition" onClick={() => handleSort("capacity")}>
                           Capacity {eventSortField === "capacity" && (eventSortAsc ? "↑" : "↓")}
                         </th>
@@ -1539,7 +1158,6 @@ export default function CoordinatorDashboardClient({
                         <th className="px-4 py-3 cursor-pointer hover:text-sky-500 transition" onClick={() => handleSort("available")}>
                           Available {eventSortField === "available" && (eventSortAsc ? "↑" : "↓")}
                         </th>
-                        <th className="px-4 py-3">Status</th>
                         <th className="px-4 py-3">Sheet Label</th>
                       </tr>
                     </thead>
@@ -1564,10 +1182,6 @@ export default function CoordinatorDashboardClient({
                             </div>
                           </td>
                           <td className={`px-4 py-3.5 ${subText}`}>{e.venue}</td>
-                          <td className={`px-4 py-3.5 ${subText}`}>
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">{e.date}</span>
-                            <span className="block text-[11px] text-slate-400">{e.time}</span>
-                          </td>
                           <td className={`px-4 py-3.5 font-bold ${headerText}`}>{e.capacity}</td>
                           <td className="px-4 py-3.5">
                             <span className="font-bold text-sky-500 text-sm">{e.registered}</span>
@@ -1581,24 +1195,6 @@ export default function CoordinatorDashboardClient({
                           </td>
                           <td className={`px-4 py-3.5 font-bold ${e.available === 0 ? "text-rose-500" : "text-emerald-500"}`}>
                             {e.available}
-                          </td>
-                          <td className="px-4 py-3.5">
-                            <span
-                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${e.status === "full"
-                                ? isDark
-                                  ? "bg-rose-500/15 text-rose-300 border border-rose-500/30"
-                                  : "bg-rose-100 text-rose-800 border border-rose-200"
-                                : e.status === "filling"
-                                  ? isDark
-                                    ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
-                                    : "bg-amber-100 text-amber-800 border border-amber-200"
-                                  : isDark
-                                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                                    : "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                                }`}
-                            >
-                              {e.status === "full" ? "Full" : e.status === "filling" ? "Filling Fast" : "Open"}
-                            </span>
                           </td>
                           <td className="px-4 py-3.5">
                             <span
@@ -1618,7 +1214,7 @@ export default function CoordinatorDashboardClient({
 
                       {processedEvents.length === 0 && (
                         <tr>
-                          <td colSpan={8} className={`px-4 py-12 text-center ${subText} font-medium`}>
+                          <td colSpan={6} className={`px-4 py-12 text-center ${subText} font-medium`}>
                             No matching events found for current filters.
                           </td>
                         </tr>
@@ -1839,188 +1435,6 @@ export default function CoordinatorDashboardClient({
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 3: SCHEDULES & TIMELINE                                               */}
-          {/* ========================================================================= */}
-          {activeNavTab === "schedules" && (
-            <div className="space-y-6">
-              <div className={`p-6 sm:p-8 rounded-3xl border ${cardBg} space-y-4`}>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h2 className={`font-display text-2xl sm:text-3xl font-bold ${headerText} tracking-tight`}>
-                      Symposium Master Schedules
-                    </h2>
-                    <p className={`font-mono text-xs ${subText} mt-1`}>
-                      Track the timeline of rounds, reporting times, evaluations, and results across all venues.
-                    </p>
-                  </div>
-
-                  <span className={`px-3 py-1 rounded-full text-xs font-mono border ${isDark ? "bg-indigo-500/15 border-indigo-400/30 text-indigo-300" : "bg-indigo-50 border-indigo-200 text-indigo-800"}`}>
-                    ⏱️ Chronological Breakdown
-                  </span>
-                </div>
-
-                {/* Search Bar & Event Filter */}
-                <div className={`p-3 rounded-2xl border ${searchBoxBg} grid gap-3 sm:grid-cols-12`}>
-                  <div className="sm:col-span-8">
-                    <input
-                      type="text"
-                      value={scheduleSearch}
-                      onChange={(e) => setScheduleSearch(e.target.value)}
-                      placeholder="🔍 Search schedules (e.g. 'Round 1', 'Lunch', 'Reporting', 'Hall A')…"
-                      className={`w-full rounded-xl border px-4 py-2 font-mono text-xs outline-none ${inputBg}`}
-                    />
-                  </div>
-                  <div className="sm:col-span-4">
-                    <select
-                      value={scheduleEventFilter}
-                      onChange={(e) => setScheduleEventFilter(e.target.value)}
-                      className={`w-full rounded-xl border px-3 py-2 font-mono text-xs outline-none ${selectBg}`}
-                    >
-                      <option value="all">All Events ({events.length})</option>
-                      {events.map((e) => (
-                        <option key={e.id} value={e.id}>
-                          {e.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Schedules Grid / Timeline View */}
-              <div className="grid gap-6 sm:grid-cols-2">
-                {filteredSchedules.map((e) => (
-                  <div
-                    key={e.id}
-                    className={`rounded-3xl border ${cardBg} p-6 space-y-4 shadow-sm hover:shadow-md transition`}
-                  >
-                    <div className="flex items-start justify-between gap-3 border-b border-slate-200/50 dark:border-white/10 pb-3">
-                      <div>
-                        <h3 className={`font-display text-lg font-bold ${headerText}`}>{e.name}</h3>
-                        <p className={`font-mono text-xs text-sky-500 font-semibold mt-0.5`}>
-                          📅 {e.date} · ⏱️ {e.time}
-                        </p>
-                      </div>
-                      <span className={`px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold border shrink-0 ${isDark ? "bg-sky-500/15 border-sky-400/30 text-sky-300" : "bg-sky-50 border-sky-200 text-sky-800"
-                        }`}>
-                        📍 {e.venue}
-                      </span>
-                    </div>
-
-                    {/* Timeline List */}
-                    <ul className="space-y-3 font-mono text-xs relative pl-4 border-l-2 border-sky-500/30 dark:border-sky-500/20">
-                      {e.schedule.map((s, idx) => (
-                        <li key={idx} className="relative group">
-                          {/* Dot indicator */}
-                          <div className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-sky-500 border-2 border-white dark:border-[#0d121f] group-hover:scale-125 transition-transform" />
-                          <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                            <span className="font-bold text-sky-500 w-28 shrink-0">{s.time}</span>
-                            <span className={`${headerText} font-medium`}>{s.item}</span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-
-                {filteredSchedules.length === 0 && (
-                  <div className={`col-span-full p-12 text-center rounded-3xl border ${cardBg}`}>
-                    <p className={`font-mono text-xs ${subText}`}>No schedule items found matching your search.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================================= */}
-          {/* TAB 4: ANNOUNCEMENTS HUB                                                  */}
-          {/* ========================================================================= */}
-          {activeNavTab === "announcements" && (
-            <div className="space-y-6">
-              <div className={`p-6 sm:p-8 rounded-3xl border ${cardBg} space-y-4`}>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h2 className={`font-display text-2xl sm:text-3xl font-bold ${headerText} tracking-tight flex items-center gap-2.5`}>
-                      <span className="h-3 w-3 rounded-full bg-rose-500 animate-pulse" />
-                      Official Announcements &amp; Broadcasts
-                    </h2>
-                    <p className={`font-mono text-xs ${subText} mt-1`}>
-                      Real-time notices and guidelines broadcasted by the core admin committee.
-                    </p>
-                  </div>
-
-                  <input
-                    type="text"
-                    value={announcementSearch}
-                    onChange={(e) => setAnnouncementSearch(e.target.value)}
-                    placeholder="🔍 Search announcements…"
-                    className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none ${inputBg} w-full sm:w-64`}
-                  />
-                </div>
-              </div>
-
-              {/* Announcements Feed */}
-              <div className="space-y-4">
-                {filteredAnnouncements.map((a, idx) => (
-                  <div
-                    key={a.id}
-                    className={`rounded-2xl border ${cardBg} p-5 space-y-3 shadow-sm hover:shadow-md transition relative`}
-                  >
-                    <div className="flex items-center justify-between gap-3 border-b border-slate-200/50 dark:border-white/10 pb-2.5">
-                      <div className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-rose-500" />
-                        <span className={`font-mono text-xs font-bold uppercase tracking-wider ${idx === 0 ? "text-rose-500" : isDark ? "text-slate-300" : "text-slate-700"
-                          }`}>
-                          {idx === 0 ? "Latest Bulletin" : `Announcement #${announcements.length - idx}`}
-                        </span>
-                      </div>
-                      <span suppressHydrationWarning className={`font-mono text-[11px] ${subText}`}>
-                        {new Date(a.created_at).toLocaleString()}
-                      </span>
-                    </div>
-
-                    <p className={`text-sm sm:text-base leading-relaxed ${headerText} font-medium`}>
-                      {a.message}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-1 font-mono text-[11px]">
-                      <span className={subText}>
-                        Posted by <strong className="text-sky-500">@{a.created_by}</strong>
-                      </span>
-                      <button
-                        onClick={() => copyToClipboard(a.message, "Announcement")}
-                        className={`text-[10px] px-2 py-0.5 rounded border ${isDark ? "border-white/10 text-slate-400 hover:text-white" : "border-slate-200 text-slate-600 hover:text-slate-900"
-                          } transition`}
-                      >
-                        📋 Copy Text
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-                {filteredAnnouncements.length === 0 && (
-                  <div className={`p-12 text-center rounded-3xl border ${cardBg}`}>
-                    <p className={`font-mono text-xs ${subText}`}>No announcements match your search.</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Coordinator Brief Notice */}
-              <div className={`p-5 rounded-2xl border ${isDark ? "border-sky-500/30 bg-sky-500/10" : "border-sky-200 bg-sky-50"} font-mono text-xs`}>
-                <div className="flex items-start gap-3">
-                  <span className="text-lg">💡</span>
-                  <div>
-                    <h4 className="font-bold text-sky-600 dark:text-sky-300 mb-1">Coordinator Protocol Reminder</h4>
-                    <p className={`${isDark ? "text-slate-300" : "text-slate-700"} leading-relaxed text-[11px]`}>
-                      Announcements posted by admins are automatically reflected across the public website and attendee announcement banners. As coordinators, ensure your participants are aligned with any schedule or venue adjustments announced here.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================================= */}
           {/* TAB 5: TEAM & DIRECTORY                                                   */}
           {/* ========================================================================= */}
           {activeNavTab === "directory" && (
@@ -2185,218 +1599,6 @@ export default function CoordinatorDashboardClient({
                   </div>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* ========================================================================= */}
-          {/* TAB 6: SHARED RESOURCES                                                   */}
-          {/* ========================================================================= */}
-          {activeNavTab === "resources" && (
-            <div className="space-y-6">
-              <div className={`p-6 sm:p-8 rounded-3xl border ${cardBg} space-y-4`}>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h2 className={`font-display text-2xl sm:text-3xl font-bold ${headerText} tracking-tight`}>
-                      Shared Resources &amp; Documents Hub
-                    </h2>
-                    <p className={`font-mono text-xs ${subText} mt-1`}>
-                      Master links to scoring rubrics, participant lists, rulebook PDFs, and drive folders.
-                    </p>
-                  </div>
-
-                  <input
-                    type="text"
-                    value={resourceSearch}
-                    onChange={(e) => setResourceSearch(e.target.value)}
-                    placeholder="🔍 Search resources…"
-                    className={`rounded-xl border px-3.5 py-2 font-mono text-xs outline-none ${inputBg} w-full sm:w-64`}
-                  />
-                </div>
-              </div>
-
-              {/* Resource Cards Grid */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                {filteredResources.map((r) => {
-                  const meta = getResourceMeta(r.url);
-                  return (
-                    <div
-                      key={r.id}
-                      className={`rounded-2xl border ${cardBg} p-5 space-y-3 shadow-sm hover:shadow-md transition flex flex-col justify-between`}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${meta.color}`}>
-                            <span>{meta.icon}</span>
-                            <span>{meta.label}</span>
-                          </span>
-                          <span suppressHydrationWarning className={`font-mono text-[10px] ${subText}`}>
-                            {new Date(r.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-
-                        <h3 className={`font-bold ${headerText} text-base leading-snug`}>{r.title}</h3>
-                        <p className={`font-mono text-xs ${subText} truncate`} title={r.url}>
-                          {r.url}
-                        </p>
-                      </div>
-
-                      <div className="pt-3 border-t border-slate-200/50 dark:border-white/10 flex items-center justify-between gap-2">
-                        <a
-                          href={r.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-mono text-xs font-bold transition shadow-xs"
-                        >
-                          <span>Open Document</span>
-                          <span>↗</span>
-                        </a>
-
-                        <button
-                          type="button"
-                          onClick={() => copyToClipboard(r.url, "Resource URL")}
-                          className={`px-3 py-2 rounded-xl border font-mono text-xs font-bold transition ${isDark ? "border-white/10 hover:bg-white/10 text-slate-300" : "border-slate-200 hover:bg-slate-100 text-slate-700"
-                            }`}
-                        >
-                          📋 Copy Link
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {filteredResources.length === 0 && (
-                  <div className={`col-span-full p-12 text-center rounded-3xl border ${cardBg}`}>
-                    <p className={`font-mono text-xs ${subText}`}>No shared resources uploaded yet.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================================= */}
-          {/* TAB 7: OPERATIONS CHECKLIST (Day-of-Event Execution Tool)                  */}
-          {/* ========================================================================= */}
-          {activeNavTab === "checklist" && (
-            <div className="space-y-6">
-              <div className={`p-6 sm:p-8 rounded-3xl border ${cardBg} space-y-5`}>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h2 className={`font-display text-2xl sm:text-3xl font-bold ${headerText} tracking-tight flex items-center gap-2`}>
-                      <span>✅</span>
-                      Coordinator Event Operations Checklist
-                    </h2>
-                    <p className={`font-mono text-xs ${subText} mt-1`}>
-                      Interactive task tracking for symposium day preparation, execution, and wrap-up.
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleResetChecklist}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-mono text-xs font-bold transition ${isDark ? "border-white/10 hover:bg-white/10 text-slate-400" : "border-slate-200 hover:bg-slate-100 text-slate-600"
-                      }`}
-                  >
-                    <span>↺</span>
-                    <span>Reset Defaults</span>
-                  </button>
-                </div>
-
-                {/* Progress Bar */}
-                <div className={`p-4 rounded-2xl border ${searchBoxBg} space-y-2`}>
-                  <div className="flex justify-between items-center font-mono text-xs">
-                    <span className="font-bold text-sky-500">
-                      Progress: {completedChecklistCount} of {checklist.length} Completed
-                    </span>
-                    <span className="font-bold text-emerald-500 text-sm">{checklistCompletionPct}%</span>
-                  </div>
-                  <div className={`h-3 w-full rounded-full overflow-hidden ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-sky-400 via-emerald-400 to-emerald-500 transition-all duration-500 shadow-sm shadow-emerald-500/50"
-                      style={{ width: `${checklistCompletionPct}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Add Custom Task Form */}
-                <form onSubmit={handleAddChecklistItem} className="flex flex-col sm:flex-row gap-2 pt-2">
-                  <input
-                    type="text"
-                    value={newChecklistText}
-                    onChange={(e) => setNewChecklistText(e.target.value)}
-                    placeholder="Add custom task item for your event (e.g. 'Arrange extra chairs for Hall B')…"
-                    className={`flex-1 rounded-xl border px-4 py-2.5 font-mono text-xs outline-none ${inputBg}`}
-                  />
-                  <select
-                    value={newChecklistCategory}
-                    onChange={(e) => setNewChecklistCategory(e.target.value)}
-                    className={`rounded-xl border px-3 py-2.5 font-mono text-xs outline-none ${selectBg}`}
-                  >
-                    <option value="Pre-Event">Pre-Event</option>
-                    <option value="During Event">During Event</option>
-                    <option value="Post-Event">Post-Event</option>
-                  </select>
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-mono text-xs font-bold transition shadow-xs shrink-0"
-                  >
-                    + Add Task
-                  </button>
-                </form>
-              </div>
-
-              {/* Tasks Divided by Stage */}
-              {["Pre-Event", "During Event", "Post-Event"].map((category) => {
-                const items = checklist.filter((i) => i.category === category);
-                if (items.length === 0) return null;
-
-                return (
-                  <div key={category} className={`rounded-3xl border ${cardBg} p-6 space-y-4`}>
-                    <div className="flex items-center justify-between border-b border-slate-200/50 dark:border-white/10 pb-2">
-                      <h3 className={`font-display text-lg font-bold ${headerText} flex items-center gap-2`}>
-                        <span className="h-2 w-2 rounded-full bg-sky-500" />
-                        {category} Phase
-                      </h3>
-                      <span className={`font-mono text-xs ${subText}`}>
-                        {items.filter((i) => i.completed).length}/{items.length} Done
-                      </span>
-                    </div>
-
-                    <div className="space-y-2.5">
-                      {items.map((item) => (
-                        <div
-                          key={item.id}
-                          onClick={() => toggleChecklistItem(item.id)}
-                          className={`p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-3 ${item.completed
-                            ? isDark
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-                              : "bg-emerald-50/80 border-emerald-200 text-emerald-900"
-                            : isDark
-                              ? "bg-white/[0.02] border-white/10 hover:bg-white/[0.05]"
-                              : "bg-white border-slate-200 hover:bg-slate-50"
-                            }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <input
-                              type="checkbox"
-                              checked={item.completed}
-                              onChange={() => { }} // handled by parent div onClick
-                              className="h-4 w-4 rounded text-sky-600 focus:ring-sky-500 cursor-pointer"
-                            />
-                            <span className={`font-mono text-xs ${item.completed ? "line-through opacity-75 font-normal" : "font-semibold"}`}>
-                              {item.text}
-                            </span>
-                          </div>
-
-                          <span className={`text-[10px] font-mono uppercase tracking-wider font-bold ${item.completed ? "text-emerald-500" : "text-slate-400"
-                            }`}>
-                            {item.completed ? "Completed ✓" : "Pending"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           )}
         </div>
