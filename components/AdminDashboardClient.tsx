@@ -268,7 +268,7 @@ export default function AdminDashboardClient({
 
   // Announcements tab sub-navigation state (ticker, bulletins, resources, settings)
   const [announcementsSubTab, setAnnouncementsSubTab] = useState<
-    "ticker" | "bulletins" | "resources" | "settings"
+    "ticker" | "resources" | "settings"
   >("ticker");
 
   // Running Announcement local state & templates
@@ -281,29 +281,6 @@ export default function AdminDashboardClient({
   );
   const [isSavingRunningAnnouncement, setIsSavingRunningAnnouncement] = useState(false);
   const [runningAnnouncementSaveSuccess, setRunningAnnouncementSaveSuccess] = useState(false);
-
-  const runningAnnouncementTemplates = [
-    {
-      label: "🎉 Registrations Open",
-      text: "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
-    },
-    {
-      label: "⏳ Last Chance Reminder",
-      text: "⏳ Only 2 days left to register for Symposium 2.0! Limited seats available for Coding Sprint, Web Crafters & Circuit Design • Register before slots fill!",
-    },
-    {
-      label: "📍 Spot Registrations Open",
-      text: "📍 Spot Registrations open at the Registration Desk (Main Campus Entrance) from 8:30 AM to 10:00 AM! Walk-ins welcome for all events.",
-    },
-    {
-      label: "🏆 Results & Valedictory",
-      text: "🏆 Event results are now out! Valedictory and Prize Distribution ceremony will commence at 4:30 PM in the Main Auditorium • All participants are invited.",
-    },
-    {
-      label: "⚡ Schedule Adjustment",
-      text: "⚡ Important Schedule Update: Technical Quiz prelims moved to 11:30 AM in Seminar Hall 2 • Please report 15 mins prior.",
-    },
-  ];
 
   const handleSaveRunningAnnouncement = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -2561,23 +2538,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
 
                 <button
                   type="button"
-                  onClick={() => setAnnouncementsSubTab("bulletins")}
-                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "bulletins"
-                      ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md shadow-rose-500/25 scale-[1.01]"
-                      : isDark
-                        ? "text-slate-400 hover:text-white hover:bg-white/5"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-white"
-                    }`}
-                >
-                  <span className="text-sm">📢</span>
-                  <span>Broadcast Bulletins</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-extrabold ${announcementsSubTab === "bulletins" ? "bg-white/20 text-white" : isDark ? "bg-white/10 text-slate-300" : "bg-slate-200 text-slate-700"}`}>
-                    {filteredAnnouncements.length}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
                   onClick={() => setAnnouncementsSubTab("resources")}
                   className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "resources"
                       ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/25 scale-[1.01]"
@@ -2624,9 +2584,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                             Front Page Running Announcement
                           </h3>
                         </div>
-                        <p className={`font-mono text-xs ${subText} mt-1.5 max-w-2xl`}>
-                          Configure the live animated ticker banner that displays directly under the navigation header on the front page of the website.
-                        </p>
                       </div>
 
                       <div className="flex items-center gap-3">
@@ -2650,9 +2607,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                       <div className="flex items-center justify-between">
                         <span className={`font-mono text-xs font-bold uppercase tracking-wider ${subText} flex items-center gap-2`}>
                           <span>🖥️</span> Live Header Preview (Real-time Simulation)
-                        </span>
-                        <span className="font-mono text-[11px] text-amber-500 font-semibold hidden sm:inline">
-                          Hover pauses ticker · Matches front page header
                         </span>
                       </div>
 
@@ -2734,14 +2688,12 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                     {/* EDIT & PUBLISH FORM */}
                     <form onSubmit={handleSaveRunningAnnouncement} className="space-y-5">
                       {/* Active Status Toggle */}
-                      <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-slate-50/70"}`}>
-                        <div>
-                          <p className={`font-mono text-xs font-bold ${isDark ? "text-slate-200" : "text-slate-800"}`}>
-                            Display on Front Page
-                          </p>
-                          <p className={`font-mono text-[11px] ${subText} mt-0.5`}>
-                            When turned ON, the running announcement bar will appear directly under the navbar header on the main landing page.
-                          </p>
+                      <div className={`flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-slate-50/70"}`}>
+                        <div className="flex items-center gap-2.5">
+                          <span className={`h-2.5 w-2.5 rounded-full ${isRunningAnnouncementActive ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`} />
+                          <span className={`font-mono text-xs font-bold ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+                            {isRunningAnnouncementActive ? "Announcement: ON" : "Announcement: OFF"}
+                          </span>
                         </div>
 
                         <button
@@ -2790,28 +2742,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                           className={`w-full rounded-2xl border p-4 font-mono text-xs sm:text-sm leading-relaxed outline-none transition focus:ring-2 focus:ring-amber-500/40 ${inputBg}`}
                           required={isRunningAnnouncementActive}
                         />
-                      </div>
-
-                      {/* Quick Template Chips */}
-                      <div className="space-y-2">
-                        <p className={`font-mono text-[11px] font-bold uppercase tracking-wider ${subText}`}>
-                          ⚡ Quick Templates (Click to fill)
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {runningAnnouncementTemplates.map((t, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => setRunningAnnouncementText(t.text)}
-                              className={`px-3 py-1.5 rounded-xl font-mono text-[11px] font-semibold border transition-all ${isDark
-                                  ? "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-amber-500/10 hover:border-amber-400/40 hover:text-amber-300"
-                                  : "border-slate-200 bg-white text-slate-700 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-900 shadow-xs"
-                                }`}
-                            >
-                              {t.label}
-                            </button>
-                          ))}
-                        </div>
                       </div>
 
                       {/* Success Feedback Notification */}
@@ -2870,73 +2800,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                       </div>
                     </form>
                   </div>
-                </div>
-              )}
-
-              {/* ========================================================================= */}
-              {/* SUB-TAB 2: BROADCAST BULLETINS (COORDINATOR NOTES)                        */}
-              {/* ========================================================================= */}
-              {announcementsSubTab === "bulletins" && (
-                <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-4`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className={`font-display text-xl font-bold ${headerText} flex items-center gap-2`}>
-                        <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
-                        Broadcast Bulletins to Coordinators
-                      </h3>
-                      <p className={`font-mono text-xs ${subText} mt-1`}>
-                        Post announcements visible to coordinators in their private dashboard.
-                      </p>
-                    </div>
-                    <input
-                      type="text"
-                      value={announcementSearch}
-                      onChange={(e) => setAnnouncementSearch(e.target.value)}
-                      placeholder="🔍 Search…"
-                      className={`w-36 rounded-xl border px-3 py-1.5 font-mono text-[11px] outline-none ${inputBg}`}
-                    />
-                  </div>
-
-                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
-                    {filteredAnnouncements.map((a) => (
-                      <div
-                        key={a.id}
-                        className={`flex items-start justify-between gap-3 rounded-2xl border ${isDark ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.04]" : "border-slate-200 bg-slate-50/70 hover:bg-slate-100/70"} p-4 transition`}
-                      >
-                        <div>
-                          <p className={`text-xs ${isDark ? "text-slate-200" : "text-slate-800"} font-medium leading-relaxed`}>{a.message}</p>
-                          <p suppressHydrationWarning className={`mt-1 font-mono text-[10px] uppercase tracking-wider ${subText}`}>
-                            by @{a.created_by} · {new Date(a.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <form action={deleteAnnouncementAction}>
-                          <input type="hidden" name="id" value={a.id} />
-                          <button className={`font-mono text-[11px] font-bold ${isDark ? "text-rose-400 hover:text-rose-300" : "text-rose-700 hover:text-rose-900"} hover:underline`}>
-                            Remove
-                          </button>
-                        </form>
-                      </div>
-                    ))}
-
-                    {filteredAnnouncements.length === 0 && (
-                      <p className={`font-mono text-xs ${subText} py-4 text-center`}>No announcements found.</p>
-                    )}
-                  </div>
-
-                  <form action={createAnnouncementAction} className="flex gap-2 font-mono text-xs pt-2">
-                    <input
-                      name="message"
-                      required
-                      placeholder="Broadcast a note to coordinators…"
-                      className={`flex-1 rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
-                    />
-                    <button
-                      type="submit"
-                      className="rounded-xl px-4 py-2.5 bg-rose-500 hover:bg-rose-400 text-white font-bold uppercase tracking-wider shadow-sm transition"
-                    >
-                      Post Note
-                    </button>
-                  </form>
                 </div>
               )}
 
