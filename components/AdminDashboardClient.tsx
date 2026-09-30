@@ -1167,80 +1167,6 @@ export default function AdminDashboardClient({
                     <SignOutButton />
                   </div>
                 </div>
-
-                {/* ========================================================================= */}
-                {/* COLORFUL QUICK SECTION NAVIGATION TABS                                   */}
-                {/* ========================================================================= */}
-                <div className={`mt-6 pt-5 border-t ${borderCol} flex flex-wrap gap-2.5 text-xs font-mono`}>
-                  <a
-                    href="#section-seats"
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/30 hover:border-cyan-400"
-                        : "bg-cyan-50 text-cyan-950 border-cyan-300 hover:bg-cyan-100"
-                      }`}
-                  >
-                    📊 Live Seats &amp; Status
-                  </a>
-                  <a
-                    href="#section-analytics"
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 hover:border-emerald-400"
-                        : "bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
-                      }`}
-                  >
-                    📈 Visual Analytics &amp; Charts
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("add-event")}
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-amber-500/15 text-amber-300 border-amber-400/30 hover:border-amber-400"
-                        : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
-                      }`}
-                  >
-                    ⚡ Add Event
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("coordinator")}
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-indigo-500/15 text-indigo-300 border-indigo-400/30 hover:border-indigo-400"
-                        : "bg-indigo-50 text-indigo-950 border-indigo-300 hover:bg-indigo-100"
-                      }`}
-                  >
-                    👥 Admins &amp; Coordinators
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("announcements")}
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-rose-500/15 text-rose-300 border-rose-400/30 hover:border-rose-400"
-                        : "bg-rose-50 text-rose-950 border-rose-300 hover:bg-rose-100"
-                      }`}
-                  >
-                    📢 Announcements &amp; Links
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("announcements")}
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-blue-500/15 text-blue-300 border-blue-400/30 hover:border-blue-400"
-                        : "bg-blue-50 text-blue-950 border-blue-300 hover:bg-blue-100"
-                      }`}
-                  >
-                    ⚙️ Site Settings
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleNavTabClick("gallery")}
-                    className={`px-3.5 py-2 rounded-xl border transition hover:shadow-md hover:scale-[1.02] font-bold ${isDark
-                        ? "bg-purple-500/15 text-purple-300 border-purple-400/30 hover:border-purple-400"
-                        : "bg-purple-50 text-purple-950 border-purple-300 hover:bg-purple-100"
-                      }`}
-                  >
-                    🖼️ Gallery Media
-                  </button>
-                </div>
               </header>
 
               {/* ========================================================================= */}
@@ -1722,12 +1648,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                         </th>
                         <th
                           className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
-                          onClick={() => handleSort("date")}
-                        >
-                          Date &amp; Time {eventSortField === "date" && (eventSortAsc ? "↑" : "↓")}
-                        </th>
-                        <th
-                          className="px-4 py-3.5 cursor-pointer hover:text-sky-500 transition select-none"
                           onClick={() => handleSort("capacity")}
                         >
                           Capacity {eventSortField === "capacity" && (eventSortAsc ? "↑" : "↓")}
@@ -1744,7 +1664,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                         >
                           Available {eventSortField === "available" && (eventSortAsc ? "↑" : "↓")}
                         </th>
-                        <th className="px-4 py-3.5">Status</th>
                         <th className="px-4 py-3.5 text-right">Actions</th>
                       </tr>
                     </thead>
@@ -1766,10 +1685,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                               </div>
                             </td>
                             <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{e.venue}</td>
-                            <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
-                              <span>{e.date}</span>
-                              <span className={`block text-[11px] ${subText}`}>{e.time}</span>
-                            </td>
                             <td className={`px-4 py-4 ${isDark ? "text-slate-300" : "text-slate-700"} font-medium`}>{e.capacity}</td>
                             <td className="px-4 py-4">
                               <div className="space-y-1">
@@ -1788,32 +1703,6 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                               </div>
                             </td>
                             <td className={`px-4 py-4 font-bold text-sm ${isDark ? "text-emerald-400" : "text-emerald-950"}`}>{e.available}</td>
-                            <td className="px-4 py-4">
-                              <span
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${e.status === "full"
-                                    ? isDark
-                                      ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
-                                      : "bg-rose-100 text-rose-950 border-rose-300"
-                                    : e.status === "filling"
-                                      ? isDark
-                                        ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-                                        : "bg-amber-100 text-amber-950 border-amber-300"
-                                      : isDark
-                                        ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                                        : "bg-emerald-100 text-emerald-950 border-emerald-300"
-                                  }`}
-                              >
-                                <span
-                                  className={`h-1.5 w-1.5 rounded-full ${e.status === "full"
-                                      ? "bg-rose-500"
-                                      : e.status === "filling"
-                                        ? "bg-amber-500"
-                                        : "bg-emerald-500"
-                                    }`}
-                                />
-                                {e.status === "full" ? "Full" : e.status === "filling" ? "Filling Fast" : "Open"}
-                              </span>
-                            </td>
                             <td className="px-4 py-4 text-right space-x-3 whitespace-nowrap">
                               <button
                                 onClick={() => setEditingEvent(e)}
