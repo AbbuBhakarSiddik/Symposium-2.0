@@ -26,8 +26,17 @@ export const CLUB_NAME = "Creative Codex";
 export const COLLEGE_NAME = "Shridevi Institute Of Engineering And Technology,Tumkur";
 export const SYMPOSIUM_NAME = "Innovation Ignite Symposium 2.0";
 
-// Replace "#" below with the actual Google Form registration link before going live.
-export const REGISTER_FORM_URL = "#";
+// Global registration URL configured via environment variable (.env.local or deployment variables)
+export const REGISTER_FORM_URL =
+  process.env.NEXT_PUBLIC_REGISTER_FORM_URL ||
+  process.env.REGISTER_FORM_URL ||
+  "#";
+
+// Live registration unlocks on: 4th Oct 2026, 7:30 PM IST (UTC+05:30)
+export const REGISTRATION_LIVE_DATE =
+  process.env.NEXT_PUBLIC_REGISTRATION_LIVE_DATE ||
+  process.env.REGISTRATION_LIVE_DATE ||
+  "2026-10-04T19:30:00+05:30";
 
 export const EVENTS: EventConfig[] = [
   {

@@ -380,7 +380,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       symposiumName: map.symposiumName || defaults.symposiumName,
       clubName: map.clubName || defaults.clubName,
       collegeName: map.collegeName || defaults.collegeName,
-      registerFormUrl: map.registerFormUrl || defaults.registerFormUrl,
+      registerFormUrl:
+        process.env.NEXT_PUBLIC_REGISTER_FORM_URL ||
+        process.env.REGISTER_FORM_URL ||
+        (map.registerFormUrl && map.registerFormUrl !== "#" ? map.registerFormUrl : defaults.registerFormUrl),
       googleSheetUrl: map.googleSheetUrl || defaults.googleSheetUrl,
       runningAnnouncement: map.runningAnnouncement !== undefined ? map.runningAnnouncement : defaults.runningAnnouncement,
       runningAnnouncementActive: map.runningAnnouncementActive !== undefined ? map.runningAnnouncementActive : defaults.runningAnnouncementActive,

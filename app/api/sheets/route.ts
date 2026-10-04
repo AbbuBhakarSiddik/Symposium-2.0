@@ -24,7 +24,10 @@ export async function GET() {
     totalResponses: totalResponses ?? null,
     data,
     events,
-    registerFormUrl: settings?.registerFormUrl || "#",
+    registerFormUrl:
+      process.env.NEXT_PUBLIC_REGISTER_FORM_URL ||
+      process.env.REGISTER_FORM_URL ||
+      (settings?.registerFormUrl && settings.registerFormUrl !== "#" ? settings.registerFormUrl : "#"),
     fetchedAt: new Date().toISOString(),
   });
 }

@@ -9,9 +9,14 @@
 
 import Image from "next/image";
 import LogoCards from "@/components/LogoCards";
+import HeroRegisterButton from "@/components/HeroRegisterButton";
 import { REGISTER_FORM_URL } from "@/lib/eventsConfig";
 
-export default function Hero() {
+export default function Hero({
+  registerFormUrl = REGISTER_FORM_URL,
+}: {
+  registerFormUrl?: string;
+} = {}) {
   return (
     <section
       id="home"
@@ -105,30 +110,8 @@ export default function Hero() {
 
         {/* ── 5. CTA BUTTONS ─────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 w-full mb-10 sm:mb-12">
-          {/* Primary: Register Now (Gradient pill with arrow) */}
-          <a
-            href={REGISTER_FORM_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#0095ff] via-[#0080ff] to-[#6366f1] hover:opacity-95 text-white px-8 py-3.5 font-sans text-sm sm:text-base font-semibold shadow-xl shadow-sky-500/25 hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto"
-          >
-            Register Now
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-              />
-            </svg>
-          </a>
+          {/* Primary: Register Now / Countdown Timer Button */}
+          <HeroRegisterButton registerFormUrl={registerFormUrl} />
 
           {/* Secondary: View Events (Dark glass pill with arrow) */}
           <a

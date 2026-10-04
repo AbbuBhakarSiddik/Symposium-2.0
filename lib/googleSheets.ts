@@ -333,13 +333,13 @@ export async function getLiveCounts(
   try {
     const { rows, error } = await fetchSheetRows();
 
-    if (error || rows.length < 2) {
+    if (error || rows.length === 0) {
       const fallbackCounts = emptyCounts(events);
       const res = {
         counts: fallbackCounts,
         isLive: false,
-        error: error || (rows.length < 2 ? "SHEET_EMPTY" : undefined),
-        totalResponses: Math.max(0, rows.length - 1),
+        error: error || "NO_ROWS_FOUND",
+        totalResponses: 0,
       };
       // Keep last good cache if available, but update status
       if (cachedCountsData?.isLive) {
@@ -349,6 +349,20 @@ export async function getLiveCounts(
     }
 
     const headers = rows[0].map((h) => String(h || "").trim());
+
+    // If sheet is connected and headers exist, but no submissions yet (0 responses)
+    if (rows.length === 1) {
+      const res = {
+        counts: emptyCounts(events),
+        isLive: true,
+        error: undefined,
+        totalResponses: 0,
+      };
+      cachedCountsData = res;
+      lastFetchTimestamp = now;
+      return res;
+    }
+
     let eventColIdx = findEventColumnIndex(headers);
 
     // If event column header couldn't be determined by name, scan rows to identify which column has event names
@@ -438,17 +452,30 @@ export async function getLiveRegistrations(
 
   try {
     const { rows, error } = await fetchSheetRows();
-    if (error || rows.length < 2) {
+    if (error || rows.length === 0) {
       return {
         registrations: [],
         isLive: false,
-        headers: rows[0] || [],
+        headers: [],
         totalCount: 0,
         error,
       };
     }
 
     const headers = rows[0].map((h) => String(h || "").trim());
+
+    // If sheet connected with headers but has 0 submissions yet
+    if (rows.length === 1) {
+      const result = {
+        registrations: [],
+        isLive: true,
+        headers,
+        totalCount: 0,
+      };
+      cachedRegistrationsData = result;
+      return result;
+    }
+
     const eventColIdx = findEventColumnIndex(headers);
     const dataRows = rows.slice(1);
 
