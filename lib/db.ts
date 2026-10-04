@@ -365,7 +365,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     clubName: CLUB_NAME,
     collegeName: COLLEGE_NAME,
     registerFormUrl: REGISTER_FORM_URL,
-    googleSheetUrl: "https://docs.google.com/spreadsheets/d/1KxPkq3bnXk-08Vr8g4mEMNjbxwiiavneUtHMl_M4SbY/edit?gid=1683046113#gid=1683046113",
+    googleSheetUrl: "https://docs.google.com/spreadsheets/d/1YynwBobcAJvQ1tN0YF92TA-6uhp_kukPOEAc3diatis/edit?usp=sharing",
     runningAnnouncement: "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
     runningAnnouncementActive: "true",
   };

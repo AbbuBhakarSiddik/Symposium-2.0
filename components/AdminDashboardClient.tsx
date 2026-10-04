@@ -1410,18 +1410,35 @@ export default function AdminDashboardClient({
                           Google Sheets Not Connected — Showing Preview / Mock Data
                         </p>
                         <p className={`text-[11px] leading-relaxed ${isDark ? "text-amber-200/90" : "text-amber-900"}`}>
-                          Add the following variables to your <code className={`px-1.5 py-0.5 rounded border border-amber-500/20 ${isDark ? "bg-amber-950/60 text-amber-200" : "bg-amber-100 text-amber-950"
-                            }`}>.env.local</code> to connect live registration counts:
+                          Your Google Sheet is configured in backend settings, but the sheet cannot be read yet.
                         </p>
-                        <pre className={`rounded-xl p-3 text-[11px] leading-relaxed border border-amber-500/20 overflow-x-auto select-all ${isDark ? "bg-black/40 text-amber-300" : "bg-white text-amber-950"
-                          }`}>
-                          {`GOOGLE_SHEETS_CLIENT_EMAIL=your-service@project.iam.gserviceaccount.com
-GOOGLE_SHEETS_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\\n..."
-GOOGLE_SHEET_ID=your_spreadsheet_id_from_url
-GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
-                        </pre>
+                        <div className={`rounded-xl p-3.5 text-[11px] leading-relaxed border border-amber-500/20 space-y-2 ${isDark ? "bg-black/40 text-amber-200" : "bg-white text-amber-950"}`}>
+                          <p className="font-bold text-amber-400 uppercase tracking-wide">
+                            👉 Step 1: Open Google Sheet Sharing Permissions
+                          </p>
+                          <p>
+                            Open your sheet:{" "}
+                            <a
+                              href={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1YynwBobcAJvQ1tN0YF92TA-6uhp_kukPOEAc3diatis/edit?usp=sharing"}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-sky-400 underline font-semibold hover:text-sky-300"
+                            >
+                              Open Google Sheet ↗
+                            </a>
+                          </p>
+                          <p>
+                            Click the blue <strong>Share</strong> button (top right) → under <strong>General access</strong>, change from <strong>Restricted</strong> to <strong>&ldquo;Anyone with the link&rdquo;</strong> → make sure role is set to <strong>Viewer</strong> → click <strong>Done</strong>.
+                          </p>
+                          <p className="font-bold text-amber-400 uppercase tracking-wide pt-1">
+                            👉 Step 2: Instant Sync
+                          </p>
+                          <p>
+                            Once shared, click <strong>Refresh Sheet Data</strong> on this page to fetch real-time registrations immediately without needing private RSA keys!
+                          </p>
+                        </div>
                         <p className={`text-[11px] ${isDark ? "text-amber-300/80" : "text-amber-900"}`}>
-                          The <strong>Sheet Label</strong> on each event must match the dropdown value in your Google Form exactly.
+                          The <strong>Sheet Label</strong> on each event must match the event dropdown value in your Google Form responses.
                         </p>
                       </div>
                     </div>
@@ -2883,7 +2900,7 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                           Google Sheets Live Response URL / ID
                         </label>
                         <a
-                          href={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1KxPkq3bnXk-08Vr8g4mEMNjbxwiiavneUtHMl_M4SbY/edit?gid=1683046113#gid=1683046113"}
+                          href={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1YynwBobcAJvQ1tN0YF92TA-6uhp_kukPOEAc3diatis/edit?usp=sharing"}
                           target="_blank"
                           rel="noreferrer"
                           className="text-[11px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1 font-mono"
@@ -2893,7 +2910,7 @@ GOOGLE_SHEET_RANGE=Form Responses 1!A:Z`}
                       </div>
                       <input
                         name="googleSheetUrl"
-                        defaultValue={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1KxPkq3bnXk-08Vr8g4mEMNjbxwiiavneUtHMl_M4SbY/edit?gid=1683046113#gid=1683046113"}
+                        defaultValue={settings.googleSheetUrl || "https://docs.google.com/spreadsheets/d/1YynwBobcAJvQ1tN0YF92TA-6uhp_kukPOEAc3diatis/edit?usp=sharing"}
                         placeholder="https://docs.google.com/spreadsheets/d/..."
                         className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
                       />

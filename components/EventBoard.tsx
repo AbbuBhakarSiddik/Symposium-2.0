@@ -586,18 +586,7 @@ function EventCard({
                 )}
               </div>
 
-              {/* Rulebook / Guidelines Button if available */}
-              {event.rulebookUrl && (
-                <a
-                  href={event.rulebookUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl border border-blue-200 bg-blue-50/70 font-mono text-xs font-bold text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-colors shadow-sm"
-                >
-                  <span>📘</span>
-                  <span>Official Rulebook &amp; Guidelines ↗</span>
-                </a>
-              )}
+              
             </div>
           </div>
         )}
