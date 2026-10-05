@@ -144,7 +144,7 @@ export async function listAnnouncements(): Promise<Announcement[]> {
     .from("announcements")
     .select("id, message, created_at, created_by")
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(50);
 
   if (error) throw error;
   return data as Announcement[];

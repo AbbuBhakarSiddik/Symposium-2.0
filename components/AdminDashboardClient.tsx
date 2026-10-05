@@ -249,10 +249,91 @@ export default function AdminDashboardClient({
   const [announcementSearch, setAnnouncementSearch] = useState("");
   const [resourceSearch, setResourceSearch] = useState("");
 
-  // Announcements tab sub-navigation state (ticker, bulletins, resources, settings)
+  // Announcements tab sub-navigation state (bulletins, ticker, resources, settings)
   const [announcementsSubTab, setAnnouncementsSubTab] = useState<
-    "ticker" | "resources" | "settings"
-  >("ticker");
+    "bulletins" | "ticker" | "resources" | "settings"
+  >("bulletins");
+
+  // Official Broadcast Announcements state
+  const [localAnnouncements, setLocalAnnouncements] = useState<Announcement[]>(announcements);
+  const [newAnnouncementMessage, setNewAnnouncementMessage] = useState("");
+  const [isBroadcastingAnnouncement, setIsBroadcastingAnnouncement] = useState(false);
+  const [announcementBroadcastSuccess, setAnnouncementBroadcastSuccess] = useState(false);
+  const [announcementBroadcastError, setAnnouncementBroadcastError] = useState<string | null>(null);
+  const [deletingAnnouncementId, setDeletingAnnouncementId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalAnnouncements(announcements);
+  }, [announcements]);
+
+  const handleBroadcastAnnouncement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const msg = newAnnouncementMessage.trim();
+    if (!msg) return;
+
+    setIsBroadcastingAnnouncement(true);
+    setAnnouncementBroadcastError(null);
+    setAnnouncementBroadcastSuccess(false);
+
+    try {
+      const res = await fetch("/api/announcements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to broadcast announcement");
+      }
+
+      if (Array.isArray(data.announcements)) {
+        setLocalAnnouncements(data.announcements);
+      } else {
+        const newNotice: Announcement = {
+          id: `local-${Date.now()}`,
+          message: msg,
+          created_at: new Date().toISOString(),
+          created_by: currentUser.username || "admin",
+        };
+        setLocalAnnouncements((prev) => [newNotice, ...prev]);
+      }
+
+      setNewAnnouncementMessage("");
+      setAnnouncementBroadcastSuccess(true);
+      setTimeout(() => setAnnouncementBroadcastSuccess(false), 5000);
+    } catch (err: any) {
+      console.error(err);
+      setAnnouncementBroadcastError(err.message || "Failed to broadcast notice");
+    } finally {
+      setIsBroadcastingAnnouncement(false);
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this broadcasted notice?")) return;
+    setDeletingAnnouncementId(id);
+    try {
+      const res = await fetch(`/api/announcements?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete notice");
+      }
+
+      if (Array.isArray(data.announcements)) {
+        setLocalAnnouncements(data.announcements);
+      } else {
+        setLocalAnnouncements((prev) => prev.filter((a) => a.id !== id));
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Failed to delete notice");
+    } finally {
+      setDeletingAnnouncementId(null);
+    }
+  };
 
   // Running Announcement local state & templates
   const [runningAnnouncementText, setRunningAnnouncementText] = useState(
@@ -699,12 +780,12 @@ export default function AdminDashboardClient({
 
   // Filtered Announcements
   const filteredAnnouncements = useMemo(() => {
-    if (!announcementSearch.trim()) return announcements;
+    if (!announcementSearch.trim()) return localAnnouncements;
     const q = announcementSearch.toLowerCase();
-    return announcements.filter(
+    return localAnnouncements.filter(
       (a) => a.message.toLowerCase().includes(q) || a.created_by.toLowerCase().includes(q)
     );
-  }, [announcements, announcementSearch]);
+  }, [localAnnouncements, announcementSearch]);
 
   // Filtered Resources
   const filteredResources = useMemo(() => {
@@ -2474,6 +2555,23 @@ export default function AdminDashboardClient({
               <div className={`flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border ${isDark ? "border-white/10 bg-slate-900/60" : "border-slate-200 bg-slate-100/80"} backdrop-blur-md`}>
                 <button
                   type="button"
+                  onClick={() => setAnnouncementsSubTab("bulletins")}
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "bulletins"
+                      ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/25 scale-[1.01]"
+                      : isDark
+                        ? "text-slate-400 hover:text-white hover:bg-white/5"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white"
+                    }`}
+                >
+                  <span className="text-sm">📢</span>
+                  <span>Broadcast Notices</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-extrabold ${announcementsSubTab === "bulletins" ? "bg-white/20 text-white" : isDark ? "bg-white/10 text-slate-300" : "bg-slate-200 text-slate-700"}`}>
+                    {localAnnouncements.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => setAnnouncementsSubTab("ticker")}
                   className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-mono text-xs font-bold transition-all ${announcementsSubTab === "ticker"
                       ? "bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md shadow-amber-500/25 scale-[1.01]"
@@ -2520,6 +2618,246 @@ export default function AdminDashboardClient({
                   <span>Site Settings</span>
                 </button>
               </div>
+
+              {/* ========================================================================= */}
+              {/* SUB-TAB 0: BROADCAST NOTICES (/announcements)                            */}
+              {/* ========================================================================= */}
+              {announcementsSubTab === "bulletins" && (
+                <div className="space-y-6">
+                  {/* MAIN CONTROL CARD: COMPOSE & BROADCAST */}
+                  <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-6`}>
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                      <div>
+                        <div className="flex items-center gap-2.5">
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500" />
+                          </span>
+                          <h3 className={`font-display text-xl sm:text-2xl font-bold ${headerText}`}>
+                            Live Broadcast Announcement Control
+                          </h3>
+                        </div>
+                        <p className={`font-mono text-xs ${subText} mt-1`}>
+                          Publish official real-time announcements. Broadcasts appear instantly on the public{" "}
+                          <span className="text-rose-600 font-bold">/announcements</span> page &amp; mobile stream.
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href="/announcements"
+                          target="_blank"
+                          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition shadow-xs"
+                        >
+                          <span>🌐</span>
+                          <span>Open Public Stream ↗</span>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Compose Box */}
+                    <form onSubmit={handleBroadcastAnnouncement} className="space-y-4">
+                      <div>
+                        <label className={`block font-mono text-xs font-bold uppercase tracking-wider ${subText} mb-2`}>
+                          Announcement Message
+                        </label>
+                        <textarea
+                          value={newAnnouncementMessage}
+                          onChange={(e) => setNewAnnouncementMessage(e.target.value)}
+                          placeholder="Type your official announcement or notice here... (e.g. 'symposium soon', 'Round 1 results are out', 'Lunch tokens distributed at counter 3')"
+                          rows={3}
+                          maxLength={500}
+                          className={`w-full rounded-2xl border p-4 font-mono text-xs sm:text-sm outline-none transition focus:ring-2 focus:ring-rose-400 resize-y ${inputBg}`}
+                        />
+                      </div>
+
+                      {/* Footer Actions */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                        <div className="flex items-center gap-2 font-mono text-xs text-slate-500">
+                          <span>
+                            Broadcast as: <strong className="text-slate-900">@{currentUser.username}</strong>
+                          </span>
+                          <span className="text-emerald-600 font-bold flex items-center gap-0.5">
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            Verified Admin
+                          </span>
+                          <span className="text-slate-400">•</span>
+                          <span className="text-[11px]">{newAnnouncementMessage.length}/500 chars</span>
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={isBroadcastingAnnouncement || !newAnnouncementMessage.trim()}
+                          className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider text-white shadow-md transition-all ${
+                            isBroadcastingAnnouncement || !newAnnouncementMessage.trim()
+                              ? "bg-slate-400 cursor-not-allowed opacity-60"
+                              : "bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 hover:scale-[1.02] shadow-rose-500/25 active:scale-95 cursor-pointer"
+                          }`}
+                        >
+                          {isBroadcastingAnnouncement ? (
+                            <>
+                              <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                              </svg>
+                              <span>Broadcasting...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>📡</span>
+                              <span>Broadcast Live Notice</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Success / Error Alerts */}
+                      {announcementBroadcastSuccess && (
+                        <div className="p-3.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-800 font-mono text-xs flex items-center justify-between animate-fadeIn">
+                          <span className="flex items-center gap-2 font-bold">
+                            <span>🎉</span> Announcement successfully broadcasted! Live on /announcements.
+                          </span>
+                          <span className="text-[10px] text-emerald-600">Auto-synced</span>
+                        </div>
+                      )}
+
+                      {announcementBroadcastError && (
+                        <div className="p-3.5 rounded-xl border border-rose-300 bg-rose-50 text-rose-800 font-mono text-xs flex items-center gap-2 animate-fadeIn font-bold">
+                          <span>⚠️</span> {announcementBroadcastError}
+                        </div>
+                      )}
+                    </form>
+
+                    {/* LIVE SIMULATION PREVIEW (How users see it) */}
+                    <div className="pt-4 border-t border-slate-200/80 space-y-2">
+                      <span className={`font-mono text-xs font-bold uppercase tracking-wider ${subText} flex items-center gap-2`}>
+                        <span>👁️</span> Live Participant View (Simulated Mobile/Desktop Card)
+                      </span>
+                      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3 max-w-lg">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
+                            Notice
+                          </span>
+                          <span className="font-mono text-[11px] text-blue-600 font-bold">Just now</span>
+                        </div>
+                        <p className="font-sans text-sm sm:text-base text-slate-900 font-semibold leading-relaxed">
+                          {newAnnouncementMessage.trim() || "symposium soon"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ACTIVE BROADCASTED NOTICES LIST */}
+                  <div className={`relative overflow-hidden rounded-3xl border ${cardBg} p-6 sm:p-8 space-y-5`}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                      <div>
+                        <h4 className={`font-display text-lg sm:text-xl font-bold ${headerText} flex items-center gap-2`}>
+                          <span>📋</span>
+                          <span>Active Broadcasted Notices</span>
+                          <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold">
+                            {filteredAnnouncements.length}
+                          </span>
+                        </h4>
+                        <p className={`font-mono text-xs ${subText} mt-0.5`}>
+                          All notices currently live on the public announcements stream.
+                        </p>
+                      </div>
+
+                      {/* Search Filter */}
+                      <div className="w-full sm:w-64">
+                        <input
+                          type="text"
+                          value={announcementSearch}
+                          onChange={(e) => setAnnouncementSearch(e.target.value)}
+                          placeholder="🔍 Filter notices..."
+                          className={`w-full rounded-xl border px-3 py-2 font-mono text-xs outline-none ${inputBg}`}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Notice Cards */}
+                    <div className="space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
+                      {filteredAnnouncements.map((a) => {
+                        const dateFormatted = new Date(a.created_at).toLocaleString(undefined, {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+
+                        return (
+                          <div
+                            key={a.id}
+                            className={`rounded-2xl border p-4 sm:p-5 transition space-y-3 ${
+                              isDark
+                                ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.04]"
+                                : "border-slate-200 bg-white hover:border-rose-300 hover:shadow-sm"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <div className="flex items-center gap-2">
+                                <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+                                  Live Notice
+                                </span>
+                                <span className="font-mono text-[11px] text-slate-500">
+                                  {dateFormatted}
+                                </span>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteAnnouncement(a.id)}
+                                disabled={deletingAnnouncementId === a.id}
+                                className="inline-flex items-center gap-1 font-mono text-xs font-bold text-rose-600 hover:text-rose-800 hover:bg-rose-50 px-2.5 py-1 rounded-lg border border-transparent hover:border-rose-200 transition"
+                              >
+                                {deletingAnnouncementId === a.id ? (
+                                  <span>Deleting...</span>
+                                ) : (
+                                  <>
+                                    <span>🗑️</span>
+                                    <span>Delete</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+
+                            <p className="font-sans text-sm sm:text-base text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap">
+                              {a.message}
+                            </p>
+
+                            <div className="pt-2 border-t border-slate-100 flex items-center justify-between font-mono text-xs text-slate-500">
+                              <span>
+                                Broadcasted by <strong className="text-slate-900">@{a.created_by}</strong>
+                              </span>
+                              <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                                ✓ Verified Admin Notice
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {filteredAnnouncements.length === 0 && (
+                        <div className="text-center py-10 rounded-2xl border border-dashed border-slate-300 p-6 space-y-2">
+                          <p className="text-2xl">📢</p>
+                          <p className="font-mono text-xs text-slate-500 font-bold">
+                            {announcementSearch
+                              ? `No announcements match "${announcementSearch}".`
+                              : "No broadcasted notices yet. Send your first broadcast above!"}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* ========================================================================= */}
               {/* SUB-TAB 1: RUNNING ANNOUNCEMENT (HEADER TICKER)                           */}
