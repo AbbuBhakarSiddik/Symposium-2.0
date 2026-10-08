@@ -38,6 +38,12 @@ export const REGISTRATION_LIVE_DATE =
   process.env.REGISTRATION_LIVE_DATE ||
   "2026-10-04T19:30:00+05:30";
 
+// Default Rulebook Google Drive URL
+export const DEFAULT_RULEBOOK_URL =
+  process.env.NEXT_PUBLIC_RULEBOOK_URL ||
+  process.env.RULEBOOK_URL ||
+  "https://drive.google.com";
+
 export const EVENTS: EventConfig[] = [
   {
     id: "event-1",

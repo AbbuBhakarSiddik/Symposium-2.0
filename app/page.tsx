@@ -8,7 +8,7 @@ import Contact from "@/components/Contact";
 import CollegeBanner from "@/components/CollegeBanner";
 import HypeCountdownModal from "@/components/HypeCountdownModal";
 import { listGalleryItems, listEvents, getSiteSettings } from "@/lib/db";
-import { REGISTER_FORM_URL } from "@/lib/eventsConfig";
+import { REGISTER_FORM_URL, DEFAULT_RULEBOOK_URL } from "@/lib/eventsConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +20,7 @@ export default async function Home() {
   ]);
 
   const registerFormUrl = settings?.registerFormUrl || REGISTER_FORM_URL;
+  const rulebookUrl = settings?.rulebookUrl || DEFAULT_RULEBOOK_URL;
 
   return (
     <main className="w-full max-w-full overflow-x-hidden">
@@ -32,7 +33,7 @@ export default async function Home() {
         runningAnnouncementActive={settings?.runningAnnouncementActive !== "false"}
       />
       <Hero registerFormUrl={registerFormUrl} />
-      <EventBoard registerFormUrl={registerFormUrl} />
+      <EventBoard registerFormUrl={registerFormUrl} rulebookUrl={rulebookUrl} />
       <Achievements />
       <Gallery items={galleryItems} />
       <CoordinatorsSection events={events} />

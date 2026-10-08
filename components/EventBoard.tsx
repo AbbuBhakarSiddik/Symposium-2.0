@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EVENTS, EventConfig, REGISTER_FORM_URL } from "@/lib/eventsConfig";
+import { EVENTS, EventConfig, REGISTER_FORM_URL, DEFAULT_RULEBOOK_URL } from "@/lib/eventsConfig";
 import { useRegistrationCountdown, openHypeModal } from "@/lib/useRegistrationCountdown";
 
 type SeatData = { id: string; registered: number; capacity: number; available: number };
@@ -10,6 +10,7 @@ type ApiResponse = {
   data: SeatData[];
   events?: EventConfig[];
   registerFormUrl?: string;
+  rulebookUrl?: string;
   fetchedAt: string;
 };
 
@@ -17,13 +18,18 @@ const POLL_MS = 15000;
 
 export default function EventBoard({
   registerFormUrl: initialRegisterFormUrl,
+  rulebookUrl: initialRulebookUrl,
 }: {
   registerFormUrl?: string;
+  rulebookUrl?: string;
 } = {}) {
   const [eventsList, setEventsList] = useState<EventConfig[]>(EVENTS);
   const [seats, setSeats] = useState<Record<string, SeatData>>({});
   const [registerFormUrl, setRegisterFormUrl] = useState<string>(
     initialRegisterFormUrl || REGISTER_FORM_URL
+  );
+  const [rulebookUrl, setRulebookUrl] = useState<string>(
+    initialRulebookUrl || DEFAULT_RULEBOOK_URL
   );
   const [openId, setOpenId] = useState<string | null>(null);
   const countdown = useRegistrationCountdown();
@@ -42,6 +48,9 @@ export default function EventBoard({
         }
         if (json.registerFormUrl && json.registerFormUrl !== "#") {
           setRegisterFormUrl(json.registerFormUrl);
+        }
+        if (json.rulebookUrl && json.rulebookUrl !== "#") {
+          setRulebookUrl(json.rulebookUrl);
         }
       } catch {
         // silently keep last known state
@@ -115,6 +124,7 @@ export default function EventBoard({
             event={event}
             seat={seats[event.id]}
             registerFormUrl={registerFormUrl}
+            defaultRulebookUrl={rulebookUrl}
             isOpen={openId === event.id}
             onToggle={() => setOpenId(openId === event.id ? null : event.id)}
           />
@@ -226,6 +236,7 @@ function EventCard({
   index,
   seat,
   registerFormUrl: _registerFormUrl,
+  defaultRulebookUrl: _defaultRulebookUrl,
   isOpen,
   onToggle,
 }: {
@@ -233,10 +244,16 @@ function EventCard({
   index: number;
   seat?: SeatData;
   registerFormUrl?: string;
+  defaultRulebookUrl?: string;
   isOpen: boolean;
   onToggle: () => void;
 }) {
   const registerFormUrl = _registerFormUrl || REGISTER_FORM_URL;
+  const defaultRulebookUrl = _defaultRulebookUrl || DEFAULT_RULEBOOK_URL;
+  const effectiveRulebookUrl =
+    event.rulebookUrl && event.rulebookUrl.trim() !== ""
+      ? event.rulebookUrl
+      : defaultRulebookUrl;
   const countdown = useRegistrationCountdown();
   const eventNameKey = (event.name || "").toLowerCase().trim();
   const customConfig =
@@ -451,12 +468,12 @@ function EventCard({
 
       {/* Bottom Section: Action Buttons */}
       <div className="mt-4 sm:mt-6 pt-3.5 sm:pt-5 border-t border-slate-100">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-2">
           {!hasCustomItems && (
             <button
               onClick={onToggle}
               className={`
-                flex-1 inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider transition-all
+                w-full inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all
                 ${isOpen ? "bg-blue-50/80 border-blue-400 text-blue-700 shadow-sm" : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"}
               `}
             >
@@ -474,30 +491,54 @@ function EventCard({
             </button>
           )}
 
-          {/* Registration / Countdown Button */}
-          {countdown.isLive ? (
+          <div className="flex items-center gap-2">
+            {/* Rulebook Google Drive Button */}
             <a
-              href={registerFormUrl}
+              href={effectiveRulebookUrl}
               target="_blank"
               rel="noreferrer"
-              className={`${hasCustomItems ? "w-full" : "w-auto"} inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-sm hover:scale-[1.02] active:scale-95 transition-all`}
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-300/80 bg-sky-50/90 hover:bg-sky-100 text-sky-800 hover:text-sky-950 px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-2xs hover:scale-[1.02] active:scale-95 transition-all text-center group"
+              title={`View ${event.name} Rulebook & Guidelines on Google Drive`}
             >
-              <span>Register</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              <span className="text-sm transition-transform group-hover:scale-110">📘</span>
+              <span>Rulebook</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3 w-3 text-sky-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
               </svg>
             </a>
-          ) : (
-            <button
-              type="button"
-              onClick={openHypeModal}
-              title="Registrations open at 7:30 PM today! Click to see countdown"
-              className={`${hasCustomItems ? "w-full" : "w-auto"} inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-300/80 bg-sky-50/90 hover:bg-sky-100 text-sky-800 px-3.5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-2xs hover:scale-[1.02] active:scale-95 transition-all cursor-pointer`}
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-ping" />
-              <span>Opens 7:30 PM</span>
-            </button>
-          )}
+
+            {/* Registration / Countdown Button */}
+            {countdown.isLive ? (
+              <a
+                href={registerFormUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-sm hover:scale-[1.02] active:scale-95 transition-all text-center"
+              >
+                <span>Register</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={openHypeModal}
+                title="Registrations open at 7:30 PM today! Click to see countdown"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-300/80 bg-sky-50/90 hover:bg-sky-100 text-sky-800 px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-2xs hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-ping" />
+                <span>Opens 7:30 PM</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Expandable Details Accordion */}
@@ -586,7 +627,18 @@ function EventCard({
                 )}
               </div>
 
-              
+              {/* Official Rulebook button in Details accordion */}
+              {effectiveRulebookUrl && (
+                <a
+                  href={effectiveRulebookUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl border border-sky-300 bg-sky-50/90 hover:bg-sky-100 font-mono text-xs font-bold text-sky-800 hover:text-sky-950 transition-colors shadow-2xs group"
+                >
+                  <span className="text-base group-hover:scale-110 transition-transform">📘</span>
+                  <span>View Official Rulebook (Google Drive) ↗</span>
+                </a>
+              )}
             </div>
           </div>
         )}

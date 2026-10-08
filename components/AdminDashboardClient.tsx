@@ -1870,6 +1870,17 @@ export default function AdminDashboardClient({
                     />
                   </div>
 
+                  <div>
+                    <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1.5 uppercase tracking-wider text-[10px] font-bold`}>
+                      Rulebook URL (Google Drive)
+                    </label>
+                    <input
+                      name="rulebookUrl"
+                      placeholder="https://drive.google.com/..."
+                      className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                    />
+                  </div>
+
                   <button
                     type="submit"
                     className="w-full rounded-xl py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 hover:from-sky-400 hover:via-indigo-400 hover:to-sky-400 shadow-md shadow-sky-500/25 transition-all active:scale-[0.99]"
@@ -3232,6 +3243,32 @@ export default function AdminDashboardClient({
                         className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
                       />
                     </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
+                          Official Rulebooks Google Drive Link
+                        </label>
+                        {settings.rulebookUrl && (
+                          <a
+                            href={settings.rulebookUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[11px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1 font-mono"
+                          >
+                            Open Drive ↗
+                          </a>
+                        )}
+                      </div>
+                      <input
+                        name="rulebookUrl"
+                        defaultValue={settings.rulebookUrl || "https://drive.google.com"}
+                        placeholder="https://drive.google.com/..."
+                        className={`w-full rounded-xl border px-3.5 py-2.5 outline-none transition ${inputBg}`}
+                      />
+                      <p className={`mt-1 font-mono text-[10px] ${subText}`}>
+                        Global fallback link for all "Rulebook" buttons on the Event Board.
+                      </p>
+                    </div>
                     <div className="col-span-full">
                       <div className="flex items-center justify-between mb-1.5">
                         <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} uppercase tracking-wider text-[10px] font-bold`}>
@@ -3799,6 +3836,18 @@ export default function AdminDashboardClient({
                   name="description"
                   defaultValue={editingEvent.description}
                   rows={2}
+                  className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
+                />
+              </div>
+
+              <div>
+                <label className={`block ${isDark ? "text-slate-300" : "text-slate-700"} mb-1 uppercase tracking-wider text-[10px] font-bold`}>
+                  Rulebook URL (Google Drive)
+                </label>
+                <input
+                  name="rulebookUrl"
+                  defaultValue={editingEvent.rulebookUrl || ""}
+                  placeholder="https://drive.google.com/..."
                   className={`w-full rounded-xl border px-3.5 py-2.5 outline-none ${inputBg}`}
                 />
               </div>

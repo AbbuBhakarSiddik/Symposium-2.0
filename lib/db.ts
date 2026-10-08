@@ -190,7 +190,7 @@ export async function deleteResource(id: string) {
 }
 
 // ---------- Events Management ----------
-import { EVENTS, EventConfig, SYMPOSIUM_NAME, CLUB_NAME, COLLEGE_NAME, REGISTER_FORM_URL } from "./eventsConfig";
+import { EVENTS, EventConfig, SYMPOSIUM_NAME, CLUB_NAME, COLLEGE_NAME, REGISTER_FORM_URL, DEFAULT_RULEBOOK_URL } from "./eventsConfig";
 
 export async function listEvents(): Promise<EventConfig[]> {
   try {
@@ -235,6 +235,7 @@ export async function createEvent(input: {
   sheetEventLabel: string;
   schedule?: { time: string; item: string }[];
   coordinators?: { name: string; role: string; phone?: string; email?: string }[];
+  rulebookUrl?: string | null;
 }) {
   const db = supabaseAdmin();
   const eventId = input.id || `event-${Date.now()}`;
@@ -250,6 +251,7 @@ export async function createEvent(input: {
     sheet_event_label: input.sheetEventLabel,
     schedule: input.schedule || [],
     coordinators: input.coordinators || [],
+    rulebook_url: input.rulebookUrl || null,
   });
 
   if (error) {
@@ -271,6 +273,7 @@ export async function updateEvent(
     sheetEventLabel: string;
     schedule: { time: string; item: string }[];
     coordinators: { name: string; role: string; phone?: string; email?: string; image?: string }[];
+    rulebookUrl: string | null;
   }>
 ) {
   const db = supabaseAdmin();
@@ -286,6 +289,7 @@ export async function updateEvent(
   if (input.sheetEventLabel !== undefined) payload.sheet_event_label = input.sheetEventLabel;
   if (input.schedule !== undefined) payload.schedule = input.schedule;
   if (input.coordinators !== undefined) payload.coordinators = input.coordinators;
+  if (input.rulebookUrl !== undefined) payload.rulebook_url = input.rulebookUrl;
 
   const { error } = await db.from("events").update(payload).eq("id", id);
   if (error) {
@@ -355,6 +359,7 @@ export type SiteSettings = {
   collegeName: string;
   registerFormUrl: string;
   googleSheetUrl?: string;
+  rulebookUrl?: string;
   runningAnnouncement?: string;
   runningAnnouncementActive?: string;
 };
@@ -366,6 +371,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     collegeName: COLLEGE_NAME,
     registerFormUrl: REGISTER_FORM_URL,
     googleSheetUrl: "https://docs.google.com/spreadsheets/d/1YynwBobcAJvQ1tN0YF92TA-6uhp_kukPOEAc3diatis/edit?usp=sharing",
+    rulebookUrl: DEFAULT_RULEBOOK_URL,
     runningAnnouncement: "📢 Registrations are now open for Innovation Ignite Symposium 2.0! Join exciting technical & non-technical events • Cash prizes, certificates & lunch provided • Register now!",
     runningAnnouncementActive: "true",
   };
@@ -385,6 +391,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         process.env.REGISTER_FORM_URL ||
         (map.registerFormUrl && map.registerFormUrl !== "#" ? map.registerFormUrl : defaults.registerFormUrl),
       googleSheetUrl: map.googleSheetUrl || defaults.googleSheetUrl,
+      rulebookUrl:
+        process.env.NEXT_PUBLIC_RULEBOOK_URL ||
+        process.env.RULEBOOK_URL ||
+        (map.rulebookUrl && map.rulebookUrl !== "#" ? map.rulebookUrl : defaults.rulebookUrl),
       runningAnnouncement: map.runningAnnouncement !== undefined ? map.runningAnnouncement : defaults.runningAnnouncement,
       runningAnnouncementActive: map.runningAnnouncementActive !== undefined ? map.runningAnnouncementActive : defaults.runningAnnouncementActive,
     };

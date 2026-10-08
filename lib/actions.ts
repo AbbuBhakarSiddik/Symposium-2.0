@@ -114,6 +114,7 @@ export async function createEventAction(formData: FormData) {
   const venue = String(formData.get("venue") || "").trim();
   const capacity = parseInt(String(formData.get("capacity") || "50"), 10);
   const sheetEventLabel = String(formData.get("sheetEventLabel") || name).trim();
+  const rulebookUrl = String(formData.get("rulebookUrl") || "").trim() || null;
 
   if (!name || !date || !time || !venue || !sheetEventLabel) {
     throw new Error("Missing required event fields");
@@ -133,6 +134,7 @@ export async function createEventAction(formData: FormData) {
       { time: "TBD", item: "Finals & results" },
     ],
     coordinators: [],
+    rulebookUrl,
   });
 
   revalidatePath("/");
@@ -154,6 +156,7 @@ export async function updateEventAction(formData: FormData) {
   const venue = String(formData.get("venue") || "").trim();
   const capacityStr = formData.get("capacity");
   const sheetEventLabel = String(formData.get("sheetEventLabel") || "").trim();
+  const rulebookUrl = formData.get("rulebookUrl");
 
   const payload: any = {};
   if (name) payload.name = name;
@@ -166,6 +169,7 @@ export async function updateEventAction(formData: FormData) {
     payload.capacity = parseInt(String(capacityStr), 10);
   }
   if (sheetEventLabel) payload.sheetEventLabel = sheetEventLabel;
+  if (rulebookUrl !== null) payload.rulebookUrl = String(rulebookUrl).trim() || null;
 
   await updateEvent(id, payload);
 
@@ -261,12 +265,16 @@ export async function updateSiteSettingsAction(formData: FormData) {
   const collegeName = String(formData.get("collegeName") || "").trim();
   const registerFormUrl = String(formData.get("registerFormUrl") || "").trim();
   const googleSheetUrl = String(formData.get("googleSheetUrl") || "").trim();
+  const rulebookUrl = formData.get("rulebookUrl");
 
   if (symposiumName) await updateSiteSetting("symposiumName", symposiumName);
   if (clubName) await updateSiteSetting("clubName", clubName);
   if (collegeName) await updateSiteSetting("collegeName", collegeName);
   if (registerFormUrl) await updateSiteSetting("registerFormUrl", registerFormUrl);
   if (googleSheetUrl) await updateSiteSetting("googleSheetUrl", googleSheetUrl);
+  if (rulebookUrl !== null) {
+    await updateSiteSetting("rulebookUrl", String(rulebookUrl).trim());
+  }
 
   const runningAnnouncement = formData.get("runningAnnouncement");
   if (runningAnnouncement !== null) {
