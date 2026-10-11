@@ -6,7 +6,6 @@ import Achievements from "@/components/Achievements";
 import CoordinatorsSection from "@/components/CoordinatorsSection";
 import Contact from "@/components/Contact";
 import CollegeBanner from "@/components/CollegeBanner";
-import HypeCountdownModal from "@/components/HypeCountdownModal";
 import { listGalleryItems, listEvents, getSiteSettings } from "@/lib/db";
 import { REGISTER_FORM_URL, DEFAULT_RULEBOOK_URL } from "@/lib/eventsConfig";
 
@@ -24,9 +23,6 @@ export default async function Home() {
 
   return (
     <main className="w-full max-w-full overflow-x-hidden">
-      {/* ── HIGH-ENERGY HYPE POPUP & LIVE COUNTDOWN TIMER ── */}
-      <HypeCountdownModal registerFormUrl={registerFormUrl} />
-
       <CollegeBanner />
       <Header
         runningAnnouncement={settings?.runningAnnouncement}

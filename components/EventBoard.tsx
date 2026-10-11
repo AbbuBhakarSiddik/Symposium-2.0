@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { EVENTS, EventConfig, REGISTER_FORM_URL, DEFAULT_RULEBOOK_URL } from "@/lib/eventsConfig";
-import { useRegistrationCountdown, openHypeModal } from "@/lib/useRegistrationCountdown";
 
 type SeatData = { id: string; registered: number; capacity: number; available: number };
 type ApiResponse = {
@@ -32,7 +31,6 @@ export default function EventBoard({
     initialRulebookUrl || DEFAULT_RULEBOOK_URL
   );
   const [openId, setOpenId] = useState<string | null>(null);
-  const countdown = useRegistrationCountdown();
 
   useEffect(() => {
     let cancelled = false;
@@ -75,12 +73,6 @@ export default function EventBoard({
     );
   });
 
-  const totalCapacity = visibleEvents.reduce((acc, ev) => acc + (ev.capacity || 0), 0);
-  const totalRegistered = visibleEvents.reduce(
-    (acc, ev) => acc + (seats[ev.id]?.registered ?? 0),
-    0
-  );
-
   return (
     <section id="events" className="scroll-mt-24 mx-auto max-w-7xl px-5 pt-8 pb-8 sm:pt-14 sm:pb-12">
       {/* Section Header */}
@@ -92,27 +84,17 @@ export default function EventBoard({
           </div>
           <h2 className="section-heading text-slate-900 tracking-tight">Events</h2>
           <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
-            Choose your competition, explore event timelines and team requirements, and claim your spot before seats fill up.
+            Choose your competition, explore event timelines and team requirements, and claim your spot.
           </p>
         </div>
 
-        {/* Aggregate Badges & Countdown (Desktop/Tablet) */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={openHypeModal}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-300 bg-sky-50/90 hover:bg-sky-100 text-sky-800 font-mono text-xs font-bold transition-all shadow-2xs cursor-pointer hover:scale-105 active:scale-95"
-            title="Click to view live countdown popup"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${countdown.isLive ? "bg-emerald-400 opacity-75" : "bg-sky-400 opacity-75"}`} />
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${countdown.isLive ? "bg-emerald-500" : "bg-sky-500"}`} />
-            </span>
-            <span suppressHydrationWarning>
-              {countdown.isLive ? "🔥 Registrations Open!" : `⏳ Unlocks: ${countdown.formattedTimer}`}
-            </span>
-          </button>
-        </div>
+        {/* Aggregate Count Badge (Desktop/Tablet) */}
+        {visibleEvents.length > 0 && (
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-sky-200 bg-sky-50/70 font-mono text-xs text-sky-800 font-semibold shadow-sm shrink-0">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{visibleEvents.length} Active Events</span>
+          </div>
+        )}
       </div>
 
       {/* 3-Column Responsive Grid */}
@@ -254,7 +236,6 @@ function EventCard({
     event.rulebookUrl && event.rulebookUrl.trim() !== ""
       ? event.rulebookUrl
       : defaultRulebookUrl;
-  const countdown = useRegistrationCountdown();
   const eventNameKey = (event.name || "").toLowerCase().trim();
   const customConfig =
     EVENT_CUSTOM_CONFIG[event.id] ||
@@ -276,24 +257,7 @@ function EventCard({
 
   const sectionTitle = customConfig?.sectionTitle || "DOMAIN";
   const hasCustomItems = Boolean(customItems && customItems.length > 0);
-
-  const registered = seat?.registered ?? 0;
-  const capacity = event.capacity;
-  const available = seat?.available ?? Math.max(capacity - registered, 0);
-  const isClosed = available <= 0 || (capacity > 0 && registered >= capacity);
-  const percentageFilled = capacity > 0 ? Math.min((registered / capacity) * 100, 100) : 0;
-
   const theme = THEME_ACCENTS[index % THEME_ACCENTS.length];
-
-  // Determine status
-  const status =
-    seat === undefined
-      ? "loading"
-      : isClosed
-        ? "full"
-        : available <= capacity * 0.2
-          ? "filling"
-          : "open";
 
   return (
     <div
@@ -321,28 +285,10 @@ function EventCard({
           )}
 
           {/* Status Badge */}
-          {status === "open" && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm">
-              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Open
-            </span>
-          )}
-          {status === "filling" && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-300 shadow-sm font-semibold">
-              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-amber-500 animate-ping" />
-              Filling Fast
-            </span>
-          )}
-          {status === "full" && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-300 shadow-sm">
-              Closed / Full
-            </span>
-          )}
-          {status === "loading" && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono bg-slate-50 text-slate-500 border border-slate-300">
-              ···
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm">
+            <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-emerald-500 animate-pulse" />
+            Open
+          </span>
         </div>
 
         {/* Event Title & Tagline */}
@@ -374,30 +320,18 @@ function EventCard({
           </div>
 
           {!hasCustomItems && (
-            <>
-              {/* Venue */}
-              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
-                <span className="text-base select-none">📍</span>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Venue</p>
-                  <p className="text-xs font-bold text-slate-800 truncate">{event.venue}</p>
-                </div>
+            <div className="col-span-2 flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+              <span className="text-sm sm:text-base select-none">📍</span>
+              <div className="min-w-0">
+                <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Venue</p>
+                <p className="text-[11px] sm:text-xs font-bold text-slate-800 truncate">{event.venue}</p>
               </div>
-
-              {/* Capacity */}
-              <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
-                <span className="text-base select-none">👥</span>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Capacity</p>
-                  <p className="text-xs font-bold text-slate-800 truncate">{capacity} Seats</p>
-                </div>
-              </div>
-            </>
+            </div>
           )}
         </div>
 
         {/* DOMAIN / KEY ROUNDS Section (under by under) */}
-        {hasCustomItems && customItems && customItems.length > 0 ? (
+        {hasCustomItems && customItems && customItems.length > 0 && (
           <div className="mt-3 sm:mt-4 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
             <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-2.5">
               <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-blue-600 animate-pulse" />
@@ -421,46 +355,6 @@ function EventCard({
                   </div>
                 );
               })}
-            </div>
-          </div>
-        ) : (
-          /* Live Seat Tracker & Progress Bar for regular events */
-          <div className="mt-5 p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/90 space-y-2">
-            <div className="flex justify-between items-center text-xs font-mono">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
-                Seats Status
-              </span>
-              <span className="font-bold text-slate-900">
-                {registered} <span className="font-normal text-slate-400">/ {capacity} filled</span>
-              </span>
-            </div>
-
-            {/* Progress bar track */}
-            <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80">
-              <div
-                className={`h-full rounded-full transition-all duration-700 ease-out ${isClosed
-                  ? "bg-red-500"
-                  : percentageFilled >= 80
-                    ? "bg-gradient-to-r from-amber-400 to-red-500"
-                    : `bg-gradient-to-r ${theme.gradientBar}`
-                  }`}
-                style={{ width: `${percentageFilled}%` }}
-              />
-            </div>
-
-            <div className="flex justify-between items-center text-[11px] font-mono">
-              <span
-                className={`font-semibold px-2 py-0.5 rounded ${isClosed
-                  ? "text-red-700 bg-red-100/70"
-                  : available <= capacity * 0.2
-                    ? "text-amber-800 bg-amber-100/70"
-                    : "text-blue-700 bg-blue-100/60"
-                  }`}
-              >
-                {isClosed ? "0 spots remaining" : `${available} spots left`}
-              </span>
-              <span className="text-slate-500 font-medium">{percentageFilled.toFixed(0)}% Booked</span>
             </div>
           </div>
         )}
@@ -514,30 +408,18 @@ function EventCard({
               </svg>
             </a>
 
-            {/* Registration / Countdown Button */}
-            {countdown.isLive ? (
-              <a
-                href={registerFormUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-sm hover:scale-[1.02] active:scale-95 transition-all text-center"
-              >
-                <span>Register</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
-            ) : (
-              <button
-                type="button"
-                onClick={openHypeModal}
-                title="Registrations open at 7:30 PM today! Click to see countdown"
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-300/80 bg-sky-50/90 hover:bg-sky-100 text-sky-800 px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-2xs hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-ping" />
-                <span>Opens 7:30 PM</span>
-              </button>
-            )}
+            {/* Registration Button */}
+            <a
+              href={registerFormUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider shadow-sm hover:scale-[1.02] active:scale-95 transition-all text-center"
+            >
+              <span>Register</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
           </div>
         </div>
 
